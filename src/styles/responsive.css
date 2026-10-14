@@ -250,9 +250,23 @@
 /* --------------------------------------------------------------------------
    Media Queries: Breakpoint 768px (Standard Mobile & Phablet)
    -------------------------------------------------------------------------- */
+/* Navbar extras (wishlist, theme) show in the ☰ menu only on phones */
+.mobile-menu-extras {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .mobile-bottom-bar {
     display: block;
+  }
+
+  /* Top bar keeps logo, search, account and ☰; cart is in the bottom bar */
+  .hide-on-phone {
+    display: none !important;
+  }
+
+  .mobile-menu-extras {
+    display: flex;
   }
 
   .customer-shell-main {
@@ -371,6 +385,11 @@
 
   .mobile-bottom-nav .mobile-nav-btn span {
     font-size: 0.65rem;
+  }
+
+  /* Signed-in account button: icon only */
+  .nav-user-name {
+    display: none;
   }
 }
 

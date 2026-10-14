@@ -8,6 +8,14 @@ import { useCart } from '../../context/CartContext';
 import { useStore } from '../../context/StoreContext';
 import { SearchBar } from '../Common/SearchBar';
 
+const mobileMenuItemStyle = {
+  display: 'flex', alignItems: 'center', gap: '0.6rem',
+  background: 'none', border: 'none', cursor: 'pointer',
+  padding: '0.65rem 1rem', borderRadius: 'var(--radius-sm)',
+  fontSize: '0.925rem', fontWeight: 600, color: 'var(--text-primary)',
+  textAlign: 'left', fontFamily: 'var(--font-sans)'
+};
+
 const Navbar = () => {
   const {
     navigateTo, currentView,
@@ -193,7 +201,7 @@ const Navbar = () => {
 
             {/* Theme toggle */}
             <button
-              className="icon-btn"
+              className="icon-btn hide-on-phone"
               onClick={toggleTheme}
               title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
             >
@@ -202,7 +210,7 @@ const Navbar = () => {
 
             {/* Wishlist */}
             <button
-              className="icon-btn"
+              className="icon-btn hide-on-phone"
               onClick={() => navigateTo('wishlist')}
               title="Wishlist"
               style={{ position: 'relative' }}
@@ -216,7 +224,7 @@ const Navbar = () => {
 
             {/* Cart */}
             <button
-              className="icon-btn"
+              className="icon-btn hide-on-phone"
               onClick={() => setIsCartDrawerOpen(true)}
               title="Cart"
               style={{ position: 'relative' }}
@@ -236,7 +244,7 @@ const Navbar = () => {
                   style={{ gap: '0.35rem', paddingRight: '0.75rem' }}
                 >
                   <User size={18} />
-                  <span style={{ fontSize: '0.8rem', fontWeight: 600, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <span className="nav-user-name" style={{ fontSize: '0.8rem', fontWeight: 600, maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {currentUser.name?.split(' ')[0]}
                   </span>
                   <ChevronDown size={13} />
@@ -334,6 +342,20 @@ const Navbar = () => {
                 {link.label}
               </button>
             ))}
+
+            {/* On phones these live here instead of the top bar */}
+            <div className="mobile-menu-extras" style={{ borderTop: '1px solid var(--border-subtle)', marginTop: '0.5rem', paddingTop: '0.5rem', flexDirection: 'column', gap: '0.25rem' }}>
+              <button
+                onClick={() => { navigateTo('wishlist'); setMobileMenuOpen(false); }}
+                style={mobileMenuItemStyle}
+              >
+                <Heart size={17} /> Wishlist{wishlist.length > 0 ? ` (${wishlist.length})` : ''}
+              </button>
+              <button onClick={toggleTheme} style={mobileMenuItemStyle}>
+                {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+                {theme === 'dark' ? 'Light mode' : 'Dark mode'}
+              </button>
+            </div>
           </div>
         )}
       </header>
