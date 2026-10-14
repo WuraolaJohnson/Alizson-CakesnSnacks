@@ -28,7 +28,7 @@ export const AppProvider = ({ children }) => {
     const path = window.location.pathname.toLowerCase();
     // Returning from Google (?code=… or ?error=…) to the portal it was started from
     const params = new URLSearchParams(window.location.search);
-    if (params.has('code') || params.has('error')) {
+    if (params.has('code') || params.has('error') || params.has('portal')) {
       const portal = getPendingOAuthPortal();
       if (portal === 'admin' || portal === 'rider') return portal;
     }

@@ -173,6 +173,8 @@ const Navbar = () => {
                 style={{
                   cursor: 'pointer',
                   padding: '0.45rem 0.85rem',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
                   borderRadius: 'var(--radius-full)',
                   fontSize: '0.875rem',
                   fontWeight: 600,
@@ -189,7 +191,8 @@ const Navbar = () => {
           </nav>
 
           {/* Right Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+          {/* marginLeft: auto keeps these on the right when the link row is hidden */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0, marginLeft: 'auto' }}>
             {/* Search */}
             <button
               className="icon-btn"

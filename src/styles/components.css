@@ -660,3 +660,34 @@
     display: flex !important;
   }
 }
+
+/* Round close button on dark/coloured modal headers (e.g. Gift Studio).
+   Fixed size + flex-shrink: 0 so a long title can't squeeze it into an oval. */
+.modal-close-on-dark {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.14);
+  color: #FFFFFF;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  line-height: 0;
+  transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.modal-close-on-dark:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #FFFFFF;
+  transform: rotate(90deg);
+}
+
+.modal-close-on-dark:focus-visible {
+  outline: 2px solid #FFCC6B;
+  outline-offset: 2px;
+}

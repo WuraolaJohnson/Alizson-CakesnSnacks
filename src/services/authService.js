@@ -233,9 +233,12 @@ export async function getRiderForUser(userId) {
  * Redirects to Google. After approval Google returns to this site and
  * the Supabase client finishes the sign-in automatically (?code=…).
  *
- * The return address is always the bare site URL, so it only has to match
- * the Supabase Redirect URLs allow-list. Which staff portal to reopen is
- * remembered in sessionStorage (survives the round trip in the same tab).
+ * Which staff portal to reopen is carried two ways, so either one is enough:
+ *  - ?portal=admin|rider on the return URL (kept when the URL matches the
+ *    Supabase Redirect URLs allow-list, e.g. https://site/**)
+ *  - a short-lived note in localStorage — shared by every tab, because on
+ *    phones Google often returns in a NEW tab (or via the Google app), where
+ *    the original tab's sessionStorage is not visible.
  *
  * @param {'admin'|'rider'|null} portal - staff portal to return to
  * @returns {{ error }} only if the redirect could not be started.
@@ -247,15 +250,16 @@ export async function signInWithGoogle(portal = null) {
 
   try {
     if (portal) {
-      sessionStorage.setItem(OAUTH_PORTAL_KEY, JSON.stringify({ portal, at: Date.now() }));
+      localStorage.setItem(OAUTH_PORTAL_KEY, JSON.stringify({ portal, at: Date.now() }));
     } else {
-      sessionStorage.removeItem(OAUTH_PORTAL_KEY);
+      localStorage.removeItem(OAUTH_PORTAL_KEY);
     }
-  } catch { /* storage blocked — user lands on the storefront instead */ }
+  } catch { /* storage blocked — the ?portal= parameter still works */ }
 
+  const redirectTo = window.location.origin + '/' + (portal ? `?portal=${portal}` : '');
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: window.location.origin + '/' }
+    options: { redirectTo }
   });
 
   return { error: error?.message || null };
@@ -263,15 +267,20 @@ export async function signInWithGoogle(portal = null) {
 
 const OAUTH_PORTAL_KEY = 'cz_oauth_portal';
 const OAUTH_PORTAL_MAX_AGE_MS = 10 * 60 * 1000;
+const PORTALS = ['admin', 'rider'];
 
 /**
- * The staff portal ('admin' | 'rider') a Google sign-in was started from,
- * if it was started in this tab in the last 10 minutes; otherwise null.
+ * The staff portal ('admin' | 'rider') a Google sign-in was started from:
+ * from the ?portal= URL parameter, or a note saved in the last 10 minutes.
  */
 export function getPendingOAuthPortal() {
+  const fromUrl = new URLSearchParams(window.location.search).get('portal');
+  if (PORTALS.includes(fromUrl)) return fromUrl;
   try {
-    const saved = JSON.parse(sessionStorage.getItem(OAUTH_PORTAL_KEY) || 'null');
-    if (saved && Date.now() - saved.at < OAUTH_PORTAL_MAX_AGE_MS) return saved.portal;
+    const saved = JSON.parse(localStorage.getItem(OAUTH_PORTAL_KEY) || 'null');
+    if (saved && PORTALS.includes(saved.portal) && Date.now() - saved.at < OAUTH_PORTAL_MAX_AGE_MS) {
+      return saved.portal;
+    }
   } catch { /* ignore */ }
   return null;
 }
@@ -290,7 +299,7 @@ export function isReturningFromPortalOAuth(portal) {
 
 /** Forget the pending portal and leave the address bar on #admin / #rider. */
 export function clearPortalOAuthParams(hash) {
-  try { sessionStorage.removeItem(OAUTH_PORTAL_KEY); } catch { /* ignore */ }
+  try { localStorage.removeItem(OAUTH_PORTAL_KEY); } catch { /* ignore */ }
   window.history.replaceState(null, '', window.location.pathname + '#' + hash);
 }
 

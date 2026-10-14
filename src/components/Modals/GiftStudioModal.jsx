@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useCart } from '../../context/CartContext';
 import { 
@@ -135,16 +136,17 @@ export default function GiftStudioModal() {
           style={{
             background: 'linear-gradient(135deg, #4D0A18 0%, #7E152B 50%, #8F4F06 100%)',
             color: '#fff',
-            padding: '1.25rem 2rem',
+            padding: '1.25rem clamp(1rem, 4vw, 2rem)',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            gap: '0.75rem'
           }}
         >
-          <div>
+          <div style={{ minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ fontSize: '1.75rem' }}>🎁</span>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, letterSpacing: '-0.02em', color: '#fff' }}>
+              <span style={{ fontSize: '1.75rem', flexShrink: 0 }}>🎁</span>
+              <h2 style={{ fontSize: 'clamp(1.1rem, 4.5vw, 1.4rem)', lineHeight: 1.2, fontWeight: 700, margin: 0, letterSpacing: '-0.02em', color: '#fff' }}>
                 Luxury Gift Studio & Concierge
               </h2>
             </div>
@@ -154,22 +156,13 @@ export default function GiftStudioModal() {
           </div>
 
           <button
+            type="button"
+            className="modal-close-on-dark"
             onClick={closeGiftStudio}
-            style={{
-              background: 'rgba(255, 255, 255, 0.15)',
-              border: 'none',
-              color: '#fff',
-              width: '36px',
-              height: '36px',
-              borderRadius: '50%',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.25rem'
-            }}
+            aria-label="Close Gift Studio"
+            title="Close"
           >
-            ✕
+            <X size={20} strokeWidth={2.5} />
           </button>
         </div>
 

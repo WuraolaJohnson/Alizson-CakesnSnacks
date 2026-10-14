@@ -231,6 +231,13 @@
     gap: 2.5rem;
     text-align: center;
   }
+}
+
+/* --------------------------------------------------------------------------
+   Navbar: the full link row needs ~1120px when signed in (logo + 6 links +
+   icons + account). Below 1180px use the ☰ menu instead of squashing links.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1179px) {
   .desktop-nav {
     display: none !important;
   }
