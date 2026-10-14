@@ -192,11 +192,15 @@ const Footer = () => {
         }}>
           <span>© 2026 Alizson Cakes & Snacks. All Rights Reserved. Made with <Heart size={12} style={{ display: 'inline', color: 'var(--burgundy-500)', verticalAlign: 'middle' }} /> in Abeokuta, Ogun State, Nigeria.</span>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map(t => (
-              <button key={t} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontSize: 'inherit' }}
+            {/* Standalone pages in public/ (also linked from the Google sign-in screen) */}
+            {[
+              { label: 'Privacy Policy', href: '/privacy.html' },
+              { label: 'Terms of Service', href: '/terms.html' }
+            ].map(({ label, href }) => (
+              <a key={href} href={href} style={{ color: 'inherit', textDecoration: 'none', fontFamily: 'var(--font-sans)', fontSize: 'inherit' }}
                 onMouseEnter={e => e.currentTarget.style.color = 'var(--gold-400)'}
                 onMouseLeave={e => e.currentTarget.style.color = ''}
-              >{t}</button>
+              >{label}</a>
             ))}
           </div>
         </div>
