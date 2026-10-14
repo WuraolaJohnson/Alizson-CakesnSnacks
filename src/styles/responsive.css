@@ -1,0 +1,381 @@
+/* ==========================================================================
+   Comprehensive Responsive Design System - Alizson Multi-Portal Ecosystem
+   Supports: Customer Store, Customer Dashboard, Admin Portal, Rider Portal, Modals
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Container & Layout Sizing
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-max, 1320px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.container-narrow {
+  width: 100%;
+  max-width: var(--container-narrow, 1040px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+.container-tight {
+  width: 100%;
+  max-width: var(--container-tight, 780px);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Grid Systems
+   -------------------------------------------------------------------------- */
+.grid-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.grid-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.25rem;
+}
+
+.grid-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.grid-3col {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+}
+
+.grid-4col {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* Specific Multi-Portal Responsive Grids */
+.cart-page-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.customer-dashboard-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.admin-dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+/* Responsive Table Wrapper */
+.responsive-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  scrollbar-width: thin;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.responsive-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--cream-300, #E8D8C0);
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Bottom Navigation Bar
+   -------------------------------------------------------------------------- */
+.mobile-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--charcoal-900, #1A1715);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-sticky, 100);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.mobile-bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: none;
+  color: var(--charcoal-300, #C2B9B3);
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm, 8px);
+  transition: all var(--transition-fast, 0.15s ease);
+  position: relative;
+}
+
+.mobile-nav-btn.active {
+  color: var(--gold-400, #F5A623);
+}
+
+.mobile-nav-btn .badge-count {
+  position: absolute;
+  top: 0;
+  right: 0.2rem;
+  background: var(--gold-500, #E58A13);
+  color: var(--white, #FFFFFF);
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   Touch and Scroll Helpers
+   -------------------------------------------------------------------------- */
+.touch-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.touch-scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* --------------------------------------------------------------------------
+   Media Queries: Breakpoint 1024px (Laptops & Tablets Landscape)
+   -------------------------------------------------------------------------- */
+@media (max-width: 1024px) {
+  .grid-4col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .admin-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    text-align: center;
+  }
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-menu-toggle {
+    display: inline-flex !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Media Queries: Breakpoint 860px (Tablets Portrait)
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .cart-page-grid {
+    grid-template-columns: 1fr;
+  }
+  .customer-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .product-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .grid-2col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Media Queries: Breakpoint 768px (Standard Mobile & Phablet)
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .mobile-bottom-bar {
+    display: block;
+  }
+
+  .customer-shell-main {
+    padding-bottom: 75px;
+  }
+
+  .grid-2col, .grid-3col, .grid-4col {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-products {
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 1rem;
+  }
+
+  .grid-categories {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .admin-sidebar-desktop {
+    display: none !important;
+  }
+
+  .admin-mobile-topbar {
+    display: flex !important;
+  }
+
+  .admin-main-container {
+    padding: 1.25rem 1rem !important;
+  }
+
+  .modal-card, .modal-card-lg {
+    max-width: 95vw !important;
+    max-height: 92vh !important;
+    border-radius: var(--radius-lg, 18px) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Media Queries: Breakpoint 640px (Mobile Phones)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .container,
+  .container-narrow,
+  .container-tight {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .display-title-xl {
+    font-size: 2rem !important;
+    line-height: 1.15 !important;
+  }
+
+  .display-title {
+    font-size: 1.65rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .section-title {
+    font-size: 1.4rem !important;
+  }
+
+  .section-py {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  .section-py-sm {
+    padding-top: 1.75rem;
+    padding-bottom: 1.75rem;
+  }
+
+  /* Form controls font size on mobile to prevent iOS auto-zoom */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  .grid-products {
+    grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
+    gap: 0.75rem;
+  }
+
+  /* Buttons wrap cleanly on mobile */
+  .btn-responsive-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-responsive-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Media Queries: Breakpoint 400px (Compact Mobile / Fold / Small Phones)
+   -------------------------------------------------------------------------- */
+@media (max-width: 400px) {
+  .container,
+  .container-narrow,
+  .container-tight {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .grid-products {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .mobile-bottom-nav .mobile-nav-btn span {
+    font-size: 0.65rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
