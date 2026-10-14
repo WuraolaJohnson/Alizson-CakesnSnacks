@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { onAuthStateChange, signOut as authSignOut, getCurrentUser } from '../services/authService';
+import { onAuthStateChange, signOut as authSignOut, getCurrentUser, getPendingOAuthPortal } from '../services/authService';
 
 const AppContext = createContext();
 
@@ -26,6 +26,12 @@ export const AppProvider = ({ children }) => {
     const hash = window.location.hash.toLowerCase();
     const search = window.location.search.toLowerCase();
     const path = window.location.pathname.toLowerCase();
+    // Returning from Google (?code=… or ?error=…) to the portal it was started from
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code') || params.has('error')) {
+      const portal = getPendingOAuthPortal();
+      if (portal === 'admin' || portal === 'rider') return portal;
+    }
     if (hash === '#admin' || search.includes('admin') || path.endsWith('/admin')) {
       return 'admin';
     }

@@ -13,7 +13,7 @@ import AdminFeedback from './AdminFeedback';
 import AdminFleetMap from './AdminFleetMap';
 import AdminRiders from './AdminRiders';
 import { useApp } from '../../context/AppContext';
-import { getStaffUser, onSignedOut, signOut, isReturningFromPortalOAuth, clearPortalOAuthParams } from '../../services/authService';
+import { getStaffUser, onSignedOut, signOut, isReturningFromPortalOAuth, clearPortalOAuthParams, hasSession } from '../../services/authService';
 import { OrderProvider } from '../../context/OrderContext';
 import { MapPin, Bike } from 'lucide-react';
 
@@ -55,14 +55,17 @@ const AdminLayout = () => {
     (async () => {
       // On return from Google, read any error before the URL is cleaned up
       const oauthError = new URLSearchParams(window.location.search).get('error_description');
-      const fromGoogle = isReturningFromPortalOAuth();
+      const fromGoogle = isReturningFromPortalOAuth('admin');
       const user = await getStaffUser('admin');
       if (cancelled) return;
       if (fromGoogle) {
         clearPortalOAuthParams('admin');
         if (!user) {
+          const signedIn = await hasSession();
           await signOut();
-          setLoginError(oauthError || 'That Google account does not have admin access.');
+          setLoginError(oauthError || (signedIn
+            ? 'That Google account does not have admin access.'
+            : 'Google sign-in did not complete. Please try again.'));
         }
       }
       setAuthState(user ? 'in' : 'out');

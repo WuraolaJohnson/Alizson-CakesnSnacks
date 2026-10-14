@@ -233,8 +233,11 @@ export async function getRiderForUser(userId) {
  * Redirects to Google. After approval Google returns to this site and
  * the Supabase client finishes the sign-in automatically (?code=…).
  *
- * @param {'admin'|'rider'|null} portal - staff portal to return to;
- *   ?portal=admin is picked up by AppContext's initial view check.
+ * The return address is always the bare site URL, so it only has to match
+ * the Supabase Redirect URLs allow-list. Which staff portal to reopen is
+ * remembered in sessionStorage (survives the round trip in the same tab).
+ *
+ * @param {'admin'|'rider'|null} portal - staff portal to return to
  * @returns {{ error }} only if the redirect could not be started.
  */
 export async function signInWithGoogle(portal = null) {
@@ -242,22 +245,52 @@ export async function signInWithGoogle(portal = null) {
     return { error: 'Google sign-in is unavailable: Supabase is not configured.' };
   }
 
-  const redirectTo = window.location.origin + '/' + (portal ? `?portal=${portal}` : '');
+  try {
+    if (portal) {
+      sessionStorage.setItem(OAUTH_PORTAL_KEY, JSON.stringify({ portal, at: Date.now() }));
+    } else {
+      sessionStorage.removeItem(OAUTH_PORTAL_KEY);
+    }
+  } catch { /* storage blocked — user lands on the storefront instead */ }
+
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo }
+    options: { redirectTo: window.location.origin + '/' }
   });
 
   return { error: error?.message || null };
 }
 
-/** True when the page was just reached from a Google sign-in for a staff portal. */
-export function isReturningFromPortalOAuth() {
-  return new URLSearchParams(window.location.search).has('portal');
+const OAUTH_PORTAL_KEY = 'cz_oauth_portal';
+const OAUTH_PORTAL_MAX_AGE_MS = 10 * 60 * 1000;
+
+/**
+ * The staff portal ('admin' | 'rider') a Google sign-in was started from,
+ * if it was started in this tab in the last 10 minutes; otherwise null.
+ */
+export function getPendingOAuthPortal() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(OAUTH_PORTAL_KEY) || 'null');
+    if (saved && Date.now() - saved.at < OAUTH_PORTAL_MAX_AGE_MS) return saved.portal;
+  } catch { /* ignore */ }
+  return null;
 }
 
-/** Drop ?portal=… from the address bar once the sign-in is handled. */
+/** True when any Supabase session exists (regardless of role). */
+export async function hasSession() {
+  if (!isSupabaseReady()) return false;
+  const { data: { session } } = await supabase.auth.getSession();
+  return !!session;
+}
+
+/** True when this page load is the return from a Google sign-in for `portal`. */
+export function isReturningFromPortalOAuth(portal) {
+  return getPendingOAuthPortal() === portal;
+}
+
+/** Forget the pending portal and leave the address bar on #admin / #rider. */
 export function clearPortalOAuthParams(hash) {
+  try { sessionStorage.removeItem(OAUTH_PORTAL_KEY); } catch { /* ignore */ }
   window.history.replaceState(null, '', window.location.pathname + '#' + hash);
 }
 

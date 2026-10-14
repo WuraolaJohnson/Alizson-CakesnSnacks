@@ -3,7 +3,7 @@ import { LogOut, Navigation, UserCheck, Shield, Compass } from 'lucide-react';
 import RiderLoginPage from './RiderLoginPage';
 import RiderPortal from '../RiderPortal';
 import { useApp } from '../../context/AppContext';
-import { getStaffUser, getRiderForUser, onSignedOut, signOut, isReturningFromPortalOAuth, clearPortalOAuthParams } from '../../services/authService';
+import { getStaffUser, getRiderForUser, onSignedOut, signOut, isReturningFromPortalOAuth, clearPortalOAuthParams, hasSession } from '../../services/authService';
 
 export default function RiderLayout() {
   const { showToast } = useApp();
@@ -17,7 +17,7 @@ export default function RiderLayout() {
     (async () => {
       // On return from Google, read any error before the URL is cleaned up
       const oauthError = new URLSearchParams(window.location.search).get('error_description');
-      const fromGoogle = isReturningFromPortalOAuth();
+      const fromGoogle = isReturningFromPortalOAuth('rider');
       const user = await getStaffUser('rider');
       const { rider: record } = user ? await getRiderForUser(user.id) : { rider: null };
       if (cancelled) return;
@@ -25,8 +25,11 @@ export default function RiderLayout() {
       if (fromGoogle) {
         clearPortalOAuthParams('rider');
         if (!active) {
+          const signedIn = await hasSession();
           await signOut();
-          setLoginError(oauthError || (record
+          setLoginError(oauthError || (!signedIn
+            ? 'Google sign-in did not complete. Please try again.'
+            : record
             ? `Your rider account is ${record.accountStatus}. Please contact the admin.`
             : 'That Google account is not linked to a rider profile. Please contact the admin.'));
         }
