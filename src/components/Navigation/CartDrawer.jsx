@@ -8,7 +8,8 @@ export const CartDrawer = () => {
   const {
     isCartDrawerOpen,
     setIsCartDrawerOpen,
-    navigateTo
+    navigateTo,
+    goToCheckout
   } = useApp();
 
   const {
@@ -36,7 +37,7 @@ export const CartDrawer = () => {
 
   const handleCheckout = () => {
     setIsCartDrawerOpen(false);
-    navigateTo('checkout');
+    goToCheckout();
   };
 
   const handleViewFullCart = () => {

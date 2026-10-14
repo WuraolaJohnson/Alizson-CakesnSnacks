@@ -241,6 +241,32 @@ export const AppProvider = ({ children }) => {
     showToast(`Welcome back, ${userData.name}! 🎉`, 'success');
   }, [showToast]);
 
+  // ── Checkout requires an account ─────────────────────────────
+  // Guests are asked to sign in first; once they do (email or Google —
+  // sessionStorage survives the Google redirect) they continue to checkout.
+  const CHECKOUT_AFTER_LOGIN_KEY = 'cz_checkout_after_login';
+
+  const goToCheckout = useCallback(() => {
+    if (currentUser) {
+      navigateTo('checkout');
+      return;
+    }
+    try { sessionStorage.setItem(CHECKOUT_AFTER_LOGIN_KEY, '1'); } catch { /* ignore */ }
+    setAuthModalMode('login');
+    setIsAuthModalOpen(true);
+    showToast('Please sign in or create an account to place your order.', 'info');
+  }, [currentUser, navigateTo, showToast]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    let pending = false;
+    try { pending = sessionStorage.getItem(CHECKOUT_AFTER_LOGIN_KEY) === '1'; } catch { /* ignore */ }
+    if (pending) {
+      try { sessionStorage.removeItem(CHECKOUT_AFTER_LOGIN_KEY); } catch { /* ignore */ }
+      navigateTo('checkout');
+    }
+  }, [currentUser, navigateTo]);
+
   const logout = useCallback(async () => {
     setCurrentUser(null);
     localStorage.removeItem('cz_user');
@@ -401,6 +427,7 @@ export const AppProvider = ({ children }) => {
         // Navigation
         currentView,
         navigateTo,
+        goToCheckout,
         dashboardTab,
         setDashboardTab,
         currentTrackingOrderId,

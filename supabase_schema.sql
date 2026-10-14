@@ -399,13 +399,16 @@ create policy "Customers can view own orders"
   on public.orders for select
   using (customer_id is not null and customer_id = auth.uid());
 
+-- Only signed-in customers can order, and only in their own name.
 -- New orders must start unpaid and unassigned. Only the payment
 -- verification Edge Function (service role) or an admin can mark
 -- an order as Paid.
 create policy "Customers can create orders"
   on public.orders for insert
+  to authenticated
   with check (
-    (customer_id is null or customer_id = auth.uid())
+    auth.uid() is not null
+    and customer_id = auth.uid()
     and payment_status in ('Pending', 'Pending Verification', 'Awaiting Bank Confirmation')
     and status = 'Order Confirmed'
     and coalesce(status_step, 0) = 0
@@ -478,7 +481,7 @@ create index if not exists idx_orders_store on public.orders(store);
 create index if not exists idx_orders_accepted_rider on public.orders(accepted_by_rider_id);
 
 -- True while the caller is still placing this order: the order is
--- theirs (or a guest order) and was created in the last 30 minutes.
+-- theirs and was created in the last 30 minutes.
 -- Used to let checkout attach items and the first tracking event.
 create or replace function public.is_placing_order(p_order_id text)
 returns boolean
@@ -488,7 +491,8 @@ as $$
   select exists (
     select 1 from public.orders
     where id = p_order_id
-      and (customer_id is null or customer_id = auth.uid())
+      and auth.uid() is not null
+      and customer_id = auth.uid()
       and created_at > now() - interval '30 minutes'
   );
 $$;
@@ -589,9 +593,10 @@ create index if not exists idx_tracking_order_id on public.order_tracking_histor
 
 
 -- ============================================================
--- 9. GUEST ORDER TRACKING
+-- 9. ORDER TRACKING BY ORDER ID + PHONE
 -- ------------------------------------------------------------
--- Guests have no login, so RLS can't show them their order.
+-- Ordering requires an account, but a tracking link may be opened
+-- signed out (e.g. by a gift recipient or on another phone).
 -- This function returns one order only when the caller knows
 -- both the order ID and the phone number used at checkout.
 -- Call from the app with:

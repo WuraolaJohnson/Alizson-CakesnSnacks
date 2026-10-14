@@ -24,7 +24,7 @@ const CheckoutPage = () => {
     giftConfig, totalGiftFee
   } = useCart();
   const { createOrder, deliveryLocations, storeBankAccount } = useOrders();
-  const { navigateTo, currentUser, setLastPlacedOrder, showToast } = useApp();
+  const { navigateTo, currentUser, setLastPlacedOrder, showToast, goToCheckout } = useApp();
 
   const locationsList = deliveryLocations && deliveryLocations.length > 0 ? deliveryLocations : OGUN_DELIVERY_LOCATIONS;
 
@@ -88,6 +88,11 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = (paystackRef = null) => {
+    if (!currentUser) {
+      goToCheckout();
+      return;
+    }
+
     if (form.paymentMethod === 'transfer' && !form.senderName.trim()) {
       showToast('Please enter your Sender Name & Bank for transfer verification.', 'error');
       return;
@@ -109,7 +114,7 @@ const CheckoutPage = () => {
       customerName: form.name,
       customerEmail: form.email,
       customerPhone: form.phone,
-      customerId: currentUser?.id || null,
+      customerId: currentUser.id,
       items: activeCart,
       subtotal: activeSubtotal,
       deliveryFee: DELIVERY_FEE,
@@ -139,6 +144,12 @@ const CheckoutPage = () => {
 
   // Card payment via Paystack popup
   const handleCardPayment = () => {
+    // Check before opening Paystack so nobody is charged without an account
+    if (!currentUser) {
+      goToCheckout();
+      return;
+    }
+
     if (!form.name || !form.email) {
       showToast('Please fill in your name and email before paying.', 'error');
       return;
@@ -168,6 +179,20 @@ const CheckoutPage = () => {
     });
   };
 
+
+  // Orders can only be placed from an account (the database enforces this too)
+  if (!currentUser && step !== 4) {
+    return (
+      <div style={{ textAlign: 'center', padding: '6rem 1.5rem' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🔐</div>
+        <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', marginBottom: '0.75rem' }}>Sign in to place your order</h2>
+        <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+          Your cart is saved. Sign in or create an account to continue to checkout.
+        </p>
+        <button className="btn btn-primary btn-lg" onClick={goToCheckout}>Sign In to Continue</button>
+      </div>
+    );
+  }
 
   if (activeCart.length === 0 && step !== 4) {
     return (

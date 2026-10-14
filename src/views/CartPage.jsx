@@ -13,7 +13,7 @@ const CartPage = () => {
     activeCartTab, setActiveCartTab,
     giftConfig, toggleGiftService, totalGiftFee
   } = useCart();
-  const { navigateTo, openGiftStudio } = useApp();
+  const { navigateTo, openGiftStudio, goToCheckout } = useApp();
 
   const DELIVERY_FEE = 1500;
 
@@ -223,7 +223,7 @@ const CartPage = () => {
                 <button
                   className={`btn ${activeCartTab === 'bakery' ? 'btn-primary' : 'btn-burgundy'} btn-lg`}
                   style={{ width: '100%', justifyContent: 'center' }}
-                  onClick={() => navigateTo('checkout')}
+                  onClick={goToCheckout}
                 >
                   Proceed to Checkout <ArrowRight size={17} />
                 </button>
