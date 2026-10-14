@@ -64,7 +64,7 @@ export const CartDrawer = () => {
           width: '100%',
           maxWidth: '460px',
           height: '100%',
-          background: 'white',
+          background: 'var(--bg-surface)',
           boxShadow: 'var(--shadow-2xl)',
           display: 'flex',
           flexDirection: 'column',
@@ -91,7 +91,7 @@ export const CartDrawer = () => {
                 height: 38,
                 borderRadius: '10px',
                 background: activeCartTab === 'bakery' ? 'var(--gold-100)' : 'var(--burgundy-100)',
-                color: activeCartTab === 'bakery' ? 'var(--gold-700)' : 'var(--burgundy-800)',
+                color: activeCartTab === 'bakery' ? 'var(--text-gold)' : 'var(--text-burgundy)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -152,8 +152,8 @@ export const CartDrawer = () => {
               fontWeight: 700,
               fontSize: '0.85rem',
               fontFamily: 'var(--font-sans)',
-              background: activeCartTab === 'bakery' ? 'white' : 'transparent',
-              color: activeCartTab === 'bakery' ? 'var(--gold-800)' : 'var(--charcoal-600)',
+              background: activeCartTab === 'bakery' ? 'var(--bg-surface)' : 'transparent',
+              color: activeCartTab === 'bakery' ? 'var(--text-gold)' : 'var(--charcoal-600)',
               boxShadow: activeCartTab === 'bakery' ? 'var(--shadow-sm)' : 'none',
               transition: 'all 0.2s'
             }}
@@ -163,7 +163,7 @@ export const CartDrawer = () => {
             {bakeryItemsCount > 0 && (
               <span
                 style={{
-                  background: 'var(--gold-500)',
+                  background: 'var(--gold-action)',
                   color: 'white',
                   borderRadius: 'var(--radius-full)',
                   padding: '1px 6px',
@@ -190,8 +190,8 @@ export const CartDrawer = () => {
               fontWeight: 700,
               fontSize: '0.85rem',
               fontFamily: 'var(--font-sans)',
-              background: activeCartTab === 'supplies' ? 'white' : 'transparent',
-              color: activeCartTab === 'supplies' ? 'var(--burgundy-800)' : 'var(--charcoal-600)',
+              background: activeCartTab === 'supplies' ? 'var(--bg-surface)' : 'transparent',
+              color: activeCartTab === 'supplies' ? 'var(--text-burgundy)' : 'var(--charcoal-600)',
               boxShadow: activeCartTab === 'supplies' ? 'var(--shadow-sm)' : 'none',
               transition: 'all 0.2s'
             }}
@@ -226,7 +226,7 @@ export const CartDrawer = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              color: activeCartTab === 'bakery' ? 'var(--burgundy-900)' : 'var(--gold-900)'
+              color: 'var(--text-primary)'
             }}
           >
             <span>
@@ -355,7 +355,7 @@ export const CartDrawer = () => {
                         <span><strong>Add-ons:</strong> {item.addOns.join(', ')}</span>
                       )}
                       {item.customMessage && (
-                        <span style={{ fontStyle: 'italic', color: 'var(--gold-700)' }}>
+                        <span style={{ fontStyle: 'italic', color: 'var(--text-gold)' }}>
                           "{item.customMessage}"
                         </span>
                       )}
@@ -370,7 +370,7 @@ export const CartDrawer = () => {
                         marginTop: '0.75rem'
                       }}
                     >
-                      <span style={{ fontWeight: 800, color: 'var(--gold-600)', fontSize: '0.95rem' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '0.95rem' }}>
                         ₦{(item.unitPrice * item.quantity).toLocaleString()}
                       </span>
 
@@ -378,7 +378,7 @@ export const CartDrawer = () => {
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
-                          background: 'white',
+                          background: 'var(--bg-surface)',
                           borderRadius: 'var(--radius-full)',
                           border: '1px solid var(--cream-300)',
                           overflow: 'hidden'
@@ -430,7 +430,7 @@ export const CartDrawer = () => {
             style={{
               padding: '1.25rem 1.5rem',
               borderTop: '1px solid var(--cream-200)',
-              background: 'white'
+              background: 'var(--bg-surface)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>

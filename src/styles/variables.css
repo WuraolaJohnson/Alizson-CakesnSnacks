@@ -41,15 +41,30 @@
   --white: #FFFFFF;
   --black: #000000;
 
+  /* Gold that carries white text at WCAG AA (4.5:1). The lighter brand
+     golds (400–600) are for accents on dark backgrounds, not under text. */
+  --gold-action: #AD6208;
+  --gold-action-strong: #8F4F06;
+  --gold-action-deep: #783F06;
+
+  /* Fixed colours for surfaces that stay dark in BOTH themes (hero banners,
+     promo tiles). Unlike --charcoal-*, these are not remapped in dark mode. */
+  --ink: #1A1715;
+  --ink-deep: #12100F;
+
   /* Status Colors */
-  --status-success: #10B981;
+  /* Used mostly as TEXT colours — shades chosen for 4.5:1 on light
+     surfaces; dark mode below swaps in lighter shades. */
+  --status-success: #047857;
   --status-success-bg: #ECFDF5;
-  --status-warning: #F59E0B;
+  --status-warning: #B45309;
   --status-warning-bg: #FFFBEB;
-  --status-danger: #EF4444;
+  --status-danger: #B91C1C;
   --status-danger-bg: #FEF2F2;
-  --status-info: #3B82F6;
+  --status-info: #2563EB;
   --status-info-bg: #EFF6FF;
+  --status-purple: #7E22CE;
+  --status-purple-bg: #F5EEFF;
 
   /* Semantic Theme Tokens */
   --bg-primary: var(--cream-50);
@@ -66,9 +81,9 @@
 
   --text-primary: var(--charcoal-900);
   --text-secondary: var(--charcoal-600);
-  --text-muted: var(--charcoal-400);
+  --text-muted: var(--charcoal-500);
   --text-inverse: var(--cream-50);
-  --text-gold: var(--gold-600);
+  --text-gold: var(--gold-700);
   --text-burgundy: var(--burgundy-700);
 
   /* Typography */
@@ -129,6 +144,28 @@
   --text-secondary: #E8D8C0;
   --text-muted: #A3968C;
   --text-inverse: #1A1715;
+  --text-gold: #FFCC6B;
+  --text-burgundy: #F0B8C2;
+
+  /* Light brand tints are used as badge/box backgrounds; give them dark
+     equivalents so theme text on top stays readable. */
+  --gold-50: #241C12;
+  --gold-100: #33250F;
+  --gold-200: #4A3410;
+  --burgundy-50: #261317;
+  --burgundy-100: #36171F;
+  --burgundy-200: #4D1F2A;
+
+  --status-success: #34D399;
+  --status-success-bg: rgba(16, 185, 129, 0.15);
+  --status-warning: #FBBF24;
+  --status-warning-bg: rgba(245, 158, 11, 0.15);
+  --status-danger: #F87171;
+  --status-danger-bg: rgba(239, 68, 68, 0.15);
+  --status-info: #60A5FA;
+  --status-info-bg: rgba(59, 130, 246, 0.15);
+  --status-purple: #C084FC;
+  --status-purple-bg: rgba(168, 85, 247, 0.15);
 
   /* Remap Charcoal colors in Dark Mode to high-contrast legible light colors */
   --charcoal-950: #FFFFFF;

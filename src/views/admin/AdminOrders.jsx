@@ -157,7 +157,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--cream-300)',
               fontSize: '0.85rem',
-              background: 'white',
+              background: 'var(--bg-surface)',
               cursor: 'pointer'
             }}
           >
@@ -222,10 +222,10 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                       </div>
                     </td>
                     <td style={{ padding: '0.85rem 1rem' }}>
-                      <div style={{ fontWeight: 800, color: 'var(--gold-700)' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--text-gold)' }}>
                         ₦{(order.total || 0).toLocaleString()}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : '#D97706', fontWeight: 700, display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.15rem' }}>
+                      <div style={{ fontSize: '0.72rem', color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)', fontWeight: 700, display: 'flex', flexDirection: 'column', gap: '0.2rem', marginTop: '0.15rem' }}>
                         <span>
                           {order.paymentStatus === 'Paid' ? '✅ Paid' : '⏳ Awaiting Transfer'}
                         </span>
@@ -233,9 +233,9 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                           <button
                             onClick={() => confirmBankTransferPayment(order.id, 'Admin Finance')}
                             style={{
-                              background: '#FEF3C7',
+                              background: 'var(--status-warning-bg)',
                               border: '1px solid #F59E0B',
-                              color: '#B45309',
+                              color: 'var(--status-warning)',
                               borderRadius: '4px',
                               padding: '0.2rem 0.45rem',
                               fontSize: '0.68rem',
@@ -286,7 +286,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                               border: '1px solid var(--cream-300)',
                               fontSize: '0.8rem',
                               fontFamily: 'var(--font-sans)',
-                              background: canChange ? 'white' : 'var(--cream-100)',
+                              background: canChange ? 'var(--bg-surface)' : 'var(--cream-100)',
                               cursor: canChange ? 'pointer' : 'not-allowed',
                               opacity: canChange ? 1 : 0.7
                             }}
@@ -339,7 +339,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
         >
           <div
             style={{
-              background: 'white', borderRadius: 'var(--radius-xl)',
+              background: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)',
               maxWidth: '650px', width: '100%', maxHeight: '90vh', overflowY: 'auto',
               padding: '2rem', boxShadow: 'var(--shadow-2xl)', animation: 'scaleUp 0.25s ease'
             }}
@@ -384,7 +384,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                       cursor: 'pointer',
                       fontSize: '0.75rem',
                       fontWeight: 700,
-                      background: selectedOrder.status === step.key ? 'var(--gold-500)' : 'white',
+                      background: selectedOrder.status === step.key ? 'var(--gold-action)' : 'var(--bg-surface)',
                       color: selectedOrder.status === step.key ? 'white' : 'var(--charcoal-700)',
                       boxShadow: 'var(--shadow-xs)'
                     }}
@@ -410,12 +410,12 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                         Qty: {item.quantity} {item.size ? `· ${item.size}` : ''} {item.flavour ? `· ${item.flavour}` : ''}
                       </div>
                       {item.customMessage && (
-                        <div style={{ fontSize: '0.72rem', color: 'var(--gold-700)', fontStyle: 'italic' }}>
+                        <div style={{ fontSize: '0.72rem', color: 'var(--text-gold)', fontStyle: 'italic' }}>
                           Message: "{item.customMessage}"
                         </div>
                       )}
                     </div>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-700)' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-gold)' }}>
                       ₦{((item.unitPrice || 0) * (item.quantity || 1)).toLocaleString()}
                     </div>
                   </div>
@@ -438,8 +438,8 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                     fontSize: '0.72rem',
                     padding: '0.15rem 0.5rem',
                     borderRadius: 'var(--radius-full)',
-                    background: selectedOrder.paymentStatus === 'Paid' ? '#D1FAE5' : '#FEF3C7',
-                    color: selectedOrder.paymentStatus === 'Paid' ? '#047857' : '#B45309',
+                    background: selectedOrder.paymentStatus === 'Paid' ? 'var(--status-success-bg)' : 'var(--status-warning-bg)',
+                    color: selectedOrder.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)',
                     border: `1px solid ${selectedOrder.paymentStatus === 'Paid' ? '#10B981' : '#F59E0B'}`
                   }}>
                     {selectedOrder.paymentStatus === 'Paid' ? '✅ Paid & Verified' : '⏳ Awaiting Verification'}
@@ -456,7 +456,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                 <div style={{ fontWeight: 700, marginBottom: '0.4rem', color: 'var(--charcoal-900)' }}>Delivery Address & Coordinates</div>
                 <div>{selectedOrder.deliveryAddress}</div>
                 {selectedOrder.latitude && selectedOrder.longitude && (
-                  <div style={{ marginTop: '0.4rem', fontSize: '0.8rem', color: 'var(--gold-800)', background: 'white', padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontFamily: 'monospace' }}>
+                  <div style={{ marginTop: '0.4rem', fontSize: '0.8rem', color: 'var(--text-gold)', background: 'var(--bg-surface)', padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontFamily: 'monospace' }}>
                     📍 GPS Pin: [{selectedOrder.latitude}, {selectedOrder.longitude}] ({selectedOrder.lga || 'Ogun LGA'})
                   </div>
                 )}
@@ -495,7 +495,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '220px', overflowY: 'auto', padding: '0.5rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
                   {[...selectedOrder.trackingHistory].reverse().map((entry, idx) => (
                     <div key={idx} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', fontSize: '0.82rem', padding: '0.5rem 0.6rem', background: idx === 0 ? 'rgba(229,138,19,0.08)' : 'white', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-200)' }}>
-                      <div style={{ minWidth: '70px', fontWeight: 700, color: 'var(--gold-700)', fontSize: '0.75rem' }}>{entry.timestamp}</div>
+                      <div style={{ minWidth: '70px', fontWeight: 700, color: 'var(--text-gold)', fontSize: '0.75rem' }}>{entry.timestamp}</div>
                       <div style={{ flex: 1 }}>
                         <div style={{ color: 'var(--charcoal-900)' }}>{entry.event}</div>
                         <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>by {entry.actor}</div>
@@ -524,7 +524,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.5rem', borderTop: '1px solid var(--cream-200)' }}>
                 <span style={{ fontWeight: 700, fontSize: '1rem' }}>Total Amount</span>
-                <span style={{ fontWeight: 800, fontSize: '1.35rem', color: 'var(--gold-700)' }}>
+                <span style={{ fontWeight: 800, fontSize: '1.35rem', color: 'var(--text-gold)' }}>
                   ₦{(selectedOrder.total || 0).toLocaleString()}
                 </span>
               </div>
@@ -536,7 +536,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
                 <button
                   className="btn"
                   style={{
-                    background: '#10B981',
+                    background: '#047857',
                     color: 'white',
                     border: 'none',
                     fontWeight: 700,

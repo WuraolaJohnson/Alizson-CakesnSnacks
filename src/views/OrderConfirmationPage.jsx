@@ -58,7 +58,7 @@ export const OrderConfirmationPage = () => {
               width: 80,
               height: 80,
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--gold-400), var(--gold-600))',
+              background: 'linear-gradient(135deg, var(--gold-action), var(--gold-action-strong))',
               color: 'white',
               display: 'flex',
               alignItems: 'center',
@@ -96,7 +96,7 @@ export const OrderConfirmationPage = () => {
             }}
           >
             <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Order ID:</span>
-            <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--gold-500)', letterSpacing: '0.04em' }}>
+            <span style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-gold)', letterSpacing: '0.04em' }}>
               {currentOrder.id}
             </span>
             {currentOrder.fulfillmentType !== 'pickup' ? (
@@ -149,7 +149,7 @@ export const OrderConfirmationPage = () => {
                       width: 36,
                       height: 36,
                       borderRadius: '50%',
-                      background: isCurrent ? 'var(--gold-500)' : isPassed ? 'var(--status-success)' : 'var(--bg-surface)',
+                      background: isCurrent ? 'var(--gold-action)' : isPassed ? '#047857' : 'var(--bg-surface)',
                       color: isPassed ? 'white' : 'var(--text-muted)',
                       display: 'flex',
                       alignItems: 'center',
@@ -166,7 +166,7 @@ export const OrderConfirmationPage = () => {
                     style={{
                       fontSize: '0.72rem',
                       fontWeight: isCurrent ? 800 : isPassed ? 600 : 500,
-                      color: isCurrent ? 'var(--gold-500)' : isPassed ? 'var(--text-primary)' : 'var(--text-muted)',
+                      color: isCurrent ? 'var(--text-gold)' : isPassed ? 'var(--text-primary)' : 'var(--text-muted)',
                       lineHeight: 1.2
                     }}
                   >
@@ -200,12 +200,12 @@ export const OrderConfirmationPage = () => {
                       Qty: {item.quantity} {item.size ? `· ${item.size}` : ''} {item.flavour ? `· ${item.flavour}` : ''}
                     </div>
                     {item.customMessage && (
-                      <div style={{ fontSize: '0.72rem', fontStyle: 'italic', color: 'var(--gold-500)' }}>
+                      <div style={{ fontSize: '0.72rem', fontStyle: 'italic', color: 'var(--text-gold)' }}>
                         "{item.customMessage}"
                       </div>
                     )}
                   </div>
-                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-500)', flexShrink: 0 }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-gold)', flexShrink: 0 }}>
                     ₦{((item.unitPrice || 0) * (item.quantity || 1)).toLocaleString()}
                   </div>
                 </div>
@@ -223,14 +223,14 @@ export const OrderConfirmationPage = () => {
                 <span>{currentOrder.fulfillmentType === 'pickup' || currentOrder.deliveryFee === 0 ? 'FREE' : `₦${(currentOrder.deliveryFee ?? 1500).toLocaleString()}`}</span>
               </div>
               {currentOrder.giftConfig?.isGift && (currentOrder.giftFee > 0) && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--gold-500)', fontWeight: 600, marginBottom: '0.75rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--text-gold)', fontWeight: 600, marginBottom: '0.75rem' }}>
                   <span>🎁 Gift Package ({currentOrder.giftConfig.packaging?.name || 'Gift Package'})</span>
                   <span>₦{(currentOrder.giftFee || 0).toLocaleString()}</span>
                 </div>
               )}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', paddingTop: '0.6rem', borderTop: '1px solid var(--border-subtle)' }}>
                 <span>Total Paid / Due</span>
-                <span style={{ color: 'var(--gold-500)' }}>₦{(currentOrder.total || 0).toLocaleString()}</span>
+                <span style={{ color: 'var(--text-gold)' }}>₦{(currentOrder.total || 0).toLocaleString()}</span>
               </div>
             </div>
 
@@ -245,7 +245,7 @@ export const OrderConfirmationPage = () => {
                   border: '1px solid var(--border-subtle)'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-500)', marginBottom: '0.35rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-gold)', marginBottom: '0.35rem' }}>
                   <span>🎁 Personalized Gift Service Active</span>
                 </div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
@@ -253,7 +253,7 @@ export const OrderConfirmationPage = () => {
                   <strong>Card Style:</strong> {currentOrder.giftConfig.card?.name}<br />
                   <strong>Occasion:</strong> {currentOrder.giftConfig.occasion}<br />
                   {currentOrder.giftConfig.personalMessage && (
-                    <div style={{ marginTop: '0.35rem', fontStyle: 'italic', color: 'var(--gold-500)' }}>
+                    <div style={{ marginTop: '0.35rem', fontStyle: 'italic', color: 'var(--text-gold)' }}>
                       "{currentOrder.giftConfig.personalMessage}"
                     </div>
                   )}
@@ -280,7 +280,7 @@ export const OrderConfirmationPage = () => {
 
                 {currentOrder.latitude && currentOrder.longitude && (
                   <div style={{ marginTop: '0.4rem', background: 'var(--bg-surface)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)', fontSize: '0.78rem', color: 'var(--text-primary)', border: '1px solid var(--border-subtle)' }}>
-                    <div style={{ fontWeight: 800, color: 'var(--gold-500)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                    <div style={{ fontWeight: 800, color: 'var(--text-gold)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                       📍 Map Pin Coordinates Saved
                     </div>
                     <div style={{ marginTop: '0.2rem', fontFamily: 'monospace', fontWeight: 600 }}>

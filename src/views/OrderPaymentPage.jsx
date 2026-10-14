@@ -107,7 +107,7 @@ export default function OrderPaymentPage({ orderIdParam }) {
         
         {/* Header Branding */}
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--gold-50)', padding: '0.4rem 1rem', borderRadius: 'var(--radius-full)', color: 'var(--gold-700)', fontWeight: 800, fontSize: '0.8rem', border: '1px solid var(--gold-200)', marginBottom: '0.75rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--gold-50)', padding: '0.4rem 1rem', borderRadius: 'var(--radius-full)', color: 'var(--text-gold)', fontWeight: 800, fontSize: '0.8rem', border: '1px solid var(--gold-200)', marginBottom: '0.75rem' }}>
             <ShieldCheck size={16} /> Alizson Direct Gateway Security
           </div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'var(--text-primary)', margin: '0 0 0.4rem' }}>
@@ -133,7 +133,7 @@ export default function OrderPaymentPage({ orderIdParam }) {
             <div style={{ fontSize: '2.2rem', marginBottom: '0.25rem' }}>
               {isPaid ? '🎉' : '💳'}
             </div>
-            <div style={{ fontWeight: 800, fontSize: '1.2rem', color: isPaid ? '#10B981' : '#D97706', marginBottom: '0.2rem' }}>
+            <div style={{ fontWeight: 800, fontSize: '1.2rem', color: isPaid ? 'var(--status-success)' : 'var(--status-warning)', marginBottom: '0.2rem' }}>
               {isPaid ? 'PAYMENT CONFIRMED & VERIFIED' : 'PAYMENT AWAITING CONFIRMATION'}
             </div>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -149,7 +149,7 @@ export default function OrderPaymentPage({ orderIdParam }) {
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               OFFICIAL SERVER AMOUNT DUE
             </div>
-            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--gold-500)', margin: '0.2rem 0' }}>
+            <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-gold)', margin: '0.2rem 0' }}>
               ₦{orderTotal.toLocaleString()}
             </div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
@@ -170,7 +170,7 @@ export default function OrderPaymentPage({ orderIdParam }) {
               <div>📞 <strong>Phone:</strong> {order.customerPhone}</div>
               <div>📦 <strong>Items Ordered:</strong> {(order.items || []).length} item(s)</div>
               {order.paymentReference && (
-                <div>💳 <strong>Payment Reference:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#10B981' }}>{order.paymentReference}</span></div>
+                <div>💳 <strong>Payment Reference:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 800, color: 'var(--status-success)' }}>{order.paymentReference}</span></div>
               )}
               {order.paymentConfirmedAt && (
                 <div>🕒 <strong>Confirmed At:</strong> {order.paymentConfirmedAt}</div>
@@ -231,7 +231,7 @@ export default function OrderPaymentPage({ orderIdParam }) {
             </div>
           ) : (
             <div style={{ textAlign: 'center' }}>
-              <div style={{ background: '#10B981', color: 'white', padding: '0.85rem 1.25rem', borderRadius: 'var(--radius-md)', fontWeight: 800, fontSize: '0.95rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+              <div style={{ background: '#047857', color: 'white', padding: '0.85rem 1.25rem', borderRadius: 'var(--radius-md)', fontWeight: 800, fontSize: '0.95rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
                 <CheckCircle2 size={20} /> Payment Success Confirmed
               </div>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>

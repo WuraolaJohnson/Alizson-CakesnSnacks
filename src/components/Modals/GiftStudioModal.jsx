@@ -121,7 +121,7 @@ export default function GiftStudioModal() {
           width: '100%',
           maxWidth: '940px',
           maxHeight: '92vh',
-          backgroundColor: '#fff',
+          backgroundColor: 'var(--bg-surface)',
           borderRadius: '24px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           overflow: 'hidden',
@@ -133,7 +133,7 @@ export default function GiftStudioModal() {
         {/* Modal Header */}
         <div 
           style={{
-            background: 'linear-gradient(135deg, #4D0A18 0%, #7E152B 50%, #C6720A 100%)',
+            background: 'linear-gradient(135deg, #4D0A18 0%, #7E152B 50%, #8F4F06 100%)',
             color: '#fff',
             padding: '1.25rem 2rem',
             display: 'flex',
@@ -144,7 +144,7 @@ export default function GiftStudioModal() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ fontSize: '1.75rem' }}>🎁</span>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, letterSpacing: '-0.02em' }}>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: 0, letterSpacing: '-0.02em', color: '#fff' }}>
                 Luxury Gift Studio & Concierge
               </h2>
             </div>
@@ -178,7 +178,7 @@ export default function GiftStudioModal() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            backgroundColor: '#FFFBEB',
+            backgroundColor: 'var(--status-warning-bg)',
             borderBottom: '1px solid #FDE68A',
             padding: '0.75rem 1.25rem',
             overflowX: 'auto',
@@ -201,7 +201,7 @@ export default function GiftStudioModal() {
                 borderRadius: '12px',
                 border: activeStep === step.id ? 'none' : '1px solid transparent',
                 backgroundColor: activeStep === step.id ? '#7E152B' : 'transparent',
-                color: activeStep === step.id ? '#ffffff' : '#78350F',
+                color: activeStep === step.id ? '#ffffff' : 'var(--status-warning)',
                 fontWeight: activeStep === step.id ? 700 : 600,
                 fontSize: '0.825rem',
                 cursor: 'pointer',
@@ -225,10 +225,10 @@ export default function GiftStudioModal() {
           {/* STEP 1: PACKAGING SELECTION */}
           {activeStep === 1 && (
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '0.35rem' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
                 Choose Your Packaging Style
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.25rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
                 Select a luxury box or wooden crate to package your items elegantly.
               </p>
 
@@ -245,7 +245,7 @@ export default function GiftStudioModal() {
                         overflow: 'hidden',
                         cursor: 'pointer',
                         transition: 'all 0.2s ease',
-                        backgroundColor: isSelected ? '#FFFBEB' : '#fff',
+                        backgroundColor: isSelected ? 'var(--status-warning-bg)' : 'var(--bg-surface)',
                         boxShadow: isSelected ? '0 10px 15px -3px rgba(198, 114, 10, 0.15)' : '0 1px 3px rgba(0,0,0,0.05)',
                         position: 'relative'
                       }}
@@ -256,7 +256,7 @@ export default function GiftStudioModal() {
                             position: 'absolute',
                             top: '10px',
                             right: '10px',
-                            backgroundColor: isSelected ? '#C6720A' : '#7E152B',
+                            backgroundColor: isSelected ? '#AD6208' : '#7E152B',
                             color: '#fff',
                             fontSize: '0.7rem',
                             fontWeight: 600,
@@ -277,14 +277,14 @@ export default function GiftStudioModal() {
 
                       <div style={{ padding: '0.85rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: '#111827' }}>
+                          <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {pkg.name}
                           </h4>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#C6720A' }}>
+                          <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-gold)' }}>
                             ₦{pkg.price.toLocaleString()}
                           </span>
                         </div>
-                        <p style={{ margin: '0.35rem 0 0', fontSize: '0.78rem', color: '#6b7280', lineHeight: 1.4 }}>
+                        <p style={{ margin: '0.35rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
                           {pkg.subtitle}
                         </p>
                       </div>
@@ -299,7 +299,7 @@ export default function GiftStudioModal() {
           {activeStep === 2 && (
             <div>
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                   Select Celebration Occasion
                 </h3>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -312,9 +312,10 @@ export default function GiftStudioModal() {
                         style={{
                           padding: '0.45rem 0.9rem',
                           borderRadius: '999px',
-                          border: isSelected ? `2px solid ${occ.color}` : '1px solid #e5e7eb',
-                          backgroundColor: isSelected ? `${occ.color}15` : '#fff',
-                          color: isSelected ? occ.color : '#374151',
+                          border: isSelected ? `2px solid ${occ.color}` : '1px solid var(--border-medium)',
+                          backgroundColor: isSelected ? `${occ.color}22` : 'var(--bg-surface)',
+                          // The coloured border/tint marks the selection; text stays readable
+                          color: isSelected ? 'var(--text-primary)' : 'var(--text-secondary)',
                           fontWeight: isSelected ? 700 : 500,
                           fontSize: '0.825rem',
                           cursor: 'pointer'
@@ -328,7 +329,7 @@ export default function GiftStudioModal() {
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                   Choose Greeting Card Style
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
@@ -343,7 +344,7 @@ export default function GiftStudioModal() {
                           borderRadius: '14px',
                           padding: '0.85rem',
                           cursor: 'pointer',
-                          backgroundColor: isSelected ? '#FFF5F7' : '#fff',
+                          backgroundColor: isSelected ? 'var(--burgundy-50)' : 'var(--bg-surface)',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.75rem'
@@ -355,10 +356,10 @@ export default function GiftStudioModal() {
                           style={{ width: '48px', height: '48px', borderRadius: '8px', objectFit: 'cover' }}
                         />
                         <div>
-                          <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: '#111827' }}>
+                          <h4 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {card.name}
                           </h4>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#7E152B' }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-burgundy)' }}>
                             ₦{card.price.toLocaleString()}
                           </span>
                         </div>
@@ -369,7 +370,7 @@ export default function GiftStudioModal() {
               </div>
 
               <div>
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '0.5rem' }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                   Write Your Personal Greeting Message
                 </h3>
                 <textarea
@@ -395,10 +396,10 @@ export default function GiftStudioModal() {
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#111827', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
                     Optional Add-ons & Extras (Wine, Chocolates, etc.)
                   </h3>
-                  <p style={{ fontSize: '0.85rem', color: '#6b7280', margin: '0.2rem 0 0' }}>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0.2rem 0 0' }}>
                     Select fine wine, chocolates, or money bouquet — or select <strong>NONE</strong> to send packaging & card only.
                   </p>
                 </div>
@@ -410,8 +411,8 @@ export default function GiftStudioModal() {
                       padding: '0.4rem 0.85rem',
                       borderRadius: '8px',
                       border: '1px solid #EF4444',
-                      background: '#FEF2F2',
-                      color: '#DC2626',
+                      background: 'var(--status-danger-bg)',
+                      color: 'var(--status-danger)',
                       fontWeight: 700,
                       fontSize: '0.78rem',
                       cursor: 'pointer'
@@ -423,7 +424,7 @@ export default function GiftStudioModal() {
               </div>
 
               {/* Status Banner */}
-              <div style={{ background: selectedAddons.length === 0 ? '#F3F4F6' : '#ECFDF5', border: `1px solid ${selectedAddons.length === 0 ? '#D1D5DB' : '#10B981'}`, padding: '0.75rem 1rem', borderRadius: '12px', fontSize: '0.85rem', color: '#374151', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ background: selectedAddons.length === 0 ? 'var(--bg-surface-soft)' : 'var(--status-success-bg)', border: `1px solid ${selectedAddons.length === 0 ? '#D1D5DB' : '#10B981'}`, padding: '0.75rem 1rem', borderRadius: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span>
                   {selectedAddons.length === 0 
                     ? 'ℹ️ No extra add-ons currently selected. (Sending Box + Card only)'
@@ -431,7 +432,7 @@ export default function GiftStudioModal() {
                   }
                 </span>
                 {selectedAddons.length === 0 && (
-                  <span style={{ fontWeight: 800, color: '#6B7280', fontSize: '0.75rem', textTransform: 'uppercase' }}>
+                  <span style={{ fontWeight: 800, color: 'var(--text-muted)', fontSize: '0.75rem', textTransform: 'uppercase' }}>
                     [No Add-ons]
                   </span>
                 )}
@@ -450,7 +451,7 @@ export default function GiftStudioModal() {
                           border: isAdded ? '2px solid #F5A623' : '1px solid #e5e7eb',
                           borderRadius: '16px',
                           padding: '1rem',
-                          backgroundColor: isAdded ? '#FFF9ED' : '#fff',
+                          backgroundColor: isAdded ? 'var(--gold-50)' : 'var(--bg-surface)',
                           gridColumn: '1 / -1'
                         }}
                       >
@@ -458,10 +459,10 @@ export default function GiftStudioModal() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                             <img src={addon.image} alt={addon.name} style={{ width: 48, height: 48, borderRadius: '10px', objectFit: 'cover' }} />
                             <div>
-                              <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#592D05' }}>
+                              <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-gold)' }}>
                                 💸 Crisp Cash Money Bouquet (Optional)
                               </h4>
-                              <div style={{ fontSize: '0.75rem', color: '#783F06' }}>Custom cash note arrangement</div>
+                              <div style={{ fontSize: '0.75rem', color: 'var(--text-gold)' }}>Custom cash note arrangement</div>
                             </div>
                           </div>
 
@@ -471,7 +472,7 @@ export default function GiftStudioModal() {
                               padding: '0.45rem 1rem',
                               borderRadius: '999px',
                               border: 'none',
-                              background: isAdded ? '#DC2626' : '#E58A13',
+                              background: isAdded ? '#B91C1C' : '#AD6208',
                               color: 'white',
                               fontWeight: 800,
                               fontSize: '0.8rem',
@@ -484,7 +485,7 @@ export default function GiftStudioModal() {
 
                         {isAdded && (
                           <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed #F5A623' }}>
-                            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#783F06', marginBottom: '0.4rem' }}>Select Cash Variant:</div>
+                            <div style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-gold)', marginBottom: '0.4rem' }}>Select Cash Variant:</div>
                             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
                               {MONEY_BOUQUET_VARIANTS.map(variant => {
                                 const isSelected = selectedBouquetVariant.amount === variant.amount;
@@ -496,8 +497,8 @@ export default function GiftStudioModal() {
                                       padding: '0.4rem 0.65rem',
                                       borderRadius: '8px',
                                       border: isSelected ? '2px solid #9E5605' : '1px solid #FFCC6B',
-                                      background: isSelected ? '#9E5605' : 'white',
-                                      color: isSelected ? 'white' : '#783F06',
+                                      background: isSelected ? '#9E5605' : 'var(--bg-surface)',
+                                      color: isSelected ? 'white' : 'var(--text-gold)',
                                       fontWeight: 800,
                                       fontSize: '0.78rem',
                                       cursor: 'pointer'
@@ -523,7 +524,7 @@ export default function GiftStudioModal() {
                         borderRadius: '16px',
                         padding: '1rem',
                         cursor: 'pointer',
-                        backgroundColor: isAdded ? '#ECFDF5' : '#fff',
+                        backgroundColor: isAdded ? 'var(--status-success-bg)' : 'var(--bg-surface)',
                         display: 'flex',
                         gap: '0.85rem',
                         alignItems: 'center',
@@ -536,13 +537,13 @@ export default function GiftStudioModal() {
                         style={{ width: '60px', height: '60px', borderRadius: '12px', objectFit: 'cover', flexShrink: 0 }}
                       />
                       <div style={{ flex: 1 }}>
-                        <h5 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: '#111827' }}>
+                        <h5 style={{ margin: 0, fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                           {addon.name}
                         </h5>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#C6720A', marginTop: '0.2rem' }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                           +₦{addon.price?.toLocaleString()}
                         </div>
-                        <div style={{ fontSize: '0.72rem', color: isAdded ? '#047857' : '#6B7280', marginTop: '0.2rem', fontWeight: 600 }}>
+                        <div style={{ fontSize: '0.72rem', color: isAdded ? 'var(--status-success)' : 'var(--text-muted)', marginTop: '0.2rem', fontWeight: 600 }}>
                           {isAdded ? '✓ Added' : 'Click to add'}
                         </div>
                       </div>
@@ -556,16 +557,16 @@ export default function GiftStudioModal() {
           {/* STEP 4: RECIPIENT DETAILS */}
           {activeStep === 4 && (
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
                 Recipient & Delivery Details
               </h3>
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.25rem' }}>
+              <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
                 Specify who is receiving this surprise gift package.
               </p>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                     Recipient Full Name *
                   </label>
                   <input
@@ -585,7 +586,7 @@ export default function GiftStudioModal() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                     Recipient Phone Number *
                   </label>
                   <input
@@ -606,7 +607,7 @@ export default function GiftStudioModal() {
               </div>
 
               <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#374151', marginBottom: '0.35rem' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                   Delivery Address *
                 </label>
                 <textarea
@@ -631,13 +632,13 @@ export default function GiftStudioModal() {
           {/* STEP 5: LIVE PREVIEW & CONFIRMATION */}
           {activeStep === 5 && (
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#1f2937', marginBottom: '1rem' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem' }}>
                 Live Gift Package Preview
               </h3>
 
               <div 
                 style={{
-                  background: 'linear-gradient(135deg, #FFFBEB 0%, #FFF5F7 100%)',
+                  background: 'var(--status-warning-bg)',
                   borderRadius: '20px',
                   border: '2px solid #FDE68A',
                   padding: '1.5rem',
@@ -647,10 +648,10 @@ export default function GiftStudioModal() {
                 }}
               >
                 {/* Visual Card Side */}
-                <div style={{ backgroundColor: '#fff', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
+                <div style={{ backgroundColor: 'var(--bg-surface)', borderRadius: '16px', padding: '1.25rem', boxShadow: '0 4px 12px rgba(0,0,0,0.06)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
                     <span style={{ fontSize: '1.25rem' }}>💌</span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: '#C6720A' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-gold)' }}>
                       {currentOccasion} Card Preview
                     </span>
                   </div>
@@ -660,21 +661,21 @@ export default function GiftStudioModal() {
                       border: '1px dashed #C6720A',
                       borderRadius: '12px',
                       padding: '1rem',
-                      backgroundColor: '#FFFDF9',
+                      backgroundColor: 'var(--bg-surface-soft)',
                       minHeight: '110px'
                     }}
                   >
-                    <p style={{ margin: 0, fontStyle: 'italic', fontSize: '0.875rem', color: '#4b5563', lineHeight: 1.5 }}>
+                    <p style={{ margin: 0, fontStyle: 'italic', fontSize: '0.875rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                       "{giftConfig.personalMessage || 'Your personal greeting message will appear here...'}"
                     </p>
                     {giftConfig.senderName && (
-                      <p style={{ margin: '0.75rem 0 0', fontWeight: 700, fontSize: '0.85rem', color: '#7E152B', textAlign: 'right' }}>
+                      <p style={{ margin: '0.75rem 0 0', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text-burgundy)', textAlign: 'right' }}>
                         — {giftConfig.senderName}
                       </p>
                     )}
                   </div>
 
-                  <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: '#6b7280' }}>
+                  <div style={{ marginTop: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                     <strong>Packaging:</strong> {currentPackaging.name} (₦{packagingFee.toLocaleString()})<br />
                     <strong>Card Style:</strong> {currentCard.name} (₦{cardFee.toLocaleString()})<br />
                     <strong>Add-ons ({selectedAddons.length}):</strong> {selectedAddons.length > 0 ? selectedAddons.map(a => a.name).join(', ') : 'None'}
@@ -683,21 +684,21 @@ export default function GiftStudioModal() {
 
                 {/* Summary Side */}
                 <div>
-                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>
+                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     Gift Recipient:
                   </h4>
-                  <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: '#374151' }}>
+                  <p style={{ margin: '0 0 1rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
                     👤 <strong>{giftConfig.recipientName || 'Not specified yet'}</strong><br />
                     📞 {giftConfig.recipientPhone || 'No phone number'}<br />
                     📍 {giftConfig.deliveryAddress || 'No address specified'}
                   </p>
 
-                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700, color: '#111827' }}>
+                  <h4 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     Gift Add-ons & Extras:
                   </h4>
-                  <div style={{ maxHeight: '100px', overflowY: 'auto', fontSize: '0.825rem', color: '#4b5563', marginBottom: '1rem' }}>
+                  <div style={{ maxHeight: '100px', overflowY: 'auto', fontSize: '0.825rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
                     {selectedAddons.length === 0 ? (
-                      <em style={{ color: '#9ca3af' }}>No extra add-ons selected (Box + Card only).</em>
+                      <em style={{ color: 'var(--text-muted)' }}>No extra add-ons selected (Box + Card only).</em>
                     ) : (
                       selectedAddons.map((addon, idx) => (
                         <div key={idx} style={{ padding: '2px 0' }}>
@@ -708,7 +709,7 @@ export default function GiftStudioModal() {
                   </div>
 
                   <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '0.75rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.15rem', color: '#7E152B' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.15rem', color: 'var(--text-burgundy)' }}>
                       <span>Gift Service Total:</span>
                       <span>₦{giftTotal.toLocaleString()}</span>
                     </div>
@@ -725,13 +726,13 @@ export default function GiftStudioModal() {
           style={{
             padding: '1rem 2rem',
             borderTop: '1px solid #e5e7eb',
-            backgroundColor: '#f9fafb',
+            backgroundColor: 'var(--bg-surface-soft)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}
         >
-          <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#C6720A' }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--text-gold)' }}>
             Gift Package Total: ₦{giftTotal.toLocaleString()}
           </div>
 
@@ -743,8 +744,8 @@ export default function GiftStudioModal() {
                   padding: '0.6rem 1.25rem',
                   borderRadius: '10px',
                   border: '1px solid #d1d5db',
-                  backgroundColor: '#fff',
-                  color: '#374151',
+                  backgroundColor: 'var(--bg-surface)',
+                  color: 'var(--text-secondary)',
                   fontWeight: 600,
                   fontSize: '0.85rem',
                   cursor: 'pointer'
@@ -777,7 +778,7 @@ export default function GiftStudioModal() {
                   padding: '0.65rem 1.5rem',
                   borderRadius: '10px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #C6720A 0%, #E58A13 100%)',
+                  background: 'linear-gradient(135deg, #AD6208 0%, #8F4F06 100%)',
                   color: '#fff',
                   fontWeight: 700,
                   fontSize: '0.9rem',

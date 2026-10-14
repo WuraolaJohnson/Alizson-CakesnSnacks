@@ -273,7 +273,7 @@ export default function RiderPortal({ authRider }) {
                 <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'white' }}>{activeRider.name}</span>
                 <span className="badge badge-gold" style={{ fontSize: '0.7rem' }}>Rider ID: {activeRider.id}</span>
               </div>
-              <div style={{ fontSize: '0.8rem', color: 'var(--cream-300)', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div style={{ fontSize: '0.8rem', color: '#E8D8C0', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                 <span>🏢 Hub: {activeRider.hub}</span>
                 <span>🛵 {activeRider.vehicle}</span>
               </div>
@@ -283,7 +283,7 @@ export default function RiderPortal({ authRider }) {
           {/* Duty Status Selector for Authenticated Rider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: 'rgba(255,255,255,0.08)', padding: '0.4rem 0.85rem', borderRadius: 'var(--radius-full)', border: '1px solid rgba(229,138,19,0.3)' }}>
-              <span style={{ fontSize: '0.78rem', color: 'var(--cream-300)', fontWeight: 600 }}>Duty Availability:</span>
+              <span style={{ fontSize: '0.78rem', color: '#E8D8C0', fontWeight: 600 }}>Duty Availability:</span>
               <select
                 value={activeRider.availabilityStatus || 'Available'}
                 disabled={activeOrders.length > 0} // Locked to BUSY if active delivery is in progress
@@ -315,7 +315,7 @@ export default function RiderPortal({ authRider }) {
             <button
               onClick={() => setActiveTab('available')}
               style={{
-                background: activeTab === 'available' ? 'var(--gold-500)' : 'transparent',
+                background: activeTab === 'available' ? 'var(--gold-action)' : 'transparent',
                 color: 'white',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -333,7 +333,7 @@ export default function RiderPortal({ authRider }) {
             <button
               onClick={() => setActiveTab('active')}
               style={{
-                background: activeTab === 'active' ? 'var(--gold-500)' : 'transparent',
+                background: activeTab === 'active' ? 'var(--gold-action)' : 'transparent',
                 color: 'white',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -351,7 +351,7 @@ export default function RiderPortal({ authRider }) {
             <button
               onClick={() => setActiveTab('history')}
               style={{
-                background: activeTab === 'history' ? 'var(--gold-500)' : 'transparent',
+                background: activeTab === 'history' ? 'var(--gold-action)' : 'transparent',
                 color: 'white',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -369,7 +369,7 @@ export default function RiderPortal({ authRider }) {
             <button
               onClick={() => setActiveTab('profile')}
               style={{
-                background: activeTab === 'profile' ? 'var(--gold-500)' : 'transparent',
+                background: activeTab === 'profile' ? 'var(--gold-action)' : 'transparent',
                 color: 'white',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -387,7 +387,7 @@ export default function RiderPortal({ authRider }) {
             <button
               onClick={() => setActiveTab('earnings')}
               style={{
-                background: activeTab === 'earnings' ? 'var(--gold-500)' : 'transparent',
+                background: activeTab === 'earnings' ? 'var(--gold-action)' : 'transparent',
                 color: 'white',
                 border: 'none',
                 borderRadius: 'var(--radius-md)',
@@ -419,8 +419,8 @@ export default function RiderPortal({ authRider }) {
               </h3>
 
               {activeOrders.length > 0 && (
-                <div style={{ background: 'var(--gold-50)', border: '1px solid var(--gold-300)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', color: 'var(--gold-800)', fontSize: '0.825rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                  <Lock size={18} style={{ color: 'var(--gold-600)', flexShrink: 0 }} />
+                <div style={{ background: 'var(--gold-50)', border: '1px solid var(--gold-300)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', color: 'var(--text-gold)', fontSize: '0.825rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <Lock size={18} style={{ color: 'var(--text-gold)', flexShrink: 0 }} />
                   <span>
                     <strong>Single Active Order Enforced:</strong> You currently have an active delivery in progress (<strong>Order #{activeOrders[0].id}</strong>). You must deliver or resolve Order #{activeOrders[0].id} before accepting another assignment.
                   </span>
@@ -464,7 +464,7 @@ export default function RiderPortal({ authRider }) {
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem' }}>
                           <div>
-                            <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--gold-500)', fontFamily: 'var(--font-sans)' }}>
+                            <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>
                               Order #{ord.id}
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -477,7 +477,7 @@ export default function RiderPortal({ authRider }) {
                               Ready for Acceptance
                             </span>
                             {!validation.serviceable && (
-                              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#DC2626', background: '#FEE2E2', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
+                              <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--status-danger)', background: 'var(--status-danger-bg)', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
                                 ⚠️ Out of Service Area
                               </span>
                             )}
@@ -486,7 +486,7 @@ export default function RiderPortal({ authRider }) {
 
                         {/* Customer Address & Derived Location Validation */}
                         <div style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginBottom: '0.6rem', display: 'flex', gap: '0.4rem', alignItems: 'flex-start' }}>
-                          <MapPin size={16} style={{ color: 'var(--gold-500)', flexShrink: 0, marginTop: 2 }} />
+                          <MapPin size={16} style={{ color: 'var(--text-gold)', flexShrink: 0, marginTop: 2 }} />
                           <div>
                             <div>{ord.deliveryAddress}</div>
                             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
@@ -498,14 +498,14 @@ export default function RiderPortal({ authRider }) {
                         {/* Distance from Hub vs Route Distance */}
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', fontSize: '0.78rem', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                            <Ruler size={14} style={{ color: 'var(--gold-500)' }} />
+                            <Ruler size={14} style={{ color: 'var(--text-gold)' }} />
                             <span>Distance from hub: {hubDistKm} km</span>
                           </div>
                           <div style={{ color: 'var(--text-muted)' }}>From hub ETA: ~{estMins} mins</div>
                           <button
                             type="button"
                             className="btn btn-outline btn-sm"
-                            style={{ padding: '0.2rem 0.55rem', fontSize: '0.72rem', height: 'auto', gap: '0.25rem', borderColor: 'var(--gold-500)', color: 'var(--gold-500)' }}
+                            style={{ padding: '0.2rem 0.55rem', fontSize: '0.72rem', height: 'auto', gap: '0.25rem', borderColor: 'var(--gold-500)', color: 'var(--text-gold)' }}
                             onClick={(e) => {
                               e.stopPropagation();
                               setMapModalOrder(ord);
@@ -517,7 +517,7 @@ export default function RiderPortal({ authRider }) {
 
                         {/* Service Area Warning Callout if Invalid */}
                         {!validation.serviceable && (
-                          <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)', color: '#991B1B', fontSize: '0.78rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          <div style={{ background: 'var(--status-danger-bg)', border: '1px solid #FCA5A5', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-md)', color: 'var(--status-danger)', fontSize: '0.78rem', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                             <AlertTriangle size={15} style={{ flexShrink: 0 }} />
                             <span>{validation.reason}</span>
                           </div>
@@ -562,7 +562,7 @@ export default function RiderPortal({ authRider }) {
                     <div className="card" style={{ padding: '1.75rem', border: '2px solid var(--gold-500)', background: 'var(--bg-card)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--border-subtle)' }}>
                         <div>
-                          <span style={{ fontSize: '0.72rem', color: 'var(--gold-500)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                          <span style={{ fontSize: '0.72rem', color: 'var(--text-gold)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                             Order Route & Destination Preview
                           </span>
                           <h3 style={{ margin: '0.2rem 0 0', fontWeight: 800, fontSize: '1.3rem', color: 'var(--text-primary)' }}>
@@ -584,13 +584,13 @@ export default function RiderPortal({ authRider }) {
                       {/* Route & Distance Metrics */}
                       <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', marginBottom: '1.25rem', border: '1px solid var(--border-subtle)' }}>
                         <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <Compass size={16} style={{ color: 'var(--gold-500)' }} /> Hub & Destination Location Breakdown
+                          <Compass size={16} style={{ color: 'var(--text-gold)' }} /> Hub & Destination Location Breakdown
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', textAlign: 'center', marginBottom: '1rem' }}>
                           <div style={{ background: 'var(--bg-card)', padding: '0.75rem 0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
                             <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700 }}>HUB DISTANCE</div>
-                            <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--gold-500)', marginTop: '0.2rem' }}>
+                            <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                               {hubDistKm} km
                             </div>
                           </div>
@@ -677,10 +677,15 @@ export default function RiderPortal({ authRider }) {
                     const routeDistKm = calculateHaversineDistance(riderLat, riderLng, destLat, destLng);
                     const routeEstMins = Math.max(2, Math.round((routeDistKm * 1.3 / 30) * 60));
 
-                    const statusColor = ord.status === 'Out for Delivery' ? '#3B82F6'
+                    // Tint (hex, used with alpha) and a theme-aware text colour
+                    const statusTint = ord.status === 'Out for Delivery' ? '#3B82F6'
                       : ord.status === 'Nearby' ? '#10B981'
                       : ord.status === 'Picked Up' ? '#F59E0B'
-                      : 'var(--gold-500)';
+                      : '#E58A13';
+                    const statusText = ord.status === 'Out for Delivery' ? 'var(--status-info)'
+                      : ord.status === 'Nearby' ? 'var(--status-success)'
+                      : ord.status === 'Picked Up' ? 'var(--status-warning)'
+                      : 'var(--text-gold)';
 
                     return (
                       <div
@@ -697,7 +702,7 @@ export default function RiderPortal({ authRider }) {
                       >
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem' }}>
                           <div>
-                            <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--gold-500)', fontFamily: 'var(--font-sans)' }}>
+                            <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>
                               Order #{ord.id}
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
@@ -707,20 +712,20 @@ export default function RiderPortal({ authRider }) {
                           <span style={{
                             fontSize: '0.75rem', fontWeight: 800,
                             padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-sm)',
-                            background: `${statusColor}18`, color: statusColor
+                            background: `${statusTint}18`, color: statusText
                           }}>
                             {ord.status}
                           </span>
                         </div>
 
                         <div style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', marginBottom: '0.6rem', display: 'flex', gap: '0.4rem', alignItems: 'flex-start' }}>
-                          <MapPin size={16} style={{ color: 'var(--gold-500)', flexShrink: 0, marginTop: 2 }} />
+                          <MapPin size={16} style={{ color: 'var(--text-gold)', flexShrink: 0, marginTop: 2 }} />
                           <span>{ord.deliveryAddress}</span>
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', fontSize: '0.78rem', color: 'var(--text-secondary)', background: 'var(--bg-surface)', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                            <Ruler size={14} style={{ color: 'var(--gold-500)' }} />
+                            <Ruler size={14} style={{ color: 'var(--text-gold)' }} />
                             <span>Current route distance: {routeDistKm} km</span>
                           </div>
                           <div style={{ color: 'var(--text-muted)' }}>Current ETA: ~{routeEstMins} mins</div>
@@ -756,7 +761,7 @@ export default function RiderPortal({ authRider }) {
 
                   const isPaid = activeOrder.paymentStatus === 'Paid' || activeOrder.adminPaymentOverride || activeOrder.cashPaymentConfirmedByRider;
                   const paymentBadge = isPaid ? (
-                    <span className="badge" style={{ background: '#10B981', color: 'white', fontSize: '0.78rem', fontWeight: 800, padding: '0.2rem 0.6rem' }}>
+                    <span className="badge" style={{ background: '#047857', color: 'white', fontSize: '0.78rem', fontWeight: 800, padding: '0.2rem 0.6rem' }}>
                       🟢 Paid
                     </span>
                   ) : (
@@ -803,7 +808,7 @@ export default function RiderPortal({ authRider }) {
 
                       {/* GPS Error Alert */}
                       {gpsError && (
-                        <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', padding: '0.75rem', borderRadius: 'var(--radius-md)', color: '#991B1B', fontSize: '0.8rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ background: 'var(--status-danger-bg)', border: '1px solid #FCA5A5', padding: '0.75rem', borderRadius: 'var(--radius-md)', color: 'var(--status-danger)', fontSize: '0.8rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                             <AlertCircle size={16} />
                             <span>{gpsError}</span>
@@ -826,7 +831,7 @@ export default function RiderPortal({ authRider }) {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', textAlign: 'center' }}>
                           <div style={{ background: 'var(--bg-card)', padding: '0.75rem', borderRadius: 'var(--radius-md)' }}>
                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700 }}>DISTANCE TO CUSTOMER</div>
-                            <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--gold-500)', marginTop: '0.2rem' }}>
+                            <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                               {routeDistKm} km
                             </div>
                             <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>(Distance from hub: {hubDistKm} km)</div>
@@ -853,7 +858,7 @@ export default function RiderPortal({ authRider }) {
                           <div><strong>Delivery Address:</strong> {activeOrder.deliveryAddress}</div>
                           <div><strong>LGA / District:</strong> {activeOrder.lga || 'Abeokuta South'}, Ogun State</div>
                           {activeOrder.specialInstructions && (
-                            <div style={{ fontStyle: 'italic', color: 'var(--gold-500)', marginTop: '0.2rem' }}>
+                            <div style={{ fontStyle: 'italic', color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                               "Notes: {activeOrder.specialInstructions}"
                             </div>
                           )}
@@ -880,7 +885,7 @@ export default function RiderPortal({ authRider }) {
                       {/* Step-by-Step Delivery Lifecycle Controls */}
                       <div style={{ marginBottom: '1.5rem', background: 'var(--bg-surface)', padding: '1.15rem', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-subtle)' }}>
                         <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <RefreshCw size={14} style={{ color: 'var(--gold-500)' }} /> Step-by-step Delivery Progress
+                          <RefreshCw size={14} style={{ color: 'var(--text-gold)' }} /> Step-by-step Delivery Progress
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -907,7 +912,7 @@ export default function RiderPortal({ authRider }) {
                           )}
 
                           {activeOrder.status === 'Nearby' && (
-                            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#10B981', fontWeight: 700, fontSize: '0.85rem', textAlign: 'center' }}>
+                            <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(16, 185, 129, 0.3)', color: 'var(--status-success)', fontWeight: 700, fontSize: '0.85rem', textAlign: 'center' }}>
                               📍 Arrived at Customer Location! Complete payment &amp; PIN handover below.
                             </div>
                           )}
@@ -927,12 +932,12 @@ export default function RiderPortal({ authRider }) {
                           justifyContent: 'space-between',
                           gap: '0.75rem'
                         }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10B981', fontWeight: 700, fontSize: '0.875rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--status-success)', fontWeight: 700, fontSize: '0.875rem' }}>
                             <CheckCircle2 size={18} />
                             <span>Paid — Collect Customer PIN Below For Handover</span>
                           </div>
                           <span style={{
-                            background: '#10B981',
+                            background: '#047857',
                             color: '#fff',
                             padding: '0.2rem 0.65rem',
                             borderRadius: 'var(--radius-full)',
@@ -946,7 +951,7 @@ export default function RiderPortal({ authRider }) {
                       ) : (
                         <div style={{ background: 'var(--bg-surface)', border: '2px dashed #F59E0B', borderRadius: 'var(--radius-lg)', padding: '1.25rem', marginBottom: '1.25rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                            <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#D97706', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <div style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--status-warning)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                               <AlertTriangle size={18} />
                               AWAITING PAYMENT / CASH COLLECTION
                             </div>
@@ -989,7 +994,7 @@ export default function RiderPortal({ authRider }) {
 
                       {/* Delivery Verification PIN Form */}
                       <form onSubmit={handleConfirmDelivery} style={{ background: 'var(--bg-surface)', border: `2px dashed ${isPaid ? 'var(--gold-500)' : 'var(--cream-300)'}`, borderRadius: 'var(--radius-lg)', padding: '1.25rem', opacity: isPaid ? 1 : 0.8 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: isPaid ? 'var(--gold-500)' : 'var(--text-muted)', marginBottom: '0.4rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: isPaid ? 'var(--text-gold)' : 'var(--text-muted)', marginBottom: '0.4rem' }}>
                           <Key size={18} /> Confirm Delivery Handover with Customer PIN
                         </div>
                         <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: '0 0 1rem' }}>
@@ -1025,7 +1030,7 @@ export default function RiderPortal({ authRider }) {
                           <button
                             type="button"
                             onClick={() => setEnteredPin(activeOrder.deliveryPin || '1234')}
-                            style={{ background: 'none', border: 'none', color: 'var(--gold-500)', fontSize: '0.72rem', cursor: 'pointer', marginTop: '0.5rem', width: '100%', textDecoration: 'underline' }}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-gold)', fontSize: '0.72rem', cursor: 'pointer', marginTop: '0.5rem', width: '100%', textDecoration: 'underline' }}
                           >
                             (Demo Shortcut: Autofill Customer PIN: {activeOrder.deliveryPin})
                           </button>
@@ -1123,7 +1128,7 @@ export default function RiderPortal({ authRider }) {
                 <button type="button" className="btn btn-ghost" onClick={() => setIssueModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ background: 'var(--status-danger)', borderColor: 'var(--status-danger)' }}>
+                <button type="submit" className="btn btn-primary" style={{ background: '#B91C1C', borderColor: '#B91C1C' }}>
                   Submit Failure Report
                 </button>
               </div>
@@ -1175,12 +1180,12 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
       {/* Personal Info Card */}
       <div className="card" style={{ padding: '1.5rem' }}>
         <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <User size={18} style={{ color: 'var(--gold-500)' }} /> Personal &amp; Account Information
+          <User size={18} style={{ color: 'var(--text-gold)' }} /> Personal &amp; Account Information
         </h3>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
           <div><strong>Full Name:</strong> <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{rider.name}</span></div>
-          <div><strong>Rider ID:</strong> <span style={{ fontFamily: 'monospace', color: 'var(--gold-500)', fontWeight: 800 }}>{rider.id}</span></div>
+          <div><strong>Rider ID:</strong> <span style={{ fontFamily: 'monospace', color: 'var(--text-gold)', fontWeight: 800 }}>{rider.id}</span></div>
           <div><strong>Email Address:</strong> {rider.email || 'rider@alizson.com'}</div>
           <div><strong>Phone Number:</strong> {rider.phone}</div>
           <div><strong>Date Joined:</strong> {rider.dateJoined || 'January 15, 2025'}</div>
@@ -1196,7 +1201,7 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
       {/* Vehicle & Logistics Card */}
       <div className="card" style={{ padding: '1.5rem' }}>
         <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Bike size={18} style={{ color: 'var(--gold-500)' }} /> Dispatch Vehicle &amp; Emergency
+          <Bike size={18} style={{ color: 'var(--text-gold)' }} /> Dispatch Vehicle &amp; Emergency
         </h3>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
@@ -1230,13 +1235,13 @@ const RiderEarningsTab = ({ rider, assignedOrders, completedOrders }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem' }}>
         <div className="card" style={{ padding: '1.35rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '0.35rem' }}>🛵</div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--gold-500)' }}>{completedOrders.length}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{completedOrders.length}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Completed Deliveries</div>
         </div>
 
         <div className="card" style={{ padding: '1.35rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '0.35rem' }}>⭐</div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--gold-500)' }}>{rider.rating || 4.9}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{rider.rating || 4.9}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Rating Score</div>
         </div>
 
@@ -1429,7 +1434,7 @@ const EmbeddedRouteMap = ({ activeRider, order, onExpand }) => {
       className: 'dest-marker-pill',
       html: `
         <div style="
-          background: #E58A13; color: white; border: 2px solid white;
+          background: #AD6208; color: white; border: 2px solid white;
           border-radius: 20px; padding: 2px 7px; font-weight: 800; font-size: 11px;
           white-space: nowrap; box-shadow: 0 4px 12px rgba(229,138,19,0.5);
           display: flex; align-items: center; gap: 4px;
@@ -1500,10 +1505,10 @@ const EmbeddedRouteMap = ({ activeRider, order, onExpand }) => {
         display: 'flex', alignItems: 'center', gap: '0.5rem'
       }}>
         {routeError ? (
-          <span style={{ color: '#EF4444' }}>⚠️ {routeError}</span>
+          <span style={{ color: 'var(--status-danger)' }}>⚠️ {routeError}</span>
         ) : (
           <>
-            <span>📏 Route to Customer: <strong style={{ color: 'var(--gold-500)' }}>{distKm} km</strong></span>
+            <span>📏 Route to Customer: <strong style={{ color: '#FFCC6B' }}>{distKm} km</strong></span>
             <span>⏱️ <strong>~{estMins}m</strong></span>
           </>
         )}
@@ -1516,7 +1521,7 @@ const EmbeddedRouteMap = ({ activeRider, order, onExpand }) => {
           onClick={onExpand}
           style={{
             position: 'absolute', bottom: 10, right: 10, zIndex: 500,
-            background: 'var(--gold-500)', color: 'white', border: 'none',
+            background: 'var(--gold-action)', color: 'white', border: 'none',
             padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)',
             fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer',
             boxShadow: '0 2px 8px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '0.35rem'
@@ -1583,7 +1588,7 @@ const RiderRouteMapModal = ({ order, activeRider, onClose }) => {
       className: 'dest-marker-lg',
       html: `
         <div style="
-          background: #E58A13; color: white; border: 3px solid white;
+          background: #AD6208; color: white; border: 3px solid white;
           border-radius: 20px; padding: 5px 12px; font-weight: 800; font-size: 12px;
           white-space: nowrap; box-shadow: 0 6px 16px rgba(229,138,19,0.5);
           display: flex; align-items: center; gap: 5px;
@@ -1660,7 +1665,7 @@ const RiderRouteMapModal = ({ order, activeRider, onClose }) => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Full Interactive Navigation Map
             </div>
             <h3 style={{ margin: '0.1rem 0 0', fontFamily: 'var(--font-serif)', fontSize: '1.35rem', color: 'var(--text-primary)' }}>
@@ -1683,7 +1688,7 @@ const RiderRouteMapModal = ({ order, activeRider, onClose }) => {
         </div>
 
         <div style={{ display: 'flex', gap: '1rem', background: 'var(--bg-card)', padding: '0.85rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '0.9rem' }}>📏 Current Route Distance: <strong style={{ color: 'var(--gold-500)', fontSize: '1.1rem' }}>{distKm} km</strong></div>
+          <div style={{ fontSize: '0.9rem' }}>📏 Current Route Distance: <strong style={{ color: 'var(--text-gold)', fontSize: '1.1rem' }}>{distKm} km</strong></div>
           <div style={{ fontSize: '0.9rem' }}>⏱️ Est. Driving ETA: <strong>~{estMins} mins</strong></div>
           <div style={{ fontSize: '0.9rem' }}>💵 Delivery Allowance: <strong style={{ color: 'var(--status-success)', fontSize: '1.05rem' }}>₦{(order.deliveryFee || 1500).toLocaleString()}</strong></div>
         </div>
@@ -1698,9 +1703,9 @@ const RiderRouteMapModal = ({ order, activeRider, onClose }) => {
                 left: 12,
                 right: 12,
                 zIndex: 500,
-                background: '#FEF2F2',
+                background: 'var(--status-danger-bg)',
                 border: '1px solid #EF4444',
-                color: '#991B1B',
+                color: 'var(--status-danger)',
                 borderRadius: 'var(--radius-md)',
                 padding: '0.75rem 1rem',
                 fontSize: '0.85rem',
@@ -1770,7 +1775,7 @@ const RiderHistoryTab = ({ historyOrders, rider }) => {
 
         <div className="card" style={{ padding: '1.25rem', textAlign: 'center', borderLeft: '4px solid var(--gold-500)' }}>
           <div style={{ fontSize: '1.8rem' }}>💰</div>
-          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--gold-500)', margin: '0.2rem 0' }}>₦{totalEarned.toLocaleString()}</div>
+          <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-gold)', margin: '0.2rem 0' }}>₦{totalEarned.toLocaleString()}</div>
           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>Trip Allowances Earned</div>
         </div>
 
@@ -1839,16 +1844,16 @@ const RiderHistoryTab = ({ historyOrders, rider }) => {
                       <div>👤 <strong>Customer:</strong> {ord.customerName} ({ord.customerPhone})</div>
                       <div>📍 <strong>Destination:</strong> {ord.deliveryAddress}</div>
                       {ord.deliveryPin && (
-                        <div>🔐 <strong>Customer Delivery PIN:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700, color: '#10B981' }}>{ord.deliveryPin}</span></div>
+                        <div>🔐 <strong>Customer Delivery PIN:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--status-success)' }}>{ord.deliveryPin}</span></div>
                       )}
                       {ord.failureReason && (
-                        <div style={{ color: '#EF4444' }}>⚠️ <strong>Failure Note:</strong> {ord.failureReason}</div>
+                        <div style={{ color: 'var(--status-danger)' }}>⚠️ <strong>Failure Note:</strong> {ord.failureReason}</div>
                       )}
                     </div>
                   </div>
 
                   <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
-                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-500)' }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-gold)' }}>
                       +₦{(ord.deliveryFee || 1500).toLocaleString()}
                     </div>
                     <button

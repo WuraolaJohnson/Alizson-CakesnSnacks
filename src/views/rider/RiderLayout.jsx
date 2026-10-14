@@ -89,7 +89,7 @@ export default function RiderLayout() {
                 Alizson
               </span>
               <span style={{
-                background: 'var(--gold-500)',
+                background: 'var(--gold-action)',
                 color: 'white',
                 fontSize: '0.68rem',
                 fontWeight: 800,
@@ -100,7 +100,7 @@ export default function RiderLayout() {
                 Rider Portal
               </span>
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--cream-300)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <div style={{ fontSize: '0.72rem', color: '#E8D8C0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <Compass size={12} /> Ogun Dispatch Belt
             </div>
           </div>

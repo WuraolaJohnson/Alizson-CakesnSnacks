@@ -180,7 +180,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
     `).join('');
 
     const xmlTemplate = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-<head><meta charset="utf-8"/><style>table{border-collapse:collapse;font-family:sans-serif;} th{background-color:#E58A13;color:#ffffff;font-weight:bold;border:1px solid #dddddd;padding:8px;} td{border:1px solid #dddddd;padding:6px;}</style></head>
+<head><meta charset="utf-8"/><style>table{border-collapse:collapse;font-family:sans-serif;} th{background-color:#AD6208;color:#ffffff;font-weight:bold;border:1px solid #dddddd;padding:8px;} td{border:1px solid #dddddd;padding:6px;}</style></head>
 <body><table>
 <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
 <tbody>${tableRows}</tbody>
@@ -217,7 +217,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
     >
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--radius-xl)',
           maxWidth: '650px',
           width: '100%',
@@ -234,7 +234,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            background: 'linear-gradient(135deg, var(--gold-600), var(--gold-700))',
+            background: 'linear-gradient(135deg, var(--gold-action), var(--gold-action-strong))',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
@@ -285,8 +285,8 @@ const SalesExportModal = ({ isOpen, onClose }) => {
                     padding: '0.6rem 0.5rem',
                     borderRadius: 'var(--radius-md)',
                     border: `1.5px solid ${timeframe === tf.id ? 'var(--gold-500)' : 'var(--cream-300)'}`,
-                    background: timeframe === tf.id ? 'var(--gold-50)' : 'white',
-                    color: timeframe === tf.id ? 'var(--gold-800)' : 'var(--charcoal-800)',
+                    background: timeframe === tf.id ? 'var(--gold-50)' : 'var(--bg-surface)',
+                    color: timeframe === tf.id ? 'var(--text-gold)' : 'var(--charcoal-800)',
                     cursor: 'pointer',
                     textAlign: 'center',
                     transition: 'all 0.2s'
@@ -337,21 +337,21 @@ const SalesExportModal = ({ isOpen, onClose }) => {
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem', textAlign: 'center' }}>
-              <div style={{ background: 'white', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
+              <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Orders Found</div>
                 <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--charcoal-900)', marginTop: '0.2rem' }}>
                   {filteredOrders.length}
                 </div>
               </div>
 
-              <div style={{ background: 'white', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
+              <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Items Sold</div>
-                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--gold-700)', marginTop: '0.2rem' }}>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                   {totalQuantitySold}
                 </div>
               </div>
 
-              <div style={{ background: 'white', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
+              <div style={{ background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)' }}>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Revenue Subtotal</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--status-success)', marginTop: '0.2rem' }}>
                   ₦{totalRevenueExport.toLocaleString()}

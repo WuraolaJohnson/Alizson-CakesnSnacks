@@ -59,20 +59,20 @@ const AdminRecords = () => {
 
       {/* Overview Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
-        <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--charcoal-900) 0%, #2A1F18 100%)', color: 'white' }}>
+        <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--ink) 0%, #2A1F18 100%)', color: 'white' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--gold-400)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Total Marketplace Volume
           </div>
           <div style={{ fontSize: '2rem', fontWeight: 800, color: 'white' }}>
             ₦{totalSales.toLocaleString()}
           </div>
-          <div style={{ fontSize: '0.78rem', color: 'var(--charcoal-300)', marginTop: '0.5rem' }}>
+          <div style={{ fontSize: '0.78rem', color: '#C2B9B3', marginTop: '0.5rem' }}>
             Across {orders.length} lifetime orders
           </div>
         </div>
 
         <div className="card" style={{ padding: '1.5rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--gold-700)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             🍰 Bakery Revenue Share
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--charcoal-900)' }}>
@@ -84,7 +84,7 @@ const AdminRecords = () => {
         </div>
 
         <div className="card" style={{ padding: '1.5rem' }}>
-          <div style={{ fontSize: '0.8rem', color: 'var(--burgundy-700)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+          <div style={{ fontSize: '0.8rem', color: 'var(--text-burgundy)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             🧁 Supplies Revenue Share
           </div>
           <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--charcoal-900)' }}>
@@ -114,7 +114,7 @@ const AdminRecords = () => {
                 style={{
                   height: '100%',
                   width: `${totalSales > 0 ? (bakerySales / totalSales) * 100 : 0}%`,
-                  background: 'linear-gradient(90deg, var(--gold-400), var(--gold-600))',
+                  background: 'linear-gradient(90deg, var(--gold-action), var(--gold-action-strong))',
                   borderRadius: 'var(--radius-full)',
                   transition: 'width 0.5s ease'
                 }}
@@ -155,7 +155,7 @@ const AdminRecords = () => {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', fontWeight: 600 }}>In Preparation / Transit</span>
-              <span style={{ fontWeight: 800, color: 'var(--gold-600)', fontSize: '1rem' }}>{inProgressOrders}</span>
+              <span style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '1rem' }}>{inProgressOrders}</span>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
@@ -192,7 +192,7 @@ const AdminRecords = () => {
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.category}</div>
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: 'var(--gold-700)', fontSize: '0.85rem' }}>
+                <div style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '0.85rem' }}>
                   ₦{(item.price || 0).toLocaleString()}
                 </div>
               </div>
@@ -222,7 +222,7 @@ const AdminRecords = () => {
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.brand || item.category}</div>
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: 'var(--burgundy-700)', fontSize: '0.85rem' }}>
+                <div style={{ fontWeight: 800, color: 'var(--text-burgundy)', fontSize: '0.85rem' }}>
                   ₦{(item.price || item.basePrice || 0).toLocaleString()}
                 </div>
               </div>
@@ -263,18 +263,18 @@ const AdminRecords = () => {
             </thead>
             <tbody>
               {orders.map((ord, i) => (
-                <tr key={ord.id} style={{ borderBottom: '1px solid var(--cream-100)', background: i % 2 === 0 ? 'white' : 'var(--cream-50)' }}>
-                  <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: 'var(--gold-700)', fontFamily: 'var(--font-sans)' }}>{ord.id}</td>
+                <tr key={ord.id} style={{ borderBottom: '1px solid var(--cream-100)', background: i % 2 === 0 ? 'var(--bg-surface)' : 'var(--cream-50)' }}>
+                  <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>{ord.id}</td>
                   <td style={{ padding: '0.75rem 1rem', fontWeight: 600 }}>{ord.customerName}<br/><span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{ord.customerEmail}</span></td>
                   <td style={{ padding: '0.75rem 1rem' }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px', background: ord.store === 'bakery' ? 'var(--gold-100)' : 'var(--burgundy-100)', color: ord.store === 'bakery' ? 'var(--gold-900)' : 'var(--burgundy-900)' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: '4px', background: ord.store === 'bakery' ? 'var(--gold-100)' : 'var(--burgundy-100)', color: ord.store === 'bakery' ? 'var(--text-gold)' : 'var(--text-burgundy)' }}>
                       {ord.storeName || (ord.store === 'bakery' ? 'Bakery' : 'Supplies')}
                     </span>
                   </td>
                   <td style={{ padding: '0.75rem 1rem', color: 'var(--text-muted)', fontSize: '0.8rem' }}>{ord.date}<br/>{ord.time}</td>
                   <td style={{ padding: '0.75rem 1rem', fontWeight: 700, textAlign: 'center' }}>{ord.items?.length || 1}</td>
                   <td style={{ padding: '0.75rem 1rem', fontSize: '0.8rem' }}>{ord.paymentMethod}</td>
-                  <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: 'var(--gold-700)' }}>₦{(ord.total || 0).toLocaleString()}</td>
+                  <td style={{ padding: '0.75rem 1rem', fontWeight: 800, color: 'var(--text-gold)' }}>₦{(ord.total || 0).toLocaleString()}</td>
                   <td style={{ padding: '0.75rem 1rem' }}>
                     <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '0.25rem 0.6rem', borderRadius: 'var(--radius-full)', background: ord.status === 'Delivered' || ord.status === 'Completed' ? 'var(--status-success-bg)' : 'var(--cream-200)', color: ord.status === 'Delivered' || ord.status === 'Completed' ? 'var(--status-success)' : 'var(--charcoal-900)' }}>
                       {ord.status}

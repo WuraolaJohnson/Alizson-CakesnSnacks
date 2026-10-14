@@ -101,7 +101,7 @@ export const OnboardingTourModal = () => {
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            background: 'linear-gradient(135deg, var(--charcoal-900), #2A1F18)',
+            background: 'linear-gradient(135deg, var(--ink), #2A1F18)',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
@@ -200,7 +200,7 @@ export const OnboardingTourModal = () => {
                     width: idx === currentStep ? 24 : 8,
                     height: 8,
                     borderRadius: 'var(--radius-full)',
-                    background: idx === currentStep ? 'var(--gold-500)' : 'var(--cream-300)',
+                    background: idx === currentStep ? 'var(--gold-action)' : 'var(--cream-300)',
                     cursor: 'pointer',
                     transition: 'all 0.25s'
                   }}

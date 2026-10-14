@@ -18,7 +18,7 @@ const AboutPage = () => {
     <div style={{ background: 'var(--cream-50)', paddingBottom: '5rem' }}>
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(135deg, var(--charcoal-900), #3D1A10)',
+        background: 'linear-gradient(135deg, var(--ink), #3D1A10)',
         padding: '5rem 1.5rem', textAlign: 'center', position: 'relative', overflow: 'hidden'
       }}>
         <div style={{ position: 'absolute', inset: 0, background: 'url(https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=1600&q=50) center/cover', opacity: 0.12 }} />
@@ -97,7 +97,7 @@ const AboutPage = () => {
 
           <div className="card" style={{
             padding: 'clamp(1.5rem, 4vw, 3rem)',
-            background: 'white',
+            background: 'var(--bg-surface)',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
             gap: '2.5rem',
@@ -123,7 +123,7 @@ const AboutPage = () => {
                   position: 'absolute',
                   bottom: 8,
                   right: 8,
-                  background: 'var(--gold-500)',
+                  background: 'var(--gold-action)',
                   color: 'white',
                   borderRadius: '50%',
                   width: 38,
@@ -146,7 +146,7 @@ const AboutPage = () => {
               <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.6rem', color: 'var(--charcoal-900)', marginBottom: '0.25rem' }}>
                 {FOUNDER.name}
               </h3>
-              <div style={{ fontSize: '0.9rem', color: 'var(--gold-700)', fontWeight: 700, marginBottom: '1rem' }}>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-gold)', fontWeight: 700, marginBottom: '1rem' }}>
                 {FOUNDER.role}
               </div>
               <p style={{ color: 'var(--charcoal-700)', lineHeight: 1.65, fontSize: '0.95rem', marginBottom: '1.25rem' }}>
@@ -169,7 +169,7 @@ const AboutPage = () => {
       </section>
 
       {/* CTA */}
-      <section style={{ background: 'linear-gradient(135deg, var(--charcoal-900), #2A1A08)', padding: '4.5rem 1.5rem', textAlign: 'center' }}>
+      <section style={{ background: 'linear-gradient(135deg, var(--ink), #2A1A08)', padding: '4.5rem 1.5rem', textAlign: 'center' }}>
         <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: 'white', marginBottom: '1rem' }}>Ready to Experience Alizson?</h2>
         <p style={{ color: 'rgba(255,255,255,0.65)', marginBottom: '2rem' }}>Experience the taste, refresh your soul.. Order freshly baked treats or shop the best baking supplies in Nigeria.</p>
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>

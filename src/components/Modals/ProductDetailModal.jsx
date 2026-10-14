@@ -111,11 +111,11 @@ const ProductDetailModal = () => {
               {gallery.length > 1 && (
                 <>
                   <button onClick={() => setActiveImg(p => (p - 1 + gallery.length) % gallery.length)}
-                    style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'white', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)' }}>
+                    style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-surface)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)' }}>
                     <ChevronLeft size={16} />
                   </button>
                   <button onClick={() => setActiveImg(p => (p + 1) % gallery.length)}
-                    style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'white', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)' }}>
+                    style={{ position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: 32, height: 32, borderRadius: '50%', background: 'var(--bg-surface)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: 'var(--shadow-md)' }}>
                     <ChevronRight size={16} />
                   </button>
                 </>
@@ -148,7 +148,7 @@ const ProductDetailModal = () => {
                 {product.name}
               </h2>
               {product.brand && (
-                <div style={{ fontSize: '0.85rem', color: 'var(--burgundy-700)', fontWeight: 700, marginBottom: '0.35rem' }}>by {product.brand}</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-burgundy)', fontWeight: 700, marginBottom: '0.35rem' }}>by {product.brand}</div>
               )}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <RatingStars rating={product.rating} count={product.reviewsCount} size={15} />
@@ -176,7 +176,7 @@ const ProductDetailModal = () => {
                       padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
                       border: `1.5px solid ${activeSize?.name === s.name ? 'var(--gold-500)' : 'var(--cream-300)'}`,
                       background: activeSize?.name === s.name ? 'var(--gold-50)' : 'transparent',
-                      color: activeSize?.name === s.name ? 'var(--gold-700)' : 'var(--charcoal-700)',
+                      color: activeSize?.name === s.name ? 'var(--text-gold)' : 'var(--charcoal-700)',
                       fontSize: '0.825rem', fontWeight: 600, cursor: 'pointer',
                       fontFamily: 'var(--font-sans)', transition: 'all 0.15s'
                     }}>
@@ -197,7 +197,7 @@ const ProductDetailModal = () => {
                       padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
                       border: `1.5px solid ${activeFlavour === f ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
                       background: activeFlavour === f ? 'var(--burgundy-100)' : 'transparent',
-                      color: activeFlavour === f ? 'var(--burgundy-800)' : 'var(--text-secondary)',
+                      color: activeFlavour === f ? 'var(--text-burgundy)' : 'var(--text-secondary)',
                       fontSize: '0.825rem', fontWeight: 600, cursor: 'pointer',
                       fontFamily: 'var(--font-sans)', transition: 'all 0.15s'
                     }}>
@@ -209,7 +209,7 @@ const ProductDetailModal = () => {
                 {/* If Mix & Match selected, allow selecting 2 or more flavors */}
                 {activeFlavour?.includes('Mix') && (
                   <div style={{ padding: '0.85rem 1rem', background: 'var(--cream-100)', borderRadius: 'var(--radius-md)', border: '1px solid var(--gold-300)', marginTop: '0.5rem' }}>
-                    <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--gold-900)', marginBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--text-gold)', marginBottom: '0.5rem' }}>
                       🍰 Select 2 or more flavors for your Mix & Match Parfait:
                     </div>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
@@ -224,7 +224,7 @@ const ProductDetailModal = () => {
                               padding: '0.35rem 0.85rem',
                               borderRadius: 'var(--radius-sm)',
                               border: `1.5px solid ${isSelected ? 'var(--gold-500)' : 'var(--cream-300)'}`,
-                              background: isSelected ? 'var(--gold-500)' : 'var(--bg-surface)',
+                              background: isSelected ? 'var(--gold-action)' : 'var(--bg-surface)',
                               color: isSelected ? 'white' : 'var(--text-primary)',
                               fontSize: '0.8rem',
                               fontWeight: 700,
@@ -260,7 +260,7 @@ const ProductDetailModal = () => {
                       padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
                       border: `1.5px solid ${activeVariant?.size === v.size ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
                       background: activeVariant?.size === v.size ? 'var(--burgundy-100)' : 'transparent',
-                      color: activeVariant?.size === v.size ? 'var(--burgundy-800)' : 'var(--charcoal-700)',
+                      color: activeVariant?.size === v.size ? 'var(--text-burgundy)' : 'var(--charcoal-700)',
                       fontSize: '0.825rem', fontWeight: 600, cursor: 'pointer',
                       fontFamily: 'var(--font-sans)', transition: 'all 0.15s',
                       whiteSpace: 'nowrap'
@@ -287,10 +287,10 @@ const ProductDetailModal = () => {
                         borderRadius: 'var(--radius-md)', background: selected ? 'var(--gold-50)' : 'transparent',
                         cursor: 'pointer', transition: 'all 0.15s', textAlign: 'left', fontFamily: 'var(--font-sans)'
                       }}>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: selected ? 'var(--gold-800)' : 'var(--charcoal-700)' }}>{addon.name}</span>
+                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: selected ? 'var(--text-gold)' : 'var(--charcoal-700)' }}>{addon.name}</span>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                          <span style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--gold-600)' }}>+₦{addon.price.toLocaleString()}</span>
-                          {selected && <Check size={15} style={{ color: 'var(--gold-600)' }} />}
+                          <span style={{ fontSize: '0.825rem', fontWeight: 700, color: 'var(--text-gold)' }}>+₦{addon.price.toLocaleString()}</span>
+                          {selected && <Check size={15} style={{ color: 'var(--text-gold)' }} />}
                         </div>
                       </button>
                     );
@@ -322,11 +322,11 @@ const ProductDetailModal = () => {
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, marginBottom: '0.25rem' }}>Quantity</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--cream-300)', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={() => setQuantity(q => Math.max(1, q - 1))} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--cream-300)', background: 'var(--bg-surface)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Minus size={14} />
                   </button>
                   <span style={{ fontWeight: 700, fontSize: '1.1rem', minWidth: '2rem', textAlign: 'center' }}>{quantity}</span>
-                  <button onClick={() => setQuantity(q => q + 1)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--cream-300)', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <button onClick={() => setQuantity(q => q + 1)} style={{ width: 32, height: 32, borderRadius: '50%', border: '1px solid var(--cream-300)', background: 'var(--bg-surface)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Plus size={14} />
                   </button>
                 </div>
@@ -354,7 +354,7 @@ const ProductDetailModal = () => {
               <button
                 onClick={() => toggleWishlist(product.id)}
                 className="btn btn-outline"
-                style={{ padding: '0.75rem 1rem', color: isWishlisted ? 'var(--burgundy-700)' : undefined, borderColor: isWishlisted ? 'var(--burgundy-500)' : undefined }}
+                style={{ padding: '0.75rem 1rem', color: isWishlisted ? 'var(--text-burgundy)' : undefined, borderColor: isWishlisted ? 'var(--burgundy-500)' : undefined }}
               >
                 <Heart size={18} fill={isWishlisted ? 'currentColor' : 'none'} />
                 {isWishlisted ? 'Saved' : 'Save'}

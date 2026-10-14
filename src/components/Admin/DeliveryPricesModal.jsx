@@ -65,7 +65,7 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
     >
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--radius-xl)',
           maxWidth: '780px',
           width: '100%',
@@ -82,7 +82,7 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
         <div
           style={{
             padding: '1.25rem 1.5rem',
-            background: 'linear-gradient(135deg, var(--charcoal-900), #2A1F18)',
+            background: 'linear-gradient(135deg, var(--ink), #2A1F18)',
             color: 'white',
             display: 'flex',
             alignItems: 'center',
@@ -97,7 +97,7 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
               <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'white', margin: 0 }}>
                 Manage Ogun State Delivery Prices
               </h3>
-              <p style={{ fontSize: '0.78rem', color: 'var(--charcoal-300)', margin: '0.1rem 0 0' }}>
+              <p style={{ fontSize: '0.78rem', color: '#C2B9B3', margin: '0.1rem 0 0' }}>
                 Set custom shipping tariffs per LGA across Ogun State. Changes reflect immediately at checkout.
               </p>
             </div>
@@ -105,7 +105,7 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={onClose}
-            style={{ background: 'none', border: 'none', color: 'var(--charcoal-300)', cursor: 'pointer', padding: '0.4rem' }}
+            style={{ background: 'none', border: 'none', color: '#C2B9B3', cursor: 'pointer', padding: '0.4rem' }}
           >
             <X size={20} />
           </button>
@@ -185,9 +185,9 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
                             border: `1.5px solid ${isModified ? 'var(--gold-500)' : 'var(--cream-300)'}`,
                             fontWeight: 800,
                             fontSize: '0.875rem',
-                            color: 'var(--gold-700)',
+                            color: 'var(--text-gold)',
                             textAlign: 'right',
-                            background: isModified ? 'white' : 'var(--cream-50)'
+                            background: isModified ? 'var(--bg-surface)' : 'var(--cream-50)'
                           }}
                         />
                       </div>

@@ -215,15 +215,15 @@ const CheckoutPage = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
                   <div style={{
                     width: 34, height: 34, borderRadius: '50%',
-                    background: i < step ? 'var(--status-success)' : i === step ? 'var(--gold-500)' : 'var(--cream-300)',
-                    color: i <= step ? 'white' : 'var(--charcoal-500)',
+                    background: i < step ? '#047857' : i === step ? 'var(--gold-action)' : 'var(--cream-200)',
+                    color: i <= step ? 'white' : 'var(--charcoal-700)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontWeight: 800, fontSize: '0.85rem',
                     transition: 'all 0.3s'
                   }}>
                     {i < step ? <Check size={16} /> : i + 1}
                   </div>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: i === step ? 'var(--gold-600)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: i === step ? 'var(--text-gold)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
                 </div>
                 {i < 3 && <div style={{ width: 40, height: 2, background: i < step ? 'var(--status-success)' : 'var(--cream-300)', borderRadius: 'var(--radius-full)', alignSelf: 'center', marginBottom: '1.2rem', transition: 'all 0.3s' }} />}
               </React.Fragment>
@@ -265,13 +265,13 @@ const CheckoutPage = () => {
                   padding: '1rem',
                   borderRadius: 'var(--radius-lg)',
                   border: `2px solid ${fulfillmentType === 'delivery' ? 'var(--gold-500)' : 'var(--cream-300)'}`,
-                  background: fulfillmentType === 'delivery' ? 'var(--gold-50)' : 'white',
+                  background: fulfillmentType === 'delivery' ? 'var(--gold-50)' : 'var(--bg-surface)',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.2s'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '0.95rem', color: fulfillmentType === 'delivery' ? 'var(--gold-800)' : 'var(--charcoal-800)', marginBottom: '0.3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '0.95rem', color: fulfillmentType === 'delivery' ? 'var(--text-gold)' : 'var(--charcoal-800)', marginBottom: '0.3rem' }}>
                   <Truck size={18} /> Home / Office Delivery
                 </div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -286,13 +286,13 @@ const CheckoutPage = () => {
                   padding: '1rem',
                   borderRadius: 'var(--radius-lg)',
                   border: `2px solid ${fulfillmentType === 'pickup' ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
-                  background: fulfillmentType === 'pickup' ? 'var(--burgundy-50)' : 'white',
+                  background: fulfillmentType === 'pickup' ? 'var(--burgundy-50)' : 'var(--bg-surface)',
                   cursor: 'pointer',
                   textAlign: 'left',
                   transition: 'all 0.2s'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '0.95rem', color: fulfillmentType === 'pickup' ? 'var(--burgundy-800)' : 'var(--charcoal-800)', marginBottom: '0.3rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, fontSize: '0.95rem', color: fulfillmentType === 'pickup' ? 'var(--text-burgundy)' : 'var(--charcoal-800)', marginBottom: '0.3rem' }}>
                   <Store size={18} /> Store Pick-Up (Free)
                 </div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
@@ -313,7 +313,7 @@ const CheckoutPage = () => {
                   <label
                     style={{
                       display: 'flex', gap: '0.75rem', padding: '0.85rem', borderRadius: 'var(--radius-md)',
-                      background: pickupBranch === 'bakery' ? 'white' : 'transparent',
+                      background: pickupBranch === 'bakery' ? 'var(--bg-surface)' : 'transparent',
                       border: `1.5px solid ${pickupBranch === 'bakery' ? 'var(--gold-500)' : 'var(--cream-300)'}`,
                       cursor: 'pointer'
                     }}
@@ -332,7 +332,7 @@ const CheckoutPage = () => {
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
                         📍 {ALIZSON_OFFICIAL_CONTACTS.branches.bakery.address}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--gold-700)', fontWeight: 600, marginTop: '0.25rem' }}>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-gold)', fontWeight: 600, marginTop: '0.25rem' }}>
                         🕒 {ALIZSON_OFFICIAL_CONTACTS.branches.bakery.hours}
                       </div>
                     </div>
@@ -342,7 +342,7 @@ const CheckoutPage = () => {
                   <label
                     style={{
                       display: 'flex', gap: '0.75rem', padding: '0.85rem', borderRadius: 'var(--radius-md)',
-                      background: pickupBranch === 'supplies' ? 'white' : 'transparent',
+                      background: pickupBranch === 'supplies' ? 'var(--bg-surface)' : 'transparent',
                       border: `1.5px solid ${pickupBranch === 'supplies' ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
                       cursor: 'pointer'
                     }}
@@ -361,7 +361,7 @@ const CheckoutPage = () => {
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
                         📍 {ALIZSON_OFFICIAL_CONTACTS.branches.supplies.address}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--burgundy-700)', fontWeight: 600, marginTop: '0.25rem' }}>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-burgundy)', fontWeight: 600, marginTop: '0.25rem' }}>
                         🕒 {ALIZSON_OFFICIAL_CONTACTS.branches.supplies.hours}
                       </div>
                     </div>
@@ -381,7 +381,7 @@ const CheckoutPage = () => {
                 <div style={{ padding: '0.85rem 1rem', background: 'rgba(229,138,19,0.12)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(229,138,19,0.3)', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <ShieldAlert size={20} color="var(--gold-700)" style={{ flexShrink: 0 }} />
                   <div>
-                    <div style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--gold-900)' }}>
+                    <div style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--text-gold)' }}>
                       📍 Ogun State Delivery Restriction Notice
                     </div>
                     <div style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', marginTop: '0.15rem' }}>
@@ -442,7 +442,7 @@ const CheckoutPage = () => {
                       borderRadius: 'var(--radius-md)',
                       border: '1.5px dashed var(--gold-500)',
                       background: 'rgba(229,138,19,0.08)',
-                      color: 'var(--gold-800)',
+                      color: 'var(--text-gold)',
                       fontWeight: 700,
                       fontSize: '0.85rem',
                       cursor: 'pointer',
@@ -513,7 +513,7 @@ const CheckoutPage = () => {
         {step === 2 && (
           <StepCard title="Review Your Order" icon="📋">
             <div style={{ background: 'var(--cream-50)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--cream-200)' }}>
-              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: activeCartTab === 'bakery' ? 'var(--gold-600)' : 'var(--burgundy-700)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
+              <div style={{ fontSize: '0.8rem', fontWeight: 800, color: activeCartTab === 'bakery' ? 'var(--text-gold)' : 'var(--text-burgundy)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
                 {activeCartTab === 'bakery' ? '🍰 Bakery Order' : '🧁 Baking Supplies Order'}
               </div>
               {activeCart.map(item => (
@@ -524,7 +524,7 @@ const CheckoutPage = () => {
                     <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                       {item.size}{item.flavour ? ` · ${item.flavour}` : ''} · Qty: {item.quantity}
                     </div>
-                    {item.customMessage && <div style={{ fontSize: '0.75rem', color: 'var(--gold-700)', fontStyle: 'italic' }}>"{item.customMessage}"</div>}
+                    {item.customMessage && <div style={{ fontSize: '0.75rem', color: 'var(--text-gold)', fontStyle: 'italic' }}>"{item.customMessage}"</div>}
                   </div>
                   <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>₦{(item.unitPrice * item.quantity).toLocaleString()}</span>
                 </div>
@@ -552,7 +552,7 @@ const CheckoutPage = () => {
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.05rem', fontWeight: 800, paddingTop: '0.5rem', borderTop: '1px solid var(--cream-200)' }}>
                   <span>Total</span>
-                  <span style={{ color: 'var(--gold-600)' }}>₦{TOTAL.toLocaleString()}</span>
+                  <span style={{ color: 'var(--text-gold)' }}>₦{TOTAL.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -573,12 +573,12 @@ const CheckoutPage = () => {
                 <button key={pm.id} onClick={() => update('paymentMethod', pm.id)} style={{
                   display: 'flex', alignItems: 'center', gap: '0.85rem',
                   padding: '0.9rem 1.1rem', border: `1.5px solid ${form.paymentMethod === pm.id ? 'var(--gold-500)' : 'var(--cream-300)'}`,
-                  borderRadius: 'var(--radius-md)', background: form.paymentMethod === pm.id ? 'var(--gold-50)' : 'white',
+                  borderRadius: 'var(--radius-md)', background: form.paymentMethod === pm.id ? 'var(--gold-50)' : 'var(--bg-surface)',
                   cursor: 'pointer', width: '100%', textAlign: 'left', fontFamily: 'var(--font-sans)', transition: 'all 0.15s'
                 }}>
                   <span style={{ fontSize: '1.5rem' }}>{pm.icon}</span>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: form.paymentMethod === pm.id ? 'var(--gold-800)' : 'var(--charcoal-800)' }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.9rem', color: form.paymentMethod === pm.id ? 'var(--text-gold)' : 'var(--charcoal-800)' }}>
                       {pm.label}
                     </div>
                     {pm.id === 'transfer' && (
@@ -587,7 +587,7 @@ const CheckoutPage = () => {
                       </div>
                     )}
                   </div>
-                  {form.paymentMethod === pm.id && <Check size={17} style={{ marginLeft: 'auto', color: 'var(--gold-600)' }} />}
+                  {form.paymentMethod === pm.id && <Check size={17} style={{ marginLeft: 'auto', color: 'var(--text-gold)' }} />}
                 </button>
               ))}
             </div>
@@ -595,7 +595,7 @@ const CheckoutPage = () => {
             {/* Bank Transfer Details Box */}
             {form.paymentMethod === 'transfer' && (
               <div style={{
-                background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+                background: 'var(--status-warning-bg)',
                 border: '1.5px solid var(--gold-400)',
                 borderRadius: 'var(--radius-lg)',
                 padding: '1.25rem',
@@ -604,7 +604,7 @@ const CheckoutPage = () => {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.6rem' }}>
                   <Building2 size={18} color="var(--gold-800)" />
-                  <strong style={{ fontSize: '0.925rem', color: 'var(--gold-900)' }}>
+                  <strong style={{ fontSize: '0.925rem', color: 'var(--text-gold)' }}>
                     Store Official Bank Account Details
                   </strong>
                 </div>
@@ -613,7 +613,7 @@ const CheckoutPage = () => {
                   Please transfer exactly <strong>₦{TOTAL.toLocaleString()}</strong> to the account below, then enter your sender name for verification.
                 </p>
 
-                <div style={{ background: 'white', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gold-200)', marginBottom: '1.25rem' }}>
+                <div style={{ background: 'var(--bg-surface)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gold-200)', marginBottom: '1.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Bank Name</span>
                     <span style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--charcoal-900)' }}>
@@ -624,7 +624,7 @@ const CheckoutPage = () => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Account Number</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontWeight: 900, fontSize: '1.15rem', color: 'var(--gold-800)', fontFamily: 'monospace', letterSpacing: '0.06em' }}>
+                      <span style={{ fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-gold)', fontFamily: 'monospace', letterSpacing: '0.06em' }}>
                         {storeBankAccount?.accountNumber || '0123456789'}
                       </span>
                       <button
@@ -638,7 +638,7 @@ const CheckoutPage = () => {
                           cursor: 'pointer',
                           fontSize: '0.72rem',
                           fontWeight: 700,
-                          color: 'var(--gold-900)',
+                          color: 'var(--text-gold)',
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '0.25rem'
@@ -668,7 +668,7 @@ const CheckoutPage = () => {
                     placeholder="e.g. Adewale Adeleke (Access Bank)"
                     value={form.senderName}
                     onChange={e => update('senderName', e.target.value)}
-                    style={{ background: 'white' }}
+                    style={{ background: 'var(--bg-surface)' }}
                   />
                 </div>
 
@@ -682,7 +682,7 @@ const CheckoutPage = () => {
                     placeholder={`e.g. ${form.name || 'Your Name'} - Bakery Order`}
                     value={form.transferRef}
                     onChange={e => update('transferRef', e.target.value)}
-                    style={{ background: 'white' }}
+                    style={{ background: 'var(--bg-surface)' }}
                   />
                 </div>
               </div>
@@ -690,7 +690,7 @@ const CheckoutPage = () => {
 
             <div style={{ padding: '1rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-200)', display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <span style={{ fontWeight: 600, fontSize: '0.925rem' }}>Order Total to Pay</span>
-              <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--gold-600)' }}>₦{TOTAL.toLocaleString()}</span>
+              <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-gold)' }}>₦{TOTAL.toLocaleString()}</span>
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem' }}>
@@ -698,7 +698,9 @@ const CheckoutPage = () => {
               <button
                 className="btn btn-primary btn-lg"
                 style={{ flex: 1, justifyContent: 'center' }}
-                onClick={form.paymentMethod === 'card' ? handleCardPayment : handlePlaceOrder}
+                // Call without arguments: passing handlePlaceOrder directly would hand it the
+                // click event as the "Paystack reference" and crash saving the order
+                onClick={() => (form.paymentMethod === 'card' ? handleCardPayment() : handlePlaceOrder())}
               >
                 {form.paymentMethod === 'card' ? '💳 Pay with Card via Paystack' : '🔒 Place Order Now'}
               </button>
@@ -750,7 +752,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
       {isBankTransfer && (
         order?.paymentStatus === 'Paid' ? (
           <div style={{
-            background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)',
+            background: 'var(--status-success-bg)',
             border: '2px solid #10B981',
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
@@ -758,7 +760,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
             margin: '0 auto 1.5rem',
             textAlign: 'left'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: '#047857', marginBottom: '0.4rem', fontSize: '1.05rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: 'var(--status-success)', marginBottom: '0.4rem', fontSize: '1.05rem' }}>
               ✅ Bank Transfer Verified & Confirmed
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', margin: 0, lineHeight: 1.45 }}>
@@ -767,7 +769,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
           </div>
         ) : (
           <div style={{
-            background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+            background: 'var(--status-warning-bg)',
             border: '2px solid #F59E0B',
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
@@ -775,15 +777,15 @@ const OrderConfirmationStep = ({ navigateTo }) => {
             margin: '0 auto 1.5rem',
             textAlign: 'left'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: '#D97706', marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: 'var(--status-warning)', marginBottom: '0.5rem' }}>
               ⏳ Awaiting Bank Transfer Verification
             </div>
             <p style={{ fontSize: '0.825rem', color: 'var(--charcoal-800)', margin: '0 0 0.75rem', lineHeight: 1.45 }}>
               If you haven't transferred yet, please transfer <strong>₦{(order?.total || 0).toLocaleString()}</strong> to:
             </p>
-            <div style={{ background: 'white', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid #FDE68A', fontSize: '0.85rem' }}>
+            <div style={{ background: 'var(--bg-surface)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid #FDE68A', fontSize: '0.85rem' }}>
               <div>🏦 <strong>{storeBankAccount?.bankName || 'Guaranty Trust Bank (GTBank)'}</strong></div>
-              <div style={{ fontSize: '1.05rem', fontWeight: 900, color: 'var(--gold-800)', margin: '0.2rem 0', fontFamily: 'monospace' }}>
+              <div style={{ fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-gold)', margin: '0.2rem 0', fontFamily: 'monospace' }}>
                 {storeBankAccount?.accountNumber || '0123456789'}
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{storeBankAccount?.accountName || 'Alizson Cakes & Baking Supplies'}</div>
@@ -800,7 +802,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--cream-200)' }}>
             <div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order ID</div>
-              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--gold-700)', fontFamily: 'var(--font-sans)' }}>{order.id}</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>{order.id}</div>
             </div>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Date & Time</div>
@@ -819,7 +821,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
           ].map(row => (
             <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.6rem', gap: '1rem' }}>
               <span style={{ fontSize: '0.825rem', color: 'var(--text-muted)', fontWeight: 600, flexShrink: 0 }}>{row.label}</span>
-              <span style={{ fontSize: '0.875rem', fontWeight: row.highlight ? 800 : 600, color: row.highlight ? 'var(--gold-600)' : 'var(--charcoal-800)', textAlign: 'right' }}>{row.value}</span>
+              <span style={{ fontSize: '0.875rem', fontWeight: row.highlight ? 800 : 600, color: row.highlight ? 'var(--text-gold)' : 'var(--charcoal-800)', textAlign: 'right' }}>{row.value}</span>
             </div>
           ))}
         </div>

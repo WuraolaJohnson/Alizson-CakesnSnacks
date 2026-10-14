@@ -124,7 +124,7 @@ const AdminLayout = () => {
     border: 'none',
     cursor: 'pointer',
     background: active ? 'linear-gradient(135deg, var(--gold-50), var(--cream-100))' : 'transparent',
-    color: active ? 'var(--gold-700)' : 'var(--text-secondary)',
+    color: active ? 'var(--text-gold)' : 'var(--text-secondary)',
     fontWeight: active ? 700 : 500,
     fontSize: '0.875rem',
     fontFamily: 'var(--font-sans)',
@@ -142,7 +142,7 @@ const AdminLayout = () => {
       left: 'calc(100% + 10px)',
       top: '50%',
       transform: 'translateY(-50%)',
-      background: 'var(--charcoal-900)',
+      background: 'var(--ink)',
       color: '#fff',
       fontSize: '0.75rem',
       fontFamily: 'var(--font-sans)',
@@ -198,7 +198,7 @@ const AdminLayout = () => {
             borderRadius: '50%',
             border: '2px solid var(--gold-400)',
             boxShadow: '0 2px 8px rgba(229,138,19,0.3)',
-            background: 'white',
+            background: 'var(--bg-surface)',
             overflow: 'hidden',
           }}>
             <img
@@ -217,8 +217,8 @@ const AdminLayout = () => {
           }}>
             <div style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--charcoal-900)' }}>Alizson</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-              <Shield size={10} style={{ color: 'var(--gold-600)' }} />
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold-700)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Admin</span>
+              <Shield size={10} style={{ color: 'var(--text-gold)' }} />
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-gold)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Admin</span>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@ const AdminLayout = () => {
                       padding: '0.52rem 0.85rem 0.52rem 1.5rem',
                       border: 'none', cursor: 'pointer',
                       background: subActive ? 'rgba(229,138,19,0.13)' : 'transparent',
-                      color: subActive ? 'var(--gold-700)' : 'var(--text-muted)',
+                      color: subActive ? 'var(--text-gold)' : 'var(--text-muted)',
                       fontWeight: subActive ? 600 : 400,
                       fontSize: '0.82rem',
                       fontFamily: 'var(--font-sans)',
@@ -323,7 +323,7 @@ const AdminLayout = () => {
                     }}
                   >
                     <SubIcon size={13} />{sub.label}
-                    {subActive && <span style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: 'var(--gold-500)', flexShrink: 0 }} />}
+                    {subActive && <span style={{ marginLeft: 'auto', width: 6, height: 6, borderRadius: '50%', background: 'var(--gold-action)', flexShrink: 0 }} />}
                   </button>
                 );
               })}

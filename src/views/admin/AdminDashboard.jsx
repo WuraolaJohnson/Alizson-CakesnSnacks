@@ -73,7 +73,7 @@ const AdminDashboard = ({ setActiveTab }) => {
         <div className="card" style={{ padding: '1.4rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Gross Revenue</span>
-            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(229,138,19,0.12)', color: 'var(--gold-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(229,138,19,0.12)', color: 'var(--text-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <DollarSign size={20} />
             </div>
           </div>
@@ -89,11 +89,11 @@ const AdminDashboard = ({ setActiveTab }) => {
         <div className="card" style={{ padding: '1.4rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Bakery Revenue</span>
-            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(229,138,19,0.12)', color: 'var(--gold-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(229,138,19,0.12)', color: 'var(--text-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Cake size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--gold-700)' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-gold)' }}>
             ₦{bakeryRevenue.toLocaleString()}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
@@ -105,11 +105,11 @@ const AdminDashboard = ({ setActiveTab }) => {
         <div className="card" style={{ padding: '1.4rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Supplies Revenue</span>
-            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(128,19,43,0.12)', color: 'var(--burgundy-700)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 36, height: 36, borderRadius: '9px', background: 'rgba(128,19,43,0.12)', color: 'var(--text-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Package size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--burgundy-700)' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-burgundy)' }}>
             ₦{suppliesRevenue.toLocaleString()}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
@@ -161,7 +161,7 @@ const AdminDashboard = ({ setActiveTab }) => {
             <button
               onClick={() => handleTabNav('orders')}
               style={{
-                background: 'none', border: 'none', color: 'var(--gold-600)',
+                background: 'none', border: 'none', color: 'var(--text-gold)',
                 fontWeight: 700, fontSize: '0.825rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem'
               }}
             >
@@ -196,7 +196,7 @@ const AdminDashboard = ({ setActiveTab }) => {
                         {order.store === 'bakery' ? '🍰 Bakery' : '🧁 Supplies'}
                       </span>
                     </td>
-                    <td style={{ padding: '0.75rem 0.5rem', fontWeight: 700, color: 'var(--gold-700)' }}>
+                    <td style={{ padding: '0.75rem 0.5rem', fontWeight: 700, color: 'var(--text-gold)' }}>
                       ₦{order.total?.toLocaleString()}
                     </td>
                     <td style={{ padding: '0.75rem 0.5rem' }}>
@@ -215,7 +215,7 @@ const AdminDashboard = ({ setActiveTab }) => {
                               border: '1px solid var(--cream-300)',
                               fontSize: '0.78rem',
                               fontFamily: 'var(--font-sans)',
-                              background: 'white',
+                              background: 'var(--bg-surface)',
                               cursor: 'pointer'
                             }}
                           >
@@ -280,7 +280,7 @@ const AdminDashboard = ({ setActiveTab }) => {
                         fontSize: '0.72rem',
                         borderRadius: 'var(--radius-sm)',
                         border: '1px solid var(--cream-300)',
-                        background: 'white',
+                        background: 'var(--bg-surface)',
                         cursor: 'pointer',
                         fontWeight: 600
                       }}
@@ -294,11 +294,11 @@ const AdminDashboard = ({ setActiveTab }) => {
           </div>
 
           {/* Quick Actions Card */}
-          <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--charcoal-900) 0%, #2A1F18 100%)', color: 'white' }}>
+          <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--ink) 0%, #2A1F18 100%)', color: 'white' }}>
             <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.1rem', marginBottom: '0.5rem', color: 'white' }}>
               Quick Navigation
             </h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--charcoal-300)', marginBottom: '1.25rem' }}>
+            <p style={{ fontSize: '0.8rem', color: '#C2B9B3', marginBottom: '1.25rem' }}>
               Switch seamlessly between administrator modules.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
@@ -319,7 +319,7 @@ const AdminDashboard = ({ setActiveTab }) => {
                   gap: '0.35rem'
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.background = 'var(--gold-500)';
+                  e.currentTarget.style.background = 'var(--gold-action)';
                   e.currentTarget.style.color = '#FFFFFF';
                   e.currentTarget.style.borderColor = 'var(--gold-500)';
                 }}

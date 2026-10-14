@@ -176,7 +176,7 @@ export default function AdminRiders() {
               <div style="
                 position: absolute; top: -6px; right: -6px;
                 width: 14px; height: 14px; border-radius: 50%;
-                background: #E58A13; border: 2px solid white;
+                background: #AD6208; border: 2px solid white;
               "></div>
             ` : ''}
           </div>
@@ -293,7 +293,7 @@ export default function AdminRiders() {
       {/* Metrics Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(229,138,19,0.12)', color: 'var(--gold-600)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(229,138,19,0.12)', color: 'var(--text-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Bike size={22} />
           </div>
           <div>
@@ -303,27 +303,27 @@ export default function AdminRiders() {
         </div>
 
         <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(16,185,129,0.12)', color: '#10B981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(16,185,129,0.12)', color: 'var(--status-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Navigation size={22} />
           </div>
           <div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Online / Active GPS</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#10B981' }}>{onlineRidersCount} Online</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--status-success)' }}>{onlineRidersCount} Online</div>
           </div>
         </div>
 
         <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(59,130,246,0.12)', color: '#3B82F6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(59,130,246,0.12)', color: 'var(--status-info)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Package size={22} />
           </div>
           <div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>In-Flight Deliveries</div>
-            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#3B82F6' }}>{activeDeliveriesCount} Active</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--status-info)' }}>{activeDeliveriesCount} Active</div>
           </div>
         </div>
 
         <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(245,158,11,0.12)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(245,158,11,0.12)', color: 'var(--status-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CheckCircle2 size={22} />
           </div>
           <div>
@@ -380,7 +380,7 @@ export default function AdminRiders() {
                 <select
                   value={hubFilter}
                   onChange={e => setHubFilter(e.target.value)}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'white' }}
+                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="All">All Hubs</option>
                   <option value="Abeokuta Central Hub">Abeokuta Central Hub</option>
@@ -391,7 +391,7 @@ export default function AdminRiders() {
                 <select
                   value={statusFilter}
                   onChange={e => setStatusFilter(e.target.value)}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'white' }}
+                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="All">All Statuses</option>
                   <option value="Available">Available</option>
@@ -444,7 +444,7 @@ export default function AdminRiders() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>
                         🛵 {rdr.vehicleType} · {rdr.hub}
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: isStale ? '#F59E0B' : '#10B981', fontWeight: 700, marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <div style={{ fontSize: '0.72rem', color: isStale ? 'var(--status-warning)' : 'var(--status-success)', fontWeight: 700, marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                         <span style={{ width: 7, height: 7, borderRadius: '50%', background: isStale ? '#F59E0B' : '#10B981' }} />
                         {isStale ? `Signal Paused (${formatLocationAge(rLoc.timestamp)})` : `Live GPS · ${formatLocationAge(rLoc.timestamp)}`}
                       </div>
@@ -459,13 +459,13 @@ export default function AdminRiders() {
                         padding: '0.2rem 0.5rem',
                         borderRadius: 'var(--radius-full)',
                         background: rdr.availabilityStatus === 'Available' ? 'rgba(16,185,129,0.12)' : rdr.availabilityStatus === 'Busy' ? 'rgba(229,138,19,0.12)' : 'rgba(107,114,128,0.12)',
-                        color: rdr.availabilityStatus === 'Available' ? '#10B981' : rdr.availabilityStatus === 'Busy' ? '#E58A13' : '#6B7280'
+                        color: rdr.availabilityStatus === 'Available' ? 'var(--status-success)' : rdr.availabilityStatus === 'Busy' ? 'var(--text-gold)' : 'var(--text-muted)'
                       }}
                     >
                       {rdr.availabilityStatus}
                     </span>
                     {activeOrd && (
-                      <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--gold-600)', marginTop: '0.4rem' }}>
+                      <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-gold)', marginTop: '0.4rem' }}>
                         Order #{activeOrd.id}
                       </div>
                     )}
@@ -494,7 +494,7 @@ export default function AdminRiders() {
                   <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', margin: 0, color: 'var(--charcoal-900)' }}>
                     {selectedRider.name}
                   </h2>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', background: 'var(--gold-100)', color: 'var(--gold-800)' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)', background: 'var(--gold-100)', color: 'var(--text-gold)' }}>
                     {selectedRider.id}
                   </span>
                 </div>
@@ -511,7 +511,7 @@ export default function AdminRiders() {
               <select
                 value={selectedRider.availabilityStatus}
                 onChange={e => updateRiderAvailability(selectedRider.id, e.target.value)}
-                style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-400)', fontWeight: 700, fontSize: '0.82rem', background: 'white', cursor: 'pointer' }}
+                style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-400)', fontWeight: 700, fontSize: '0.82rem', background: 'var(--bg-surface)', cursor: 'pointer' }}
               >
                 <option value="Available">Set Duty: Available</option>
                 <option value="Busy">Set Duty: Busy (On Delivery)</option>
@@ -535,7 +535,7 @@ export default function AdminRiders() {
             
             {/* Live Device GPS Telemetry */}
             <div style={{ padding: '1rem', background: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-600)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Navigation size={14} /> Device GPS Telemetry
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -549,7 +549,7 @@ export default function AdminRiders() {
 
             {/* Account & Emergency Contact */}
             <div style={{ padding: '1rem', background: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-600)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Shield size={14} /> Verification & Emergency Contact
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
@@ -557,13 +557,13 @@ export default function AdminRiders() {
                 <div><strong>Joined Date:</strong> {selectedRider.dateJoined}</div>
                 <div><strong>Rating:</strong> ⭐ {selectedRider.rating} / 5.0</div>
                 <div><strong>Emergency Contact:</strong> {selectedRider.emergencyContactName} ({selectedRider.emergencyContactPhone})</div>
-                <div><strong>Account Status:</strong> <span style={{ color: '#10B981', fontWeight: 700 }}>{selectedRider.accountStatus}</span></div>
+                <div><strong>Account Status:</strong> <span style={{ color: 'var(--status-success)', fontWeight: 700 }}>{selectedRider.accountStatus}</span></div>
               </div>
             </div>
 
             {/* Active Delivery Summary */}
             <div style={{ padding: '1rem', background: selectedRiderActiveOrder ? 'rgba(229,138,19,0.08)' : 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: selectedRiderActiveOrder ? '1px solid var(--gold-400)' : '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-600)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                 <Package size={14} /> Active Delivery Assignment
               </div>
               {selectedRiderActiveOrder ? (
@@ -571,7 +571,7 @@ export default function AdminRiders() {
                   <div><strong>Order ID:</strong> #{selectedRiderActiveOrder.id}</div>
                   <div><strong>Customer:</strong> {selectedRiderActiveOrder.customerName}</div>
                   <div><strong>Address:</strong> {selectedRiderActiveOrder.deliveryAddress}</div>
-                  <div><strong>Current Status:</strong> <span style={{ fontWeight: 800, color: 'var(--gold-700)' }}>{selectedRiderActiveOrder.status}</span></div>
+                  <div><strong>Current Status:</strong> <span style={{ fontWeight: 800, color: 'var(--text-gold)' }}>{selectedRiderActiveOrder.status}</span></div>
                   {selectedRiderRoute && !selectedRiderRoute.isError && (
                     <div><strong>Road Distance:</strong> {selectedRiderRoute.distanceKm} km (~{selectedRiderRoute.durationMinutes} mins)</div>
                   )}
@@ -601,7 +601,7 @@ export default function AdminRiders() {
                 <select
                   value={historyStatusFilter}
                   onChange={e => setHistoryStatusFilter(e.target.value)}
-                  style={{ padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'white' }}
+                  style={{ padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="all">All Statuses ({selectedRiderOrders.length})</option>
                   <option value="active">Active In-Flight</option>
@@ -611,7 +611,7 @@ export default function AdminRiders() {
                 <select
                   value={historyTimeframe}
                   onChange={e => setHistoryTimeframe(e.target.value)}
-                  style={{ padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'white' }}
+                  style={{ padding: '0.4rem 0.6rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="all">All Time</option>
                   <option value="today">Today</option>
@@ -658,16 +658,16 @@ export default function AdminRiders() {
                           {ord.date} at {ord.time}
                         </td>
                         <td style={{ padding: '0.75rem 1rem' }}>
-                          <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-full)', background: ord.paymentStatus === 'Paid' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: ord.paymentStatus === 'Paid' ? '#10B981' : '#EF4444' }}>
+                          <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-full)', background: ord.paymentStatus === 'Paid' ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', color: ord.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-danger)' }}>
                             {ord.paymentStatus}
                           </span>
                         </td>
                         <td style={{ padding: '0.75rem 1rem' }}>
-                          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: ord.status === 'Delivered' ? '#10B981' : 'var(--gold-700)' }}>
+                          <span style={{ fontSize: '0.75rem', fontWeight: 800, color: ord.status === 'Delivered' ? 'var(--status-success)' : 'var(--text-gold)' }}>
                             {ord.status}
                           </span>
                         </td>
-                        <td style={{ padding: '0.75rem 1rem', textAlign: 'right', fontWeight: 800, color: 'var(--gold-600)' }}>
+                        <td style={{ padding: '0.75rem 1rem', textAlign: 'right', fontWeight: 800, color: 'var(--text-gold)' }}>
                           ₦{(ord.total || 0).toLocaleString()}
                         </td>
                       </tr>

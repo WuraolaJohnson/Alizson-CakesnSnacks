@@ -129,7 +129,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--charcoal-900, #1A1715);
+  /* Always dark, in both themes (the charcoal scale flips in dark mode) */
+  background: var(--ink);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem 1rem calc(0.5rem + env(safe-area-inset-bottom, 0px));
   z-index: var(--z-sticky, 100);
@@ -149,7 +150,7 @@
   gap: 0.25rem;
   background: transparent;
   border: none;
-  color: var(--charcoal-300, #C2B9B3);
+  color: #C2B9B3;
   font-size: 0.7rem;
   font-weight: 600;
   font-family: var(--font-sans);
@@ -161,15 +162,24 @@
 }
 
 .mobile-nav-btn.active {
-  color: var(--gold-400, #F5A623);
+  color: #F5A623;
+}
+
+.mobile-nav-btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mobile-nav-btn.active:hover {
+  color: #FFCC6B;
 }
 
 .mobile-nav-btn .badge-count {
   position: absolute;
   top: 0;
   right: 0.2rem;
-  background: var(--gold-500, #E58A13);
-  color: var(--white, #FFFFFF);
+  background: var(--burgundy-500);
+  color: #FFFFFF;
   font-size: 0.65rem;
   font-weight: 800;
   width: 17px;

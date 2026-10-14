@@ -152,7 +152,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          background: ${isValid ? 'linear-gradient(135deg, #E58A13, #B45309)' : 'linear-gradient(135deg, #EF4444, #991B1B)'};
+          background: ${isValid ? 'linear-gradient(135deg, #AD6208, #8F4F06)' : 'linear-gradient(135deg, #EF4444, #991B1B)'};
           color: white;
           box-shadow: 0 8px 20px ${isValid ? 'rgba(229,138,19,0.5)' : 'rgba(239,68,68,0.5)'};
           border: 3px solid white;
@@ -385,7 +385,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
     >
       <div
         style={{
-          background: 'white',
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--radius-xl)',
           width: '100%',
           maxWidth: '1080px',
@@ -415,7 +415,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.2rem' }}>
               <span
                 style={{
-                  background: 'var(--gold-500)',
+                  background: 'var(--gold-action)',
                   color: 'white',
                   fontSize: '0.7rem',
                   fontWeight: 800,
@@ -427,7 +427,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
               >
                 Ogun State Belt Only
               </span>
-              <span style={{ fontSize: '0.85rem', color: 'var(--cream-300)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <span style={{ fontSize: '0.85rem', color: '#E8D8C0', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
                 <Compass size={14} /> Interactive Pinpoint Map
               </span>
             </div>
@@ -473,7 +473,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
             }}
           >
             {/* Search Bar */}
-            <div style={{ padding: '1rem', borderBottom: '1px solid var(--cream-200)', background: 'white' }}>
+            <div style={{ padding: '1rem', borderBottom: '1px solid var(--cream-200)', background: 'var(--bg-surface)' }}>
               <form onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
                 <div style={{ display: 'flex', gap: '0.5rem' }}>
                   <div style={{ position: 'relative', flex: 1 }}>
@@ -506,7 +506,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 <div
                   style={{
                     marginTop: '0.5rem',
-                    background: 'white',
+                    background: 'var(--bg-surface)',
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--cream-300)',
                     boxShadow: 'var(--shadow-md)',
@@ -550,7 +550,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
             </div>
 
             {/* Map Mode & Geolocation Actions */}
-            <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--cream-200)', background: 'white', display: 'flex', gap: '0.5rem' }}>
+            <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--cream-200)', background: 'var(--bg-surface)', display: 'flex', gap: '0.5rem' }}>
               <button
                 type="button"
                 className={`btn ${mapType === 'roadmap' ? 'btn-primary' : 'btn-outline'}`}
@@ -578,7 +578,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 onClick={handleUseCurrentLocation}
                 disabled={isLocating}
               >
-                <Navigation size={15} style={{ color: 'var(--gold-600)' }} />
+                <Navigation size={15} style={{ color: 'var(--text-gold)' }} />
                 {isLocating ? 'Detecting My Location...' : 'Use My Current GPS Location'}
               </button>
 
@@ -587,9 +587,9 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 <div
                   style={{
                     marginTop: '0.6rem',
-                    background: '#FEF3C7',
+                    background: 'var(--status-warning-bg)',
                     border: '1px solid #F59E0B',
-                    color: '#92400E',
+                    color: 'var(--status-warning)',
                     borderRadius: 'var(--radius-md)',
                     padding: '0.6rem 0.75rem',
                     fontSize: '0.75rem',
@@ -617,7 +617,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                     key={hub.lga}
                     type="button"
                     style={{
-                      background: locationDetails.lga === hub.lga ? 'var(--gold-500)' : 'white',
+                      background: locationDetails.lga === hub.lga ? 'var(--gold-action)' : 'var(--bg-surface)',
                       color: locationDetails.lga === hub.lga ? 'white' : 'var(--charcoal-800)',
                       border: '1px solid var(--cream-300)',
                       borderRadius: 'var(--radius-md)',
@@ -640,7 +640,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
               style={{
                 padding: '1rem',
                 borderTop: '1px solid var(--cream-200)',
-                background: locationDetails.isValid ? 'var(--cream-100)' : '#FEF2F2'
+                background: locationDetails.isValid ? 'var(--cream-100)' : 'var(--status-danger-bg)'
               }}
             >
               <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
@@ -670,9 +670,9 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 <div
                   style={{
                     marginTop: '0.75rem',
-                    background: '#FEE2E2',
+                    background: 'var(--status-danger-bg)',
                     border: '1px solid #FCA5A5',
-                    color: '#991B1B',
+                    color: 'var(--status-danger)',
                     borderRadius: 'var(--radius-md)',
                     padding: '0.65rem 0.85rem',
                     fontSize: '0.78rem',
@@ -718,7 +718,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 left: 16,
                 right: 16,
                 zIndex: 500,
-                background: 'rgba(255, 255, 255, 0.94)',
+                background: 'var(--bg-glass)',
                 backdropFilter: 'blur(6px)',
                 borderRadius: 'var(--radius-lg)',
                 padding: '0.75rem 1.25rem',
@@ -734,7 +734,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <span style={{ fontSize: '1.25rem' }}>{locationDetails.isValid ? '📍' : '⚠️'}</span>
                 <div>
-                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: locationDetails.isValid ? 'var(--gold-900)' : '#991B1B' }}>
+                  <div style={{ fontWeight: 800, fontSize: '0.85rem', color: locationDetails.isValid ? 'var(--text-gold)' : 'var(--status-danger)' }}>
                     {locationDetails.isValid ? 'Drag the pin or click anywhere on the map to set your exact address' : 'Location is outside Ogun State delivery belt'}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
@@ -747,8 +747,8 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
                 style={{
                   fontSize: '0.75rem',
                   fontWeight: 800,
-                  color: locationDetails.isValid ? 'var(--status-success)' : '#991B1B',
-                  background: locationDetails.isValid ? 'var(--status-success-bg)' : '#FEE2E2',
+                  color: locationDetails.isValid ? 'var(--status-success)' : 'var(--status-danger)',
+                  background: locationDetails.isValid ? 'var(--status-success-bg)' : 'var(--status-danger-bg)',
                   padding: '0.35rem 0.75rem',
                   borderRadius: 'var(--radius-sm)'
                 }}
@@ -772,7 +772,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
               <button
                 type="button"
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-surface)',
                   border: '1px solid var(--cream-300)',
                   borderRadius: 'var(--radius-md)',
                   width: 40,
@@ -791,7 +791,7 @@ export default function OgunInteractiveMapModal({ selectedLocation, onSelectLoca
               <button
                 type="button"
                 style={{
-                  background: 'white',
+                  background: 'var(--bg-surface)',
                   border: '1px solid var(--cream-300)',
                   borderRadius: 'var(--radius-md)',
                   width: 40,

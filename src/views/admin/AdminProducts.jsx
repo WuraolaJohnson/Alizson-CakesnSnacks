@@ -200,8 +200,8 @@ const AdminProducts = () => {
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.75rem 1.4rem', borderRadius: 'var(--radius-lg)',
             border: activeStoreTab === 'bakery' ? '2px solid var(--gold-500)' : '1px solid var(--cream-300)',
-            background: activeStoreTab === 'bakery' ? 'white' : 'var(--cream-100)',
-            color: activeStoreTab === 'bakery' ? 'var(--gold-800)' : 'var(--charcoal-600)',
+            background: activeStoreTab === 'bakery' ? 'var(--bg-surface)' : 'var(--cream-100)',
+            color: activeStoreTab === 'bakery' ? 'var(--text-gold)' : 'var(--charcoal-600)',
             fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
             boxShadow: activeStoreTab === 'bakery' ? 'var(--shadow-sm)' : 'none',
             transition: 'all 0.2s'
@@ -217,8 +217,8 @@ const AdminProducts = () => {
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.75rem 1.4rem', borderRadius: 'var(--radius-lg)',
             border: activeStoreTab === 'supplies' ? '2px solid var(--burgundy-700)' : '1px solid var(--cream-300)',
-            background: activeStoreTab === 'supplies' ? 'white' : 'var(--cream-100)',
-            color: activeStoreTab === 'supplies' ? 'var(--burgundy-800)' : 'var(--charcoal-600)',
+            background: activeStoreTab === 'supplies' ? 'var(--bg-surface)' : 'var(--cream-100)',
+            color: activeStoreTab === 'supplies' ? 'var(--text-burgundy)' : 'var(--charcoal-600)',
             fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer',
             boxShadow: activeStoreTab === 'supplies' ? 'var(--shadow-sm)' : 'none',
             transition: 'all 0.2s'
@@ -258,7 +258,7 @@ const AdminProducts = () => {
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--cream-300)',
               fontSize: '0.85rem',
-              background: 'white',
+              background: 'var(--bg-surface)',
               cursor: 'pointer'
             }}
           >
@@ -313,7 +313,7 @@ const AdminProducts = () => {
                         {product.category}
                       </span>
                     </td>
-                    <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--gold-700)' }}>
+                    <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--text-gold)' }}>
                       ₦{(product.price || product.basePrice || 0).toLocaleString()}
                       {product.packQuantity > 1 && (
                         <div style={{ fontSize: '0.72rem', color: 'var(--charcoal-600)', fontWeight: 600 }}>
@@ -400,7 +400,7 @@ const AdminProducts = () => {
         >
           <div
             style={{
-              background: 'white', borderRadius: 'var(--radius-xl)',
+              background: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)',
               maxWidth: '560px', width: '100%', maxHeight: '90vh', overflowY: 'auto',
               padding: '2rem', boxShadow: 'var(--shadow-2xl)', animation: 'scaleUp 0.25s ease'
             }}
@@ -437,7 +437,7 @@ const AdminProducts = () => {
                   <select
                     value={form.category}
                     onChange={e => setForm({ ...form, category: e.target.value })}
-                    style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem', background: 'white' }}
+                    style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem', background: 'var(--bg-surface)' }}
                   >
                     {categories.filter(c => c !== 'All').map(c => (
                       <option key={c} value={c}>{c}</option>
@@ -496,7 +496,7 @@ const AdminProducts = () => {
                       borderRadius: 'var(--radius-md)',
                       border: '1px solid var(--gold-500)',
                       background: 'rgba(229,138,19,0.1)',
-                      color: 'var(--gold-800)',
+                      color: 'var(--text-gold)',
                       fontWeight: 700,
                       fontSize: '0.8rem',
                       cursor: 'pointer'
@@ -536,7 +536,7 @@ const AdminProducts = () => {
                 <>
                   {(form.category === 'Pastries & Tarts' || form.category.toLowerCase().includes('pastr')) && (
                     <div style={{ padding: '0.85rem 1rem', background: 'rgba(229,138,19,0.1)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(229,138,19,0.3)', marginBottom: '0.5rem' }}>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gold-800)', marginBottom: '0.35rem' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-gold)', marginBottom: '0.35rem' }}>
                         🥐 Pastry Quantity Requirement *
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
@@ -567,7 +567,7 @@ const AdminProducts = () => {
                           />
                         </div>
                       </div>
-                      <div style={{ fontSize: '0.72rem', color: 'var(--gold-900)', marginTop: '0.4rem', fontWeight: 600 }}>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-gold)', marginTop: '0.4rem', fontWeight: 600 }}>
                         🏷️ Price Display Preview: <strong>{form.packQuantity || 12} pieces for ₦{(parseFloat(form.price) || 0).toLocaleString()}</strong>
                       </div>
                     </div>

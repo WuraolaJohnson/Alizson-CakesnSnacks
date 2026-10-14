@@ -39,13 +39,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  background: linear-gradient(135deg, var(--gold-action), var(--gold-action-strong));
   color: var(--white);
   box-shadow: 0 4px 14px rgba(229, 138, 19, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, var(--gold-500), var(--gold-700));
+  background: linear-gradient(135deg, var(--gold-action-strong), var(--gold-action-deep));
   color: var(--white) !important;
   box-shadow: 0 6px 20px rgba(229, 138, 19, 0.45);
   transform: translateY(-2px);
@@ -71,8 +71,8 @@
 }
 
 .btn-dark:hover:not(:disabled) {
-  background: var(--charcoal-800);
-  color: var(--white) !important;
+  background: var(--charcoal-700);
+  color: var(--cream-50) !important;
   transform: translateY(-2px);
 }
 
@@ -95,8 +95,8 @@
 }
 
 .btn-outline:hover:not(:disabled) {
-  background: var(--gold-500);
-  border-color: var(--gold-500);
+  background: var(--gold-action);
+  border-color: var(--gold-action);
   color: #ffffff !important;
 }
 
@@ -107,13 +107,13 @@
 
 .btn-outline-gold {
   background: transparent;
-  color: var(--gold-500);
+  color: var(--text-gold);
   border-color: var(--gold-400);
 }
 
 .btn-outline-gold:hover:not(:disabled) {
-  background: var(--gold-500);
-  border-color: var(--gold-500);
+  background: var(--gold-action);
+  border-color: var(--gold-action);
   color: #ffffff !important;
 }
 
@@ -131,14 +131,14 @@
 .btn-outline-light:hover:not(:disabled) {
   background: var(--white);
   border-color: var(--white);
-  color: var(--charcoal-950) !important;
+  color: var(--ink) !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   transform: translateY(-2px);
 }
 
 .btn-outline-light:hover:not(:disabled) svg {
-  color: var(--charcoal-950) !important;
-  stroke: var(--charcoal-950) !important;
+  color: var(--ink) !important;
+  stroke: var(--ink) !important;
 }
 
 /* "Continue with Google" — white per Google's branding guidelines */
@@ -399,7 +399,7 @@
 }
 
 .store-switcher-tab.active-bakery {
-  background: linear-gradient(135deg, var(--gold-500), var(--gold-600));
+  background: linear-gradient(135deg, var(--gold-action), var(--gold-action-strong));
   color: var(--white);
   box-shadow: 0 2px 10px rgba(229, 138, 19, 0.4);
 }
@@ -421,7 +421,7 @@
   font-weight: 600;
   line-height: 1.25;
   color: var(--charcoal-700);
-  background: var(--white);
+  background: var(--bg-surface);
   border: 1.5px solid var(--cream-300);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -446,9 +446,9 @@
 }
 
 .pill-tab.active-gold {
-  background: var(--gold-500);
+  background: var(--gold-action);
   color: var(--white);
-  border-color: var(--gold-500);
+  border-color: var(--gold-action);
   box-shadow: 0 4px 12px rgba(229, 138, 19, 0.35);
 }
 
@@ -475,7 +475,8 @@
 }
 
 .modal-card {
-  background: var(--white);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   border-radius: var(--radius-xl);
   max-width: 680px;
   width: 100%;
@@ -508,7 +509,8 @@
   bottom: 0;
   width: 100%;
   max-width: 480px;
-  background: var(--white);
+  background: var(--bg-surface);
+  color: var(--text-primary);
   z-index: calc(var(--z-drawer) + 1);
   box-shadow: var(--shadow-xl);
   display: flex;
@@ -521,7 +523,7 @@
   overflow-x: auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--cream-200);
-  background: var(--white);
+  background: var(--bg-surface);
 }
 
 .data-table {
@@ -587,7 +589,7 @@
   position: absolute;
   top: -3px;
   right: -3px;
-  background: var(--gold-500);
+  background: var(--burgundy-500);
   color: var(--white);
   font-size: 0.62rem;
   font-weight: 800;

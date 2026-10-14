@@ -62,7 +62,7 @@ export default function RiderLoginPage({ onLogin, initialError = '' }) {
       padding: '1.5rem'
     }}>
       <div style={{
-        background: '#ffffff',
+        background: 'var(--bg-surface)',
         borderRadius: '24px',
         boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
         padding: '2.5rem 2rem',
@@ -96,7 +96,7 @@ export default function RiderLoginPage({ onLogin, initialError = '' }) {
             marginBottom: '0.85rem'
           }}>
             <Navigation size={14} style={{ color: 'var(--gold-600)' }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-800)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               Dedicated Delivery Rider Portal
             </span>
           </div>
@@ -111,7 +111,7 @@ export default function RiderLoginPage({ onLogin, initialError = '' }) {
         {/* Error Alert */}
         {error && (
           <div style={{
-            background: '#FEE2E2',
+            background: 'var(--status-danger-bg)',
             border: '1px solid #FCA5A5',
             borderRadius: 'var(--radius-md)',
             padding: '0.75rem 1rem',
@@ -120,7 +120,7 @@ export default function RiderLoginPage({ onLogin, initialError = '' }) {
             gap: '0.5rem',
             marginBottom: '1.25rem',
             fontSize: '0.85rem',
-            color: '#991B1B',
+            color: 'var(--status-danger)',
             fontWeight: 600
           }}>
             <AlertCircle size={16} />

@@ -37,7 +37,7 @@ const ContactPage = () => {
     <div style={{ background: 'var(--cream-50)', paddingBottom: '5rem' }}>
       {/* Header */}
       <section style={{
-        background: 'linear-gradient(135deg, var(--charcoal-900), #2A1A08)',
+        background: 'linear-gradient(135deg, var(--ink), #2A1A08)',
         padding: '4rem 1.5rem', textAlign: 'center'
       }}>
         <div style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>📞</div>
@@ -51,10 +51,10 @@ const ContactPage = () => {
         {/* Contact Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '3.5rem' }}>
           {[
-            { icon: <Phone size={22} />, label: 'Official Phone Hotline', value: '+234 703 014 4746', sub: 'Call or WhatsApp Support', color: 'var(--gold-500)' },
-            { icon: <Mail size={22} />, label: 'Email Enquiries', value: 'alizsoncakes2@gmail.com', sub: 'Direct Customer Support', color: 'var(--burgundy-700)' },
+            { icon: <Phone size={22} />, label: 'Official Phone Hotline', value: '+234 703 014 4746', sub: 'Call or WhatsApp Support', color: 'var(--text-gold)' },
+            { icon: <Mail size={22} />, label: 'Email Enquiries', value: 'alizsoncakes2@gmail.com', sub: 'Direct Customer Support', color: 'var(--text-burgundy)' },
             { icon: <MapPin size={22} />, label: 'Bakery Headquarters', value: 'Obasanjo Hilltop', sub: 'Adefunke Shodunke St, Abeokuta', color: 'var(--status-info)' },
-            { icon: <MapPin size={22} />, label: 'Baking Supplies Store', value: 'Iyana Oja, Kuto', sub: 'Kuto Market Area, Abeokuta', color: 'var(--gold-600)' },
+            { icon: <MapPin size={22} />, label: 'Baking Supplies Store', value: 'Iyana Oja, Kuto', sub: 'Kuto Market Area, Abeokuta', color: 'var(--text-gold)' },
           ].map((c, i) => (
             <div key={i} className="card" style={{ padding: '1.5rem', textAlign: 'center', transition: 'all 0.3s' }}
               onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = 'var(--shadow-lg)'; }}
@@ -113,7 +113,7 @@ const ContactPage = () => {
           <div>
             {/* Map Placeholder */}
             <div style={{
-              background: 'linear-gradient(135deg, var(--charcoal-900), #2A1A08)',
+              background: 'linear-gradient(135deg, var(--ink), #2A1A08)',
               borderRadius: 'var(--radius-xl)', aspectRatio: '4/3',
               display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
               marginBottom: '1.5rem', overflow: 'hidden', position: 'relative'
@@ -147,8 +147,9 @@ const ContactPage = () => {
                   >
                     <span style={{ color: s.color }}>{s.icon}</span>
                     <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>{s.platform}</div>
-                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--charcoal-900)' }}>{s.label}</div>
+                      {/* Tiles keep their light brand tint in both themes, so text is fixed dark */}
+                      <div style={{ fontSize: '0.7rem', color: '#574F4A', fontWeight: 600 }}>{s.platform}</div>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#1A1715' }}>{s.label}</div>
                     </div>
                   </a>
                 ))}

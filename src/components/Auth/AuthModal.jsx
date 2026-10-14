@@ -207,7 +207,7 @@ const AuthModal = () => {
           <button
             type="button"
             onClick={() => { setAuthModalMode(isLogin ? 'signup' : 'login'); setError(''); setForm({ name: '', email: '', phone: '', password: '' }); }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--gold-600)', fontWeight: 700, fontFamily: 'var(--font-sans)' }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-gold)', fontWeight: 700, fontFamily: 'var(--font-sans)' }}
           >
             {isLogin ? 'Sign Up' : 'Sign In'}
           </button>

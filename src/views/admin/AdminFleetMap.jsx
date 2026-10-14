@@ -95,7 +95,7 @@ export default function AdminFleetMap() {
         html: `
           <div style="
             width: 32px; height: 32px; border-radius: 50%;
-            background: linear-gradient(135deg, #E58A13, #B45309);
+            background: linear-gradient(135deg, #AD6208, #8F4F06);
             border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center; color: white; font-size: 15px;
           ">
@@ -143,7 +143,7 @@ export default function AdminFleetMap() {
           if (!route.isError && route.routeCoordinates && route.routeCoordinates.length > 0) {
             // Main Drivable Road Route
             L.polyline(route.routeCoordinates, {
-              color: isStale ? '#F59E0B' : '#10B981',
+              color: isStale ? 'var(--status-warning)' : 'var(--status-success)',
               weight: 4,
               opacity: 0.85
             }).addTo(markersGroupRef.current);
@@ -182,7 +182,7 @@ export default function AdminFleetMap() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
-            <span style={{ background: 'var(--gold-500)', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)' }}>
+            <span style={{ background: 'var(--gold-action)', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)' }}>
               Live Fleet Management
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Ogun State Real-Time Map</span>
@@ -265,8 +265,8 @@ export default function AdminFleetMap() {
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
-                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--gold-700)', fontFamily: 'var(--font-sans)' }}>{ord.id}</span>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: ord.status === 'Delivered' ? 'var(--status-success)' : 'var(--gold-900)' }}>{ord.status}</span>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>{ord.id}</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: ord.status === 'Delivered' ? 'var(--status-success)' : 'var(--text-gold)' }}>{ord.status}</span>
                     </div>
 
                     <div style={{ fontSize: '0.8rem', color: 'var(--charcoal-900)', fontWeight: 600 }}>{ord.customerName}</div>
@@ -274,7 +274,7 @@ export default function AdminFleetMap() {
 
                     <div style={{ marginTop: '0.4rem', paddingTop: '0.4rem', borderTop: '1px solid var(--cream-200)', display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                       <span>🛵 {ord.assignedRider?.name || 'Unassigned'}</span>
-                      <span style={{ color: isStale ? '#D97706' : '#10B981', fontWeight: 700 }}>{ageText}</span>
+                      <span style={{ color: isStale ? 'var(--status-warning)' : 'var(--status-success)', fontWeight: 700 }}>{ageText}</span>
                     </div>
                   </div>
                 );
@@ -294,7 +294,7 @@ export default function AdminFleetMap() {
                 <div><strong>Address:</strong> {selectedOrder.deliveryAddress}</div>
                 <div><strong>LGA:</strong> {selectedOrder.lga || 'Abeokuta South'}, Ogun State</div>
                 {selectedOrder.latitude && selectedOrder.longitude && (
-                  <div style={{ fontFamily: 'monospace', color: 'var(--gold-800)', fontSize: '0.78rem' }}>
+                  <div style={{ fontFamily: 'monospace', color: 'var(--text-gold)', fontSize: '0.78rem' }}>
                     GPS: [{selectedOrder.latitude}, {selectedOrder.longitude}]
                   </div>
                 )}

@@ -174,7 +174,7 @@ const CustomerDashboard = () => {
                   padding: '0.85rem 1.1rem', border: 'none',
                   background: activeTab === tab.id ? 'var(--gold-50)' : 'transparent',
                   borderLeft: activeTab === tab.id ? '3px solid var(--gold-500)' : '3px solid transparent',
-                  color: activeTab === tab.id ? 'var(--gold-600)' : 'var(--text-secondary)',
+                  color: activeTab === tab.id ? 'var(--text-gold)' : 'var(--text-secondary)',
                   fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.875rem',
                   cursor: 'pointer', transition: 'all 0.15s', textAlign: 'left'
                 }}>
@@ -218,7 +218,7 @@ const OverviewTab = ({ userOrders, activeOrders, completedOrders, bakeryOrders, 
     </h2>
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
       {[
-        { label: 'Active Orders', value: activeOrders.length, color: 'var(--gold-500)', emoji: '📦', tab: 'active-orders' },
+        { label: 'Active Orders', value: activeOrders.length, color: 'var(--text-gold)', emoji: '📦', tab: 'active-orders' },
         { label: 'Purchase History', value: completedOrders.length, color: 'var(--status-success)', emoji: '📜', tab: 'purchase-history' },
       ].map(s => (
         <div
@@ -238,7 +238,7 @@ const OverviewTab = ({ userOrders, activeOrders, completedOrders, bakeryOrders, 
     <div className="card" style={{ padding: '1.5rem', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <User size={18} style={{ color: 'var(--gold-500)' }} /> Account & Delivery Information
+          <User size={18} style={{ color: 'var(--text-gold)' }} /> Account & Delivery Information
         </h3>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button className="btn btn-outline btn-sm" onClick={onOpenEditProfile}>
@@ -274,7 +274,7 @@ const OverviewTab = ({ userOrders, activeOrders, completedOrders, bakeryOrders, 
 
         <div style={{ gridColumn: '1 / -1', background: 'var(--bg-card)', padding: '1.15rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', minWidth: 0 }}>
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Default Delivery Address</div>
-          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-500)', marginTop: '0.35rem', lineHeight: 1.45, overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-gold)', marginTop: '0.35rem', lineHeight: 1.45, overflowWrap: 'break-word', wordBreak: 'break-word' }}>
             {currentUser.savedAddresses?.find(a => a.isDefault)?.address || currentUser.savedAddresses?.[0]?.address || 'No address saved yet'}
           </div>
         </div>
@@ -411,11 +411,11 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
             <StatusBadge status={order.store} type="store" />
             <StatusBadge status={order.status} />
             {order.paymentStatus === 'Paid' ? (
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#ECFDF5', color: '#047857', border: '1px solid #10B981', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, background: 'var(--status-success-bg)', color: 'var(--status-success)', border: '1px solid #10B981', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
                 ✅ Verified Paid
               </span>
             ) : (
-              <span style={{ fontSize: '0.7rem', fontWeight: 700, background: '#FFFBEB', color: '#B45309', border: '1px solid #F59E0B', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 700, background: 'var(--status-warning-bg)', color: 'var(--status-warning)', border: '1px solid #F59E0B', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
                 ⏳ Awaiting Payment
               </span>
             )}
@@ -425,7 +425,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--gold-600)' }}>₦{order.total.toLocaleString()}</span>
+          <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-gold)' }}>₦{order.total.toLocaleString()}</span>
           <ChevronRight size={18} style={{ transform: open ? 'rotate(90deg)' : 'none', transition: '0.2s', color: 'var(--text-muted)' }} />
         </div>
       </div>
@@ -446,7 +446,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
                         <div style={{ flex: i === 0 ? 0 : 1, height: 3, background: i <= currentStep ? 'var(--status-success)' : 'var(--border-subtle)', transition: 'background 0.3s' }} />
                         <div style={{
                           width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                          background: isDone ? 'var(--status-success)' : 'var(--bg-surface)',
+                          background: isDone ? '#047857' : 'var(--bg-surface)',
                           border: isDone ? '2px solid var(--status-success)' : '2px solid var(--border-subtle)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           boxShadow: isCurrent ? '0 0 0 4px rgba(34, 197, 94, 0.25)' : 'none',
@@ -469,7 +469,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
             margin: '0.75rem 0 1rem',
             padding: '0.65rem 1rem',
             borderRadius: 'var(--radius-md)',
-            background: order.paymentStatus === 'Paid' ? '#ECFDF5' : '#FFFBEB',
+            background: order.paymentStatus === 'Paid' ? 'var(--status-success-bg)' : 'var(--status-warning-bg)',
             border: `1px solid ${order.paymentStatus === 'Paid' ? '#10B981' : '#F59E0B'}`,
             display: 'flex',
             alignItems: 'center',
@@ -478,7 +478,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
             gap: '0.5rem',
             fontSize: '0.82rem'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, color: order.paymentStatus === 'Paid' ? '#047857' : '#B45309' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)' }}>
               {order.paymentStatus === 'Paid' ? (
                 <>
                   <span>✅ Bank Transfer Verified & Paid</span>
@@ -575,7 +575,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
                 </div>
                 <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.4rem', marginTop: '0.2rem', display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '0.92rem' }}>
                   <span style={{ color: 'var(--text-primary)' }}>Total Amount Paid</span>
-                  <span style={{ color: 'var(--gold-500)' }}>₦{displayTotal.toLocaleString()}</span>
+                  <span style={{ color: 'var(--text-gold)' }}>₦{displayTotal.toLocaleString()}</span>
                 </div>
               </div>
             );
@@ -642,7 +642,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
                   )}
                 </>
               )}
-              <span style={{ fontWeight: 800, color: 'var(--gold-500)', fontSize: '1.05rem', marginLeft: '0.25rem' }}>Total: ₦{order.total.toLocaleString()}</span>
+              <span style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '1.05rem', marginLeft: '0.25rem' }}>Total: ₦{order.total.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -791,7 +791,7 @@ const AddressesTab = ({ addresses, onAddAddress, onUpdateAddress, onDeleteAddres
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                   <div style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <MapPin size={18} style={{ color: 'var(--gold-500)' }} /> {a.label || 'Saved Location'}
+                    <MapPin size={18} style={{ color: 'var(--text-gold)' }} /> {a.label || 'Saved Location'}
                   </div>
                   {a.isDefault ? (
                     <span className="badge badge-gold" style={{ fontSize: '0.75rem' }}>
@@ -800,7 +800,7 @@ const AddressesTab = ({ addresses, onAddAddress, onUpdateAddress, onDeleteAddres
                   ) : (
                     <button
                       className="btn btn-ghost btn-sm"
-                      style={{ fontSize: '0.75rem', color: 'var(--gold-500)', padding: '0.2rem 0.5rem' }}
+                      style={{ fontSize: '0.75rem', color: 'var(--text-gold)', padding: '0.2rem 0.5rem' }}
                       onClick={() => onSetDefaultAddress(a.id)}
                     >
                       Make Default

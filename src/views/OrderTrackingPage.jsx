@@ -98,7 +98,7 @@ export default function OrderTrackingPage({ orderId }) {
       html: `
         <div style="
           width: 42px; height: 42px; border-radius: 50%;
-          background: linear-gradient(135deg, #E58A13, #B45309);
+          background: linear-gradient(135deg, #AD6208, #8F4F06);
           border: 3px solid white; box-shadow: 0 6px 16px rgba(229,138,19,0.5);
           display: flex; align-items: center; justify-content: center; color: white; font-size: 20px;
         ">
@@ -246,7 +246,7 @@ export default function OrderTrackingPage({ orderId }) {
         html: `
           <div style="
             width: 14px; height: 14px; border-radius: 50%;
-            background: #E58A13; border: 2px solid white;
+            background: #AD6208; border: 2px solid white;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
           " title="Nearest Accessible Road Entrance"></div>
         `,
@@ -267,7 +267,7 @@ export default function OrderTrackingPage({ orderId }) {
       {/* Top Header Navigation */}
       <div
         style={{
-          background: 'linear-gradient(135deg, var(--charcoal-950), #1E1712)',
+          background: 'linear-gradient(135deg, var(--ink-deep), #1E1712)',
           color: 'white',
           padding: '1.25rem 0',
           borderBottom: '2px solid var(--gold-500)'
@@ -285,7 +285,7 @@ export default function OrderTrackingPage({ orderId }) {
               <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', margin: 0, color: '#ffffff' }}>
                 Tracking Order #{order.id}
               </h1>
-              <span style={{ background: 'var(--gold-500)', color: '#ffffff', fontWeight: 800, padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', fontSize: '0.78rem' }}>
+              <span style={{ background: 'var(--gold-action)', color: '#ffffff', fontWeight: 800, padding: '0.25rem 0.75rem', borderRadius: 'var(--radius-full)', fontSize: '0.78rem' }}>
                 {order.storeName || 'Alizson Store'}
               </span>
             </div>
@@ -343,7 +343,7 @@ export default function OrderTrackingPage({ orderId }) {
           marginBottom: '1.25rem',
           padding: '0.85rem 1.25rem',
           borderRadius: 'var(--radius-lg)',
-          background: order.paymentStatus === 'Paid' ? '#ECFDF5' : '#FFFBEB',
+          background: order.paymentStatus === 'Paid' ? 'var(--status-success-bg)' : 'var(--status-warning-bg)',
           border: `2px solid ${order.paymentStatus === 'Paid' ? '#10B981' : '#F59E0B'}`,
           display: 'flex',
           alignItems: 'center',
@@ -351,7 +351,7 @@ export default function OrderTrackingPage({ orderId }) {
           flexWrap: 'wrap',
           gap: '0.5rem'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: order.paymentStatus === 'Paid' ? '#047857' : '#B45309', fontSize: '0.95rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)', fontSize: '0.95rem' }}>
             {order.paymentStatus === 'Paid' ? (
               <>
                 <span>✅ Bank Transfer Verified & Paid</span>
@@ -391,7 +391,7 @@ export default function OrderTrackingPage({ orderId }) {
               <div style={{ display: 'flex', gap: '1rem', background: 'rgba(229, 138, 19, 0.1)', padding: '0.6rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(229, 138, 19, 0.25)' }}>
                 <div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700 }}>ESTIMATED ROAD ETA</div>
-                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--gold-500)' }}>~{routeInfo.durationMinutes} mins</div>
+                  <div style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-gold)' }}>~{routeInfo.durationMinutes} mins</div>
                 </div>
                 <div style={{ borderLeft: '1px solid rgba(229, 138, 19, 0.25)', paddingLeft: '1rem' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700 }}>ROAD DISTANCE</div>
@@ -414,7 +414,7 @@ export default function OrderTrackingPage({ orderId }) {
                       width: 36,
                       height: 36,
                       borderRadius: '50%',
-                      background: isCurrent ? 'var(--gold-500)' : isDone ? 'var(--status-success)' : 'var(--bg-surface)',
+                      background: isCurrent ? 'var(--gold-action)' : isDone ? '#047857' : 'var(--bg-surface)',
                       border: isDone ? 'none' : '2px solid var(--border-subtle)',
                       color: 'white',
                       display: 'flex',
@@ -433,7 +433,7 @@ export default function OrderTrackingPage({ orderId }) {
                     style={{
                       fontSize: '0.72rem',
                       fontWeight: isCurrent ? 800 : isDone ? 700 : 500,
-                      color: isCurrent ? 'var(--gold-500)' : isDone ? 'var(--text-primary)' : 'var(--text-muted)',
+                      color: isCurrent ? 'var(--text-gold)' : isDone ? 'var(--text-primary)' : 'var(--text-muted)',
                       marginTop: '0.5rem',
                       textAlign: 'center'
                     }}
@@ -500,7 +500,7 @@ export default function OrderTrackingPage({ orderId }) {
                     zIndex: 500,
                     background: 'rgba(254, 243, 199, 0.95)',
                     border: '1px solid #F59E0B',
-                    color: '#92400E',
+                    color: 'var(--status-warning)',
                     borderRadius: 'var(--radius-md)',
                     padding: '0.65rem 1rem',
                     fontSize: '0.78rem',
@@ -525,9 +525,9 @@ export default function OrderTrackingPage({ orderId }) {
                     left: 12,
                     right: 12,
                     zIndex: 500,
-                    background: '#FEF2F2',
+                    background: 'var(--status-danger-bg)',
                     border: '1px solid #EF4444',
-                    color: '#991B1B',
+                    color: 'var(--status-danger)',
                     borderRadius: 'var(--radius-md)',
                     padding: '0.65rem 1rem',
                     fontSize: '0.78rem',
@@ -545,7 +545,7 @@ export default function OrderTrackingPage({ orderId }) {
                   </div>
                   <button
                     className="btn btn-outline"
-                    style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderColor: '#DC2626', color: '#DC2626' }}
+                    style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderColor: '#DC2626', color: 'var(--status-danger)' }}
                     onClick={() => loadRouteGeometry(riderLoc.lat, riderLoc.lng, destLat, destLng, mapInstanceRef.current, true)}
                   >
                     Retry Route
@@ -572,7 +572,7 @@ export default function OrderTrackingPage({ orderId }) {
                 />
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{rider.name}</div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--gold-500)', fontWeight: 700 }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700 }}>
                     {rider.vehicle} · {rider.rating} ★
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
@@ -596,7 +596,7 @@ export default function OrderTrackingPage({ orderId }) {
                 Delivery Destination (Ogun State)
               </div>
               <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-                <MapPin size={18} style={{ color: 'var(--gold-500)', flexShrink: 0, marginTop: 2 }} />
+                <MapPin size={18} style={{ color: 'var(--text-gold)', flexShrink: 0, marginTop: 2 }} />
                 <div>
                   <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
                     {order.deliveryAddress}
@@ -605,7 +605,7 @@ export default function OrderTrackingPage({ orderId }) {
                     <strong>LGA:</strong> {order.lga || 'Abeokuta South'} · <strong>State:</strong> Ogun State
                   </div>
                   {order.latitude && order.longitude && (
-                    <div style={{ fontSize: '0.72rem', color: 'var(--gold-500)', fontFamily: 'monospace', marginTop: '0.25rem' }}>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-gold)', fontFamily: 'monospace', marginTop: '0.25rem' }}>
                       GPS: [{order.latitude}, {order.longitude}]
                     </div>
                   )}
@@ -657,7 +657,7 @@ export default function OrderTrackingPage({ orderId }) {
                       </div>
                       <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '0.95rem' }}>
                         <span style={{ color: 'var(--text-primary)' }}>Total Amount Paid</span>
-                        <span style={{ color: 'var(--gold-500)' }}>₦{displayTotal.toLocaleString()}</span>
+                        <span style={{ color: 'var(--text-gold)' }}>₦{displayTotal.toLocaleString()}</span>
                       </div>
                     </>
                   );
@@ -685,7 +685,7 @@ export default function OrderTrackingPage({ orderId }) {
             {(order.trackingHistory || []).map((log, idx) => (
               <div key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
                 <div style={{
-                  width: 28, height: 28, borderRadius: '50%', background: 'var(--gold-500)',
+                  width: 28, height: 28, borderRadius: '50%', background: 'var(--gold-action)',
                   color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontWeight: 800, fontSize: '0.75rem', flexShrink: 0
                 }}>
@@ -696,7 +696,7 @@ export default function OrderTrackingPage({ orderId }) {
                     <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-primary)' }}>{log.event}</span>
                     <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 600 }}>{log.timestamp}</span>
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--gold-500)' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-gold)' }}>
                     Triggered by: <strong>{log.actor || 'System'}</strong>
                   </div>
                 </div>

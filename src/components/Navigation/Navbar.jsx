@@ -177,8 +177,8 @@ const Navbar = () => {
                   fontSize: '0.875rem',
                   fontWeight: 600,
                   fontFamily: 'var(--font-sans)',
-                  color: link.isGiftBtn ? '#7E152B' : (currentView === link.id ? 'var(--gold-600)' : 'var(--text-secondary)'),
-                  background: link.isGiftBtn ? '#FFF5F7' : (currentView === link.id ? 'var(--gold-50)' : 'transparent'),
+                  color: link.isGiftBtn ? '#7E152B' : (currentView === link.id ? 'var(--text-gold)' : 'var(--text-secondary)'),
+                  background: link.isGiftBtn ? '#FFF5F7' : (currentView === link.id ? 'var(--bg-surface-soft)' : 'transparent'),
                   border: link.isGiftBtn ? '1px solid #FDE68A' : 'none',
                   transition: 'all var(--transition-fast)',
                 }}
@@ -330,12 +330,12 @@ const Navbar = () => {
                   setMobileMenuOpen(false);
                 }}
                 style={{
-                  background: currentView === link.id ? 'var(--gold-50)' : 'none',
+                  background: currentView === link.id ? 'var(--bg-surface-soft)' : 'none',
                   border: 'none', cursor: 'pointer',
                   padding: '0.65rem 1rem',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.925rem', fontWeight: 600,
-                  color: currentView === link.id ? 'var(--gold-600)' : 'var(--text-primary)',
+                  color: currentView === link.id ? 'var(--text-gold)' : 'var(--text-primary)',
                   textAlign: 'left', fontFamily: 'var(--font-sans)'
                 }}
               >

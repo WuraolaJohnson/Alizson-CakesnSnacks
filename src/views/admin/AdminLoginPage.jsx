@@ -32,7 +32,7 @@ const AdminLoginPage = ({ onLogin, initialError = '' }) => {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'linear-gradient(135deg, var(--charcoal-950), #2A1A08)',
+      background: 'linear-gradient(135deg, var(--ink-deep), #2A1A08)',
       padding: '1.5rem'
     }}>
       <div style={{
@@ -56,8 +56,8 @@ const AdminLoginPage = ({ onLogin, initialError = '' }) => {
             }}
           />
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'var(--gold-50)', border: '1px solid var(--gold-200)', borderRadius: 'var(--radius-full)', padding: '0.3rem 0.9rem', marginBottom: '1rem' }}>
-            <ShieldCheck size={13} style={{ color: 'var(--gold-600)' }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-700)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Admin Portal</span>
+            <ShieldCheck size={13} style={{ color: 'var(--text-gold)' }} />
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-gold)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Admin Portal</span>
           </div>
           <h1 style={{ fontFamily: 'var(--font-serif)', fontWeight: 700, fontSize: '1.6rem', color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
             Alizson Admin

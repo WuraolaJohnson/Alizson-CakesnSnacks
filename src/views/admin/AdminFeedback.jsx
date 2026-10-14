@@ -73,7 +73,7 @@ const AdminFeedback = () => {
               <div key={stars} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.825rem' }}>
                 <span style={{ width: 45, fontWeight: 700, color: 'var(--charcoal-700)' }}>{stars} Stars</span>
                 <div style={{ flex: 1, height: 8, background: 'var(--cream-200)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
-                  <div style={{ width: `${pct}%`, height: '100%', background: 'var(--gold-500)', borderRadius: 'var(--radius-full)' }} />
+                  <div style={{ width: `${pct}%`, height: '100%', background: 'var(--gold-action)', borderRadius: 'var(--radius-full)' }} />
                 </div>
                 <span style={{ width: 35, textAlign: 'right', color: 'var(--text-muted)', fontWeight: 600 }}>{count}</span>
               </div>
@@ -110,7 +110,7 @@ const AdminFeedback = () => {
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--cream-300)',
               fontSize: '0.85rem',
-              background: 'white',
+              background: 'var(--bg-surface)',
               cursor: 'pointer'
             }}
           >
@@ -130,7 +130,7 @@ const AdminFeedback = () => {
               borderRadius: 'var(--radius-md)',
               border: '1px solid var(--cream-300)',
               fontSize: '0.85rem',
-              background: 'white',
+              background: 'var(--bg-surface)',
               cursor: 'pointer'
             }}
           >
@@ -155,7 +155,7 @@ const AdminFeedback = () => {
                   <div
                     style={{
                       width: 40, height: 40, borderRadius: '50%',
-                      background: 'linear-gradient(135deg, var(--gold-400), var(--gold-600))',
+                      background: 'linear-gradient(135deg, var(--gold-action), var(--gold-action-strong))',
                       color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontWeight: 800, fontSize: '0.95rem'
                     }}
@@ -187,7 +187,7 @@ const AdminFeedback = () => {
 
               {item.productName && (
                 <div style={{ fontSize: '0.8rem', color: 'var(--charcoal-600)', marginBottom: '0.5rem', fontWeight: 600 }}>
-                  Product / Item: <span style={{ color: 'var(--gold-700)' }}>{item.productName}</span>
+                  Product / Item: <span style={{ color: 'var(--text-gold)' }}>{item.productName}</span>
                 </div>
               )}
 
@@ -222,7 +222,7 @@ const AdminFeedback = () => {
                   <button
                     onClick={() => { setReplyingId(item.id); setReplyText(''); }}
                     style={{
-                      background: 'none', border: 'none', color: 'var(--gold-600)',
+                      background: 'none', border: 'none', color: 'var(--text-gold)',
                       cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem'
                     }}
                   >

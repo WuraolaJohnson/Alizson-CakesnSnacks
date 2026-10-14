@@ -86,7 +86,7 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
         style={{
           width: '100%',
           maxWidth: '560px',
-          background: 'white',
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--radius-xl)',
           padding: '2rem',
           boxShadow: 'var(--shadow-2xl)',
@@ -100,7 +100,7 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', borderBottom: '1px solid var(--cream-200)', paddingBottom: '1rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', background: 'var(--gold-50)', border: '1px solid var(--gold-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold-600)' }}>
+              <div style={{ width: 36, height: 36, borderRadius: 'var(--radius-md)', background: 'var(--gold-50)', border: '1px solid var(--gold-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-gold)' }}>
                 <Building2 size={20} />
               </div>
               <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.4rem', margin: 0, color: 'var(--charcoal-900)' }}>
@@ -122,17 +122,17 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
 
         {/* Live Preview Box */}
         <div style={{
-          background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)',
+          background: 'var(--status-warning-bg)',
           border: '1.5px dashed var(--gold-400)',
           borderRadius: 'var(--radius-lg)',
           padding: '1.25rem',
           marginBottom: '1.5rem'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--gold-800)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-gold)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               Customer Checkout Preview
             </span>
-            <span style={{ fontSize: '0.72rem', background: 'var(--gold-200)', color: 'var(--gold-900)', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)', fontWeight: 700 }}>
+            <span style={{ fontSize: '0.72rem', background: 'var(--gold-200)', color: 'var(--text-gold)', padding: '0.15rem 0.5rem', borderRadius: 'var(--radius-full)', fontWeight: 700 }}>
               Live Reflection
             </span>
           </div>
@@ -142,7 +142,7 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
               <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--charcoal-900)', fontFamily: 'monospace', letterSpacing: '0.08em' }}>
                 {form.accountNumber || '0123456789'}
               </div>
-              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--gold-900)' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-gold)' }}>
                 {form.bankName || 'Select a Bank'}
               </div>
               <div style={{ fontSize: '0.8rem', color: 'var(--charcoal-700)', fontWeight: 600 }}>
@@ -154,7 +154,7 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
               type="button"
               onClick={handleCopyAccount}
               className="btn btn-sm"
-              style={{ background: 'white', border: '1px solid var(--gold-300)', color: 'var(--gold-800)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+              style={{ background: 'var(--bg-surface)', border: '1px solid var(--gold-300)', color: 'var(--text-gold)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
             >
               {copied ? <Check size={14} color="#10B981" /> : <Copy size={14} />}
               <span>{copied ? 'Copied!' : 'Copy'}</span>

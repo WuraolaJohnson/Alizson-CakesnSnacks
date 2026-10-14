@@ -26,7 +26,7 @@ const CartPage = () => {
       <div className="container" style={{ paddingTop: '2.5rem' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
-          <ShoppingBag size={24} style={{ color: 'var(--gold-600)' }} />
+          <ShoppingBag size={24} style={{ color: 'var(--text-gold)' }} />
           <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, margin: 0 }}>Your Shopping Cart</h1>
         </div>
 
@@ -46,7 +46,7 @@ const CartPage = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span style={{ fontSize: '1.25rem' }}>🚚</span>
             <div>
-              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--gold-900)' }}>
+              <div style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--text-gold)' }}>
                 Delivery Restricted to Ogun State Only
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
@@ -54,7 +54,7 @@ const CartPage = () => {
               </div>
             </div>
           </div>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-800)', background: 'white', padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-300)' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-gold)', background: 'var(--bg-surface)', padding: '0.35rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-300)' }}>
             Ogun Delivery Belt 📍
           </span>
         </div>
@@ -66,7 +66,7 @@ const CartPage = () => {
             style={{
               display: 'flex', alignItems: 'center', gap: '0.5rem',
               padding: '0.55rem 1.25rem', borderRadius: 'var(--radius-full)', border: 'none',
-              background: activeCartTab === 'bakery' ? 'linear-gradient(135deg, var(--gold-500), var(--gold-600))' : 'transparent',
+              background: activeCartTab === 'bakery' ? 'linear-gradient(135deg, var(--gold-action), var(--gold-action-strong))' : 'transparent',
               color: activeCartTab === 'bakery' ? 'white' : 'var(--charcoal-600)',
               fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', fontFamily: 'var(--font-sans)',
               transition: 'all 0.2s',
@@ -75,7 +75,7 @@ const CartPage = () => {
           >
             🍰 Bakery Cart
             {bakeryItemsCount > 0 && (
-              <span style={{ background: 'rgba(255,255,255,0.25)', padding: '1px 7px', borderRadius: 'var(--radius-full)', fontSize: '0.75rem' }}>
+              <span style={{ background: activeCartTab === 'bakery' ? 'rgba(0,0,0,0.22)' : 'var(--bg-surface-soft)', padding: '1px 7px', borderRadius: 'var(--radius-full)', fontSize: '0.75rem' }}>
                 {bakeryItemsCount}
               </span>
             )}
@@ -94,7 +94,7 @@ const CartPage = () => {
           >
             🧁 Supplies Cart
             {suppliesItemsCount > 0 && (
-              <span style={{ background: 'rgba(255,255,255,0.25)', padding: '1px 7px', borderRadius: 'var(--radius-full)', fontSize: '0.75rem' }}>
+              <span style={{ background: activeCartTab === 'supplies' ? 'rgba(0,0,0,0.22)' : 'var(--bg-surface-soft)', padding: '1px 7px', borderRadius: 'var(--radius-full)', fontSize: '0.75rem' }}>
                 {suppliesItemsCount}
               </span>
             )}
@@ -102,7 +102,7 @@ const CartPage = () => {
         </div>
 
         {activeCart.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '5rem 1rem', background: 'white', borderRadius: 'var(--radius-xl)', border: '1px solid var(--cream-200)' }}>
+          <div style={{ textAlign: 'center', padding: '5rem 1rem', background: 'var(--bg-surface)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--cream-200)' }}>
             <div style={{ fontSize: '5rem', marginBottom: '1.25rem' }}>
               {activeCartTab === 'bakery' ? '🍰' : '🧁'}
             </div>
@@ -147,7 +147,7 @@ const CartPage = () => {
               {/* Gift Service Banner Card */}
               <div 
                 style={{
-                  background: 'linear-gradient(135deg, #FFFBEB 0%, #FFF5F7 100%)',
+                  background: 'var(--status-warning-bg)',
                   borderRadius: 'var(--radius-lg)',
                   border: '1px solid #FDE68A',
                   padding: '1.25rem',
@@ -180,9 +180,9 @@ const CartPage = () => {
                     width: '100%',
                     padding: '0.5rem 0.75rem',
                     borderRadius: 'var(--radius-md)',
-                    border: '1px solid #C6720A',
-                    backgroundColor: '#fff',
-                    color: '#C6720A',
+                    border: '1px solid var(--gold-action)',
+                    backgroundColor: 'var(--bg-surface)',
+                    color: 'var(--text-gold)',
                     fontWeight: 700,
                     fontSize: '0.8rem',
                     cursor: 'pointer',
@@ -253,8 +253,8 @@ const CartItemRow = ({ item, store, onUpdateQty, onRemove, isLast }) => (
       {item.size && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.15rem' }}><strong>Size:</strong> {item.size}</div>}
       {item.flavour && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.15rem' }}><strong>Flavour:</strong> {item.flavour}</div>}
       {item.addOns?.length > 0 && <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '0.15rem' }}><strong>Add-Ons:</strong> {item.addOns.join(', ')}</div>}
-      {item.customMessage && <div style={{ fontSize: '0.78rem', color: 'var(--gold-500)', marginBottom: '0.15rem', fontStyle: 'italic' }}><strong>Message:</strong> "{item.customMessage}"</div>}
-      {item.brand && <div style={{ fontSize: '0.78rem', color: 'var(--gold-500)', marginBottom: '0.15rem', fontWeight: 700 }}>{item.brand}</div>}
+      {item.customMessage && <div style={{ fontSize: '0.78rem', color: 'var(--text-gold)', marginBottom: '0.15rem', fontStyle: 'italic' }}><strong>Message:</strong> "{item.customMessage}"</div>}
+      {item.brand && <div style={{ fontSize: '0.78rem', color: 'var(--text-gold)', marginBottom: '0.15rem', fontWeight: 700 }}>{item.brand}</div>}
 
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.6rem', flexWrap: 'wrap', gap: '0.5rem' }}>
         {/* Qty */}
@@ -291,7 +291,7 @@ const CartItemRow = ({ item, store, onUpdateQty, onRemove, isLast }) => (
 const SummaryRow = ({ label, value, large }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
     <span style={{ fontSize: large ? '1rem' : '0.9rem', fontWeight: large ? 700 : 500, color: large ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{label}</span>
-    <span style={{ fontSize: large ? '1.2rem' : '0.9rem', fontWeight: 800, color: large ? 'var(--gold-500)' : 'var(--text-primary)' }}>{value}</span>
+    <span style={{ fontSize: large ? '1.2rem' : '0.9rem', fontWeight: 800, color: large ? 'var(--text-gold)' : 'var(--text-primary)' }}>{value}</span>
   </div>
 );
 

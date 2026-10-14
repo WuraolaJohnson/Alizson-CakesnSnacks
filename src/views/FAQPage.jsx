@@ -81,7 +81,7 @@ export default function FAQPage() {
     <div style={{ background: 'var(--cream-50)', minHeight: '90vh', paddingBottom: '5rem' }}>
       {/* Hero */}
       <section style={{
-        background: 'linear-gradient(135deg, var(--charcoal-900) 0%, #3D1A10 100%)',
+        background: 'linear-gradient(135deg, var(--ink) 0%, #3D1A10 100%)',
         color: 'white',
         padding: '4.5rem 1.5rem',
         textAlign: 'center',
@@ -113,7 +113,7 @@ export default function FAQPage() {
                 borderRadius: 'var(--radius-full)',
                 border: '2px solid var(--gold-500)',
                 fontSize: '0.95rem',
-                background: 'white',
+                background: 'var(--bg-surface)',
                 color: 'var(--charcoal-900)',
                 boxShadow: 'var(--shadow-lg)'
               }}
@@ -141,7 +141,7 @@ export default function FAQPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {filteredFaqs.length === 0 ? (
             <div className="card" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-              <HelpCircle size={48} style={{ color: 'var(--gold-500)', marginBottom: '1rem' }} />
+              <HelpCircle size={48} style={{ color: 'var(--text-gold)', marginBottom: '1rem' }} />
               <h3>No questions found matching "{searchTerm}"</h3>
               <p style={{ marginTop: '0.5rem' }}>Try searching with a different keyword or contact our support team below.</p>
             </div>
@@ -222,7 +222,7 @@ export default function FAQPage() {
               target="_blank"
               rel="noreferrer"
               className="btn btn-outline"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#10B981', borderColor: '#10B981' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: 'var(--status-success)', borderColor: '#10B981' }}
             >
               <MessageCircle size={16} /> WhatsApp Us
             </a>

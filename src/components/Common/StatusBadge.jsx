@@ -39,7 +39,7 @@ export const StatusBadge = ({ status = '', type = 'order' }) => {
   }
   if (s.includes('confirmed')) {
     return (
-      <span className="badge badge-info" style={{ gap: '4px', background: 'rgba(59, 130, 246, 0.18)', color: '#60A5FA', border: '1px solid rgba(59, 130, 246, 0.35)' }}>
+      <span className="badge badge-info" style={{ gap: '4px', background: 'var(--status-info-bg)', color: 'var(--status-info)', border: '1px solid rgba(59, 130, 246, 0.35)' }}>
         <CheckCircle2 size={12} /> Order Confirmed
       </span>
     );
@@ -60,21 +60,21 @@ export const StatusBadge = ({ status = '', type = 'order' }) => {
   }
   if (s.includes('picked up')) {
     return (
-      <span className="badge badge-info" style={{ gap: '4px', background: 'rgba(168, 85, 247, 0.18)', color: '#C084FC', border: '1px solid rgba(168, 85, 247, 0.35)' }}>
+      <span className="badge badge-info" style={{ gap: '4px', background: 'var(--status-purple-bg)', color: 'var(--status-purple)', border: '1px solid rgba(168, 85, 247, 0.35)' }}>
         <Truck size={12} /> Picked Up
       </span>
     );
   }
   if (s.includes('out for delivery')) {
     return (
-      <span className="badge badge-gold" style={{ gap: '4px', background: 'var(--gold-500)', color: '#ffffff' }}>
+      <span className="badge badge-gold" style={{ gap: '4px', background: 'var(--gold-action)', color: '#ffffff' }}>
         <Truck size={12} /> Out for Delivery
       </span>
     );
   }
   if (s.includes('nearby')) {
     return (
-      <span className="badge" style={{ gap: '4px', background: 'rgba(16, 185, 129, 0.18)', color: '#10B981', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
+      <span className="badge" style={{ gap: '4px', background: 'var(--status-success-bg)', color: 'var(--status-success)', border: '1px solid rgba(16, 185, 129, 0.35)' }}>
         <Truck size={12} /> Nearby
       </span>
     );

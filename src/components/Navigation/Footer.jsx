@@ -77,7 +77,7 @@ const Footer = () => {
 
   return (
     <footer style={{
-      background: 'var(--charcoal-950)',
+      background: 'var(--ink-deep)',
       borderTop: '1px solid rgba(255,255,255,0.08)',
       paddingTop: '4rem',
       marginTop: '5rem'
@@ -111,7 +111,7 @@ const Footer = () => {
                 <span style={{ fontFamily: 'var(--font-serif)', fontWeight: 800, fontSize: '1.35rem', color: 'white', display: 'block', lineHeight: 1.1 }}>
                   Aliz<span style={{ color: 'var(--gold-400)' }}>son</span>
                 </span>
-                <span style={{ fontSize: '0.7rem', color: 'var(--cream-300)', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.7rem', color: '#E8D8C0', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
                   Cakes & Snacks
                 </span>
               </div>
@@ -119,7 +119,7 @@ const Footer = () => {
             <p style={{ fontSize: '0.85rem', color: 'var(--gold-300)', fontStyle: 'italic', marginBottom: '0.75rem' }}>
               "Experience the taste, refresh your soul.."
             </p>
-            <p style={{ fontSize: '0.85rem', color: 'var(--charcoal-400)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+            <p style={{ fontSize: '0.85rem', color: '#A89D95', lineHeight: 1.6, marginBottom: '1.25rem' }}>
               Everything baking in one place. Freshly baked artisan cakes, snacks, and professional baking supplies.
             </p>
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
@@ -128,11 +128,11 @@ const Footer = () => {
                   width: 36, height: 36, borderRadius: '50%',
                   background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--charcoal-300)', cursor: 'pointer',
+                  color: '#C2B9B3', cursor: 'pointer',
                   transition: 'all 0.2s'
                 }}
                   onMouseEnter={e => { e.currentTarget.style.background = s.color; e.currentTarget.style.borderColor = s.color; e.currentTarget.style.color = 'white'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'var(--charcoal-300)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = '#C2B9B3'; }}
                 >
                   {s.icon}
                 </a>
@@ -151,11 +151,11 @@ const Footer = () => {
                   <li key={link.label}>
                     <button onClick={() => link.id === 'gift-studio' ? openGiftStudio() : navigateTo(link.id)} style={{
                       background: 'none', border: 'none', cursor: 'pointer',
-                      color: 'var(--charcoal-400)', fontSize: '0.875rem', fontFamily: 'var(--font-sans)', fontWeight: 500,
+                      color: '#A89D95', fontSize: '0.875rem', fontFamily: 'var(--font-sans)', fontWeight: 500,
                       textAlign: 'left', transition: 'color 0.15s', padding: 0
                     }}
                       onMouseEnter={e => e.currentTarget.style.color = 'var(--gold-300)'}
-                      onMouseLeave={e => e.currentTarget.style.color = 'var(--charcoal-400)'}
+                      onMouseLeave={e => e.currentTarget.style.color = '#A89D95'}
                     >
                       {link.label}
                     </button>
@@ -177,7 +177,7 @@ const Footer = () => {
             { icon: <Mail size={15} />, text: 'alizsoncakes2@gmail.com' },
             { icon: <MapPin size={15} />, text: 'Bakery: Obasanjo Hilltop | Supplies: Kuto, Abeokuta, Ogun State' },
           ].map(item => (
-            <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--charcoal-400)', fontSize: '0.825rem' }}>
+            <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#A89D95', fontSize: '0.825rem' }}>
               <span style={{ color: 'var(--gold-500)' }}>{item.icon}</span>
               {item.text}
             </div>
@@ -188,7 +188,7 @@ const Footer = () => {
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem',
           padding: '1.25rem 0',
-          fontSize: '0.8rem', color: 'var(--charcoal-500)'
+          fontSize: '0.8rem', color: '#A89D95'
         }}>
           <span>© 2026 Alizson Cakes & Snacks. All Rights Reserved. Made with <Heart size={12} style={{ display: 'inline', color: 'var(--burgundy-500)', verticalAlign: 'middle' }} /> in Abeokuta, Ogun State, Nigeria.</span>
           <div style={{ display: 'flex', gap: '1.5rem' }}>

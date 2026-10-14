@@ -46,14 +46,14 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: var(--gold-600);
+  color: var(--text-gold);
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
 }
 
 .eyebrow-burgundy {
-  color: var(--burgundy-700);
+  color: var(--text-burgundy);
 }
 
 .lead-text {
@@ -88,15 +88,15 @@ h1, h2, h3, h4, h5, h6 {
 .price-currency {
   font-size: 0.9em;
   font-weight: 700;
-  color: var(--gold-500);
+  color: var(--text-gold);
 }
 
 .text-gold {
-  color: var(--gold-500);
+  color: var(--text-gold);
 }
 
 .text-burgundy {
-  color: var(--burgundy-700);
+  color: var(--text-burgundy);
 }
 
 .text-charcoal {

@@ -70,7 +70,7 @@ export const SearchBar = ({ inline = false, onClose }) => {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          background: inline ? 'var(--cream-100)' : 'white',
+          background: inline ? 'var(--cream-100)' : 'var(--bg-surface)',
           border: '1.5px solid',
           borderColor: inline ? 'var(--cream-300)' : 'rgba(255,255,255,0.2)',
           borderRadius: 'var(--radius-full)',
@@ -114,7 +114,7 @@ export const SearchBar = ({ inline = false, onClose }) => {
           top: 'calc(100% + 8px)',
           left: 0,
           right: 0,
-          background: 'white',
+          background: 'var(--bg-surface)',
           borderRadius: 'var(--radius-lg)',
           boxShadow: 'var(--shadow-xl)',
           border: '1px solid var(--cream-200)',
@@ -151,7 +151,7 @@ export const SearchBar = ({ inline = false, onClose }) => {
                   {p.store === 'bakery' ? '🍰 Bakery' : '🧁 Supplies'} · {p.category}
                 </div>
               </div>
-              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--gold-600)', flexShrink: 0 }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-gold)', flexShrink: 0 }}>
                 ₦{(p.price || p.basePrice || 0).toLocaleString()}
               </div>
             </div>

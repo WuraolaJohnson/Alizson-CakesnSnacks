@@ -77,7 +77,7 @@ export const DesignSystemPage = () => {
                         {c.hex}
                       </span>
                     </div>
-                    <div style={{ padding: '0.75rem', background: 'white' }}>
+                    <div style={{ padding: '0.75rem', background: 'var(--bg-surface)' }}>
                       <div style={{ fontWeight: 700, fontSize: '0.85rem', color: 'var(--charcoal-900)' }}>{c.name}</div>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'monospace', marginTop: '2px' }}>{c.var}</div>
                     </div>

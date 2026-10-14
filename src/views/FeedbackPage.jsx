@@ -64,7 +64,7 @@ const FeedbackPage = () => {
     <div style={{ background: 'var(--cream-50)', minHeight: '100vh', paddingBottom: '5rem' }}>
       {/* Hero Header */}
       <section style={{
-        background: 'linear-gradient(135deg, var(--charcoal-900) 0%, #2A1A08 100%)',
+        background: 'linear-gradient(135deg, var(--ink) 0%, #2A1A08 100%)',
         padding: '4rem 1.5rem',
         textAlign: 'center',
         position: 'relative',
@@ -127,7 +127,7 @@ const FeedbackPage = () => {
                     height: 64,
                     borderRadius: '50%',
                     background: 'var(--cream-100)',
-                    color: 'var(--gold-600)',
+                    color: 'var(--text-gold)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -187,7 +187,7 @@ const FeedbackPage = () => {
             ) : (
               <div className="card" style={{ padding: '2rem', background: 'var(--bg-surface)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '1.25rem' }}>
-                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--gold-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800 }}>
+                  <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--gold-action)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 800 }}>
                     {currentUser.name.charAt(0)}
                   </div>
                   <div>
