@@ -71,12 +71,12 @@ const Footer = () => {
   const social = [
     { icon: <InstagramIcon size={18} />, label: 'Instagram', color: '#E1306C', url: 'https://www.instagram.com/alizson_cakesnsnacks/' },
     { icon: <FacebookIcon size={18} />, label: 'Facebook', color: '#1877F2', url: 'https://www.facebook.com/share/1K42FeYn9D/' },
-    { icon: <TikTokIcon size={18} />, label: 'TikTok', color: '#000000', url: 'https://www.instagram.com/alizson_cakesnsnacks/' },
+    { icon: <TikTokIcon size={18} />, label: 'TikTok', color: '#000000', url: 'https://www.tiktok.com/@alizsonbakebottlestore' },
     { icon: <MessageCircle size={18} />, label: 'WhatsApp', color: '#25D366', url: 'https://wa.link/avijal' },
   ];
 
   return (
-    <footer style={{
+    <footer className="site-footer" style={{
       background: 'var(--ink-deep)',
       borderTop: '1px solid rgba(255,255,255,0.08)',
       paddingTop: '4rem',
@@ -84,7 +84,7 @@ const Footer = () => {
     }}>
       <div className="container">
         {/* Top — Brand + Links */}
-        <div style={{
+        <div className="footer-grid" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))',
           gap: '2.5rem',
@@ -92,7 +92,7 @@ const Footer = () => {
           borderBottom: '1px solid rgba(255,255,255,0.07)'
         }}>
           {/* Brand Column */}
-          <div style={{ gridColumn: 'span 1' }}>
+          <div className="footer-brand" style={{ gridColumn: 'span 1' }}>
             <button onClick={() => navigateTo('home')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', textAlign: 'left' }}>
               <img
                 src="/logo.jpeg"
@@ -142,7 +142,7 @@ const Footer = () => {
 
           {/* Link Columns */}
           {columns.map(col => (
-            <div key={col.title}>
+            <div key={col.title} className="footer-col">
               <h4 style={{ fontSize: '0.825rem', fontWeight: 800, color: 'var(--gold-400)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1.1rem', fontFamily: 'var(--font-sans)' }}>
                 {col.title}
               </h4>
@@ -167,7 +167,7 @@ const Footer = () => {
         </div>
 
         {/* Contact Strip */}
-        <div style={{
+        <div className="footer-contact" style={{
           display: 'flex', flexWrap: 'wrap', gap: '1.5rem',
           padding: '1.5rem 0',
           borderBottom: '1px solid rgba(255,255,255,0.07)'
@@ -185,7 +185,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div style={{
+        <div className="footer-bottom" style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem',
           padding: '1.25rem 0',
           fontSize: '0.8rem', color: '#A89D95'

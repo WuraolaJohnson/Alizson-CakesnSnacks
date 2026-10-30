@@ -178,6 +178,9 @@ const CheckoutPage = () => {
   };
 
 
+  // Riders and tracking rely on the phone number, so it must look real
+  const phoneValid = (form.phone || '').replace(/\D/g, '').length >= 10;
+
   // Orders can only be placed from an account (the database enforces this too)
   if (!currentUser && step !== 4) {
     return (
@@ -242,10 +245,15 @@ const CheckoutPage = () => {
             </div>
             <div className="form-group">
               <label className="form-label">Phone Number (For Order Tracking) *</label>
-              <input className="form-input" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="+234 703 014 4746" />
+              <input className="form-input" type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="e.g. 0803 123 4567" />
+              {form.phone.trim() && !phoneValid && (
+                <div style={{ fontSize: '0.78rem', color: 'var(--status-danger)', marginTop: '0.3rem' }}>
+                  Enter a valid phone number (at least 10 digits).
+                </div>
+              )}
             </div>
             <button className="btn btn-primary btn-lg" style={{ width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}
-              onClick={() => setStep(1)} disabled={!form.name || !form.email}>
+              onClick={() => setStep(1)} disabled={!form.name.trim() || !form.email.trim() || !phoneValid}>
               Continue to Order Method <ChevronRight size={17} />
             </button>
           </StepCard>
