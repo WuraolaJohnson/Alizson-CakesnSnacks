@@ -40,7 +40,7 @@ const SIDEBAR_COLLAPSED = 64;
 
 const AdminLayout = () => {
   const { showToast, navigateTo } = useApp();
-  // 'checking' until the Supabase session has been restored on load
+  // 'checking' until the Firebase session has been restored on load
   const [authState, setAuthState]     = useState('checking'); // 'checking' | 'in' | 'out'
   const isLoggedIn = authState === 'in';
   const [loginError, setLoginError]   = useState('');

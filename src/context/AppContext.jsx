@@ -275,9 +275,9 @@ export const AppProvider = ({ children }) => {
     showToast('You have been logged out.', 'info');
   }, [navigateTo, showToast]);
 
-  // ── Supabase Session Sync ────────────────────────────────────
+  // ── Firebase Session Sync ────────────────────────────────────
   useEffect(() => {
-    // Try to restore session from Supabase on mount
+    // Try to restore session from Firebase on mount
     getCurrentUser().then(user => {
       if (user) {
         setCurrentUser(prev => {

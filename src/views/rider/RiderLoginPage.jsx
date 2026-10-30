@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Lock, Eye, EyeOff, Navigation, AlertCircle, Mail } from 'lucide-react';
 import { AVAILABLE_RIDERS } from '../../context/OrderContext';
 import { signInAsRole, getRiderForUser, signOut } from '../../services/authService';
-import { isSupabaseReady } from '../../lib/supabase';
+import { isFirebaseReady } from '../../lib/firebase';
 import GoogleSignInButton from '../../components/Auth/GoogleSignInButton';
 
-// Local development without a Supabase project: pick a demo rider instead
+// Local development without a Firebase project: pick a demo rider instead
 // of signing in. import.meta.env.DEV is false in production builds.
-const OFFLINE_DEV_MODE = import.meta.env.DEV && !isSupabaseReady();
+const OFFLINE_DEV_MODE = import.meta.env.DEV && !isFirebaseReady();
 
 /**
  * Signs a rider in and resolves their rider record.

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { X, Eye, EyeOff, Lock, Mail, User, AlertCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { signIn, signUp } from '../../services/authService';
-import { isSupabaseReady } from '../../lib/supabase';
+import { signIn, signUp, sendPasswordReset } from '../../services/authService';
+import { isFirebaseReady } from '../../lib/firebase';
 import GoogleSignInButton from './GoogleSignInButton';
 
 const AuthModal = () => {
@@ -16,6 +16,19 @@ const AuthModal = () => {
   if (!isAuthModalOpen) return null;
 
   const isLogin = authModalMode === 'login';
+
+  const handleForgotPassword = async () => {
+    setError('');
+    if (!form.email.trim()) {
+      setError('Enter your email above, then tap "Forgot password?" again.');
+      return;
+    }
+    setLoading(true);
+    const { error: resetError } = await sendPasswordReset(form.email.trim());
+    setLoading(false);
+    if (resetError) setError(resetError);
+    else showToast('If that email has an account, a reset link is on its way. Check your inbox and spam.', 'success');
+  };
 
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -138,7 +151,7 @@ const AuthModal = () => {
           </div>
         )}
 
-        {isSupabaseReady() && <GoogleSignInButton onError={setError} />}
+        {isFirebaseReady() && <GoogleSignInButton onError={setError} />}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {!isLogin && (
@@ -191,6 +204,17 @@ const AuthModal = () => {
               {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </div>
+
+          {isLogin && isFirebaseReady() && (
+            <button
+              type="button"
+              onClick={handleForgotPassword}
+              disabled={loading}
+              style={{ alignSelf: 'flex-end', marginTop: '-0.5rem', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-gold)', fontSize: '0.8rem', fontWeight: 600 }}
+            >
+              Forgot password?
+            </button>
+          )}
 
           <button
             type="submit"

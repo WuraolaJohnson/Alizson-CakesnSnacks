@@ -6,6 +6,7 @@ import {
   DollarSign, Package, ExternalLink, X, ChevronRight, RefreshCw, Layers
 } from 'lucide-react';
 import { useOrders } from '../../context/OrderContext';
+import RiderAccessPanel from './RiderAccessPanel';
 import { 
   fetchOSRMRoute, 
   formatLocationAge, 
@@ -289,6 +290,8 @@ export default function AdminRiders() {
           </button>
         </div>
       </div>
+
+      <RiderAccessPanel />
 
       {/* Metrics Banner */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>

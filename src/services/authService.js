@@ -1,12 +1,19 @@
 /**
  * authService.js
  * ──────────────────────────────────────────────────────────────
- * Wraps Supabase Auth for the Alizson marketplace.
- * Falls back to localStorage-only simulation when Supabase is
+ * Wraps Firebase Auth + the Firestore `profiles` collection.
+ * Falls back to localStorage-only simulation when Firebase is
  * not configured (i.e. during development without .env vars).
  */
 
-import { supabase, isSupabaseReady } from '../lib/supabase';
+import {
+  createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup,
+  GoogleAuthProvider, signOut as fbSignOut, onAuthStateChanged,
+  updateProfile as fbUpdateProfile, sendEmailVerification, sendPasswordResetEmail
+} from 'firebase/auth';
+import { doc, getDoc, setDoc, updateDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { auth, db, isFirebaseReady } from '../lib/firebase';
+import { requestRiderAccess, riderRequestMessage } from './riderAccessService';
 
 // ── Helpers ───────────────────────────────────────────────────
 
@@ -24,7 +31,7 @@ const DEFAULT_ADDRESSES = [
 ];
 
 /**
- * Converts a Supabase profile row → app user shape
+ * Converts a Firestore profile doc → app user shape
  */
 function profileToUser(profile) {
   return {
@@ -41,6 +48,46 @@ function profileToUser(profile) {
   };
 }
 
+/**
+ * Reads profiles/{uid}. On a first sign-in (no doc yet) creates it as a
+ * customer — the job Supabase's handle_new_user trigger used to do.
+ * Security rules only allow creating your own profile with role 'customer'.
+ */
+async function loadProfile(fbUser, extra = {}) {
+  const ref = doc(db, 'profiles', fbUser.uid);
+  const snap = await getDoc(ref);
+  if (snap.exists()) return { id: fbUser.uid, ...snap.data() };
+  const now = new Date().toISOString();
+  const profile = {
+    email: fbUser.email || '',
+    name: extra.name || fbUser.displayName || (fbUser.email || '').split('@')[0],
+    avatar_url: fbUser.photoURL || null,
+    phone: '',
+    role: 'customer',
+    saved_addresses: [],
+    created_at: now,
+    updated_at: now
+  };
+  await setDoc(ref, profile);
+  return { id: fbUser.uid, ...profile };
+}
+
+/** Turns a Firebase error code into a readable message. */
+function authMessage(err) {
+  const map = {
+    'auth/invalid-credential': 'Invalid email or password.',
+    'auth/wrong-password': 'Invalid email or password.',
+    'auth/user-not-found': 'Invalid email or password.',
+    'auth/email-already-in-use': 'An account with this email already exists.',
+    'auth/weak-password': 'Password should be at least 6 characters.',
+    'auth/invalid-email': 'Please enter a valid email address.',
+    'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+    'auth/popup-closed-by-user': 'Google sign-in was cancelled.',
+    'auth/operation-not-allowed': 'This sign-in method is turned off in Firebase (Authentication → Sign-in method).'
+  };
+  return map[err?.code] || err?.message || 'Something went wrong.';
+}
+
 // ── Sign Up ───────────────────────────────────────────────────
 
 /**
@@ -51,7 +98,7 @@ function profileToUser(profile) {
  * @returns {{ user, error }}
  */
 export async function signUp(name, email, password) {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     // Offline fallback — simulate registration in localStorage
     const fakeUser = {
       id: `local-${Date.now()}`,
@@ -65,34 +112,15 @@ export async function signUp(name, email, password) {
     return { user: fakeUser, error: null };
   }
 
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: { name },
-      // Send the confirmation link back to this site, not Supabase's default
-      emailRedirectTo: window.location.origin
-    }
-  });
-
-  if (error) return { user: null, error: error.message };
-
-  // Profile is created by the database trigger (handle_new_user)
-  // but we can patch the name in immediately
-  if (data.user) {
-    await supabase.from('profiles').upsert({
-      id: data.user.id,
-      name,
-      email,
-      role: 'customer'
-    });
+  try {
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    await fbUpdateProfile(cred.user, { displayName: name });
+    sendEmailVerification(cred.user).catch(() => {});
+    const profile = await loadProfile(cred.user, { name });
+    return { user: profileToUser(profile), error: null };
+  } catch (err) {
+    return { user: null, error: authMessage(err) };
   }
-
-  const user = data.user
-    ? profileToUser({ id: data.user.id, name, email, role: 'customer', saved_addresses: DEFAULT_ADDRESSES })
-    : null;
-
-  return { user, error: null };
 }
 
 // ── Sign In ───────────────────────────────────────────────────
@@ -102,7 +130,7 @@ export async function signUp(name, email, password) {
  * @returns {{ user, error }}
  */
 export async function signIn(email, password) {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     // Offline fallback — check localStorage
     try {
       const stored = localStorage.getItem('cz_user');
@@ -125,39 +153,38 @@ export async function signIn(email, password) {
     return { user: fakeUser, error: null };
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { user: null, error: error.message };
-
-  // Fetch full profile
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', data.user.id)
-    .single();
-
-  const user = profile ? profileToUser(profile) : null;
-  return { user, error: null };
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email, password);
+    const profile = await loadProfile(cred.user);
+    return { user: profileToUser(profile), error: null };
+  } catch (err) {
+    return { user: null, error: authMessage(err) };
+  }
 }
 
 // ── Admin / Rider Sign In ─────────────────────────────────────
 
 /**
- * Admin and rider sign in. Requires Supabase — there is no offline
+ * Admin and rider sign in. Requires Firebase — there is no offline
  * fallback for staff, so a misconfigured deploy can't be logged into.
- * The role comes from the profiles table, which users cannot edit.
+ * The role comes from the profiles collection, which users cannot edit.
  */
 export async function signInAsRole(email, password, expectedRole) {
-  if (!isSupabaseReady()) {
-    return { user: null, error: 'Sign-in is unavailable: Supabase is not configured.' };
+  if (!isFirebaseReady()) {
+    return { user: null, error: 'Sign-in is unavailable: Firebase is not configured.' };
   }
 
   const { user, error } = await signIn(email, password);
   if (error) return { user: null, error };
 
   if (!user || user.role !== expectedRole) {
+    // Rider portal: ask an admin for access instead of just refusing
+    const message = expectedRole === 'rider' && user?.role !== 'admin'
+      ? riderRequestMessage(await requestRiderAccess())
+      : `This account does not have ${expectedRole} access.`;
     // Don't leave a non-staff account signed in from the staff portal
-    await supabase.auth.signOut();
-    return { user: null, error: `This account does not have ${expectedRole} access.` };
+    await fbSignOut(auth);
+    return { user: null, error: message };
   }
 
   return { user, error: null };
@@ -168,7 +195,7 @@ export async function signInAsRole(email, password, expectedRole) {
  * otherwise null. Used to restore admin/rider sessions on reload.
  */
 export async function getStaffUser(expectedRole) {
-  if (!isSupabaseReady()) return null;
+  if (!isFirebaseReady()) return null;
   const user = await getCurrentUser();
   return user && user.role === expectedRole ? user : null;
 }
@@ -178,28 +205,29 @@ export async function getStaffUser(expectedRole) {
  * tab, or an expired refresh token). Returns an unsubscribe function.
  */
 export function onSignedOut(callback) {
-  if (!isSupabaseReady()) return () => {};
-  const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') callback();
+  if (!isFirebaseReady()) return () => {};
+  let wasSignedIn = !!auth.currentUser;
+  return onAuthStateChanged(auth, (fbUser) => {
+    if (wasSignedIn && !fbUser) callback();
+    wasSignedIn = !!fbUser;
   });
-  return () => subscription.unsubscribe();
 }
 
 /**
  * Fetch the rider record linked to a login account (riders.user_id).
- * RLS only lets a rider read their own record.
+ * Security rules only let a rider read their own record.
  */
 export async function getRiderForUser(userId) {
-  if (!isSupabaseReady()) return { rider: null, error: 'Supabase not configured' };
+  if (!isFirebaseReady()) return { rider: null, error: 'Firebase not configured' };
 
-  const { data, error } = await supabase
-    .from('riders')
-    .select('*')
-    .eq('user_id', userId)
-    .maybeSingle();
-
-  if (error) return { rider: null, error: error.message };
-  if (!data) return { rider: null, error: null };
+  let snap;
+  try {
+    snap = await getDocs(query(collection(db, 'riders'), where('user_id', '==', userId), limit(1)));
+  } catch (err) {
+    return { rider: null, error: err.message };
+  }
+  if (snap.empty) return { rider: null, error: null };
+  const data = { id: snap.docs[0].id, ...snap.docs[0].data() };
 
   return {
     rider: {
@@ -230,22 +258,19 @@ export async function getRiderForUser(userId) {
 // ── Google Sign In ────────────────────────────────────────────
 
 /**
- * Redirects to Google. After approval Google returns to this site and
- * the Supabase client finishes the sign-in automatically (?code=…).
+ * Opens the Google sign-in popup. A popup (rather than a redirect) works on
+ * browsers that block third-party storage, which breaks Firebase redirects.
  *
- * Which staff portal to reopen is carried two ways, so either one is enough:
- *  - ?portal=admin|rider on the return URL (kept when the URL matches the
- *    Supabase Redirect URLs allow-list, e.g. https://site/**)
- *  - a short-lived note in localStorage — shared by every tab, because on
- *    phones Google often returns in a NEW tab (or via the Google app), where
- *    the original tab's sessionStorage is not visible.
+ * For a staff portal, the page then reloads at /?portal=admin|rider (and a
+ * short-lived note is kept in localStorage), so the portal's existing
+ * "returning from Google" logic runs just as it did with the redirect flow.
  *
  * @param {'admin'|'rider'|null} portal - staff portal to return to
- * @returns {{ error }} only if the redirect could not be started.
+ * @returns {{ error }} only if sign-in failed or was cancelled.
  */
 export async function signInWithGoogle(portal = null) {
-  if (!isSupabaseReady()) {
-    return { error: 'Google sign-in is unavailable: Supabase is not configured.' };
+  if (!isFirebaseReady()) {
+    return { error: 'Google sign-in is unavailable: Firebase is not configured.' };
   }
 
   try {
@@ -256,13 +281,15 @@ export async function signInWithGoogle(portal = null) {
     }
   } catch { /* storage blocked — the ?portal= parameter still works */ }
 
-  const redirectTo = window.location.origin + '/' + (portal ? `?portal=${portal}` : '');
-  const { error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo }
-  });
+  try {
+    const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+    await loadProfile(cred.user);
+  } catch (err) {
+    return { error: authMessage(err) };
+  }
 
-  return { error: error?.message || null };
+  if (portal) window.location.assign(window.location.origin + `/?portal=${portal}`);
+  return { error: null };
 }
 
 const OAUTH_PORTAL_KEY = 'cz_oauth_portal';
@@ -285,11 +312,11 @@ export function getPendingOAuthPortal() {
   return null;
 }
 
-/** True when any Supabase session exists (regardless of role). */
+/** True when any Firebase session exists (regardless of role). */
 export async function hasSession() {
-  if (!isSupabaseReady()) return false;
-  const { data: { session } } = await supabase.auth.getSession();
-  return !!session;
+  if (!isFirebaseReady()) return false;
+  await auth.authStateReady();
+  return !!auth.currentUser;
 }
 
 /** True when this page load is the return from a Google sign-in for `portal`. */
@@ -303,47 +330,63 @@ export function clearPortalOAuthParams(hash) {
   window.history.replaceState(null, '', window.location.pathname + '#' + hash);
 }
 
+// ── Password Reset ────────────────────────────────────────────
+
+/** Emails a reset link. Also how users moved from Supabase set a password. */
+export async function sendPasswordReset(email) {
+  if (!isFirebaseReady()) return { error: 'Password reset is unavailable: Firebase is not configured.' };
+  try {
+    await sendPasswordResetEmail(auth, email);
+    return { error: null };
+  } catch (err) {
+    // Don't reveal whether an account exists
+    if (err?.code === 'auth/user-not-found') return { error: null };
+    return { error: authMessage(err) };
+  }
+}
+
 // ── Sign Out ──────────────────────────────────────────────────
 
 export async function signOut() {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     localStorage.removeItem('cz_user');
     return { error: null };
   }
-  const { error } = await supabase.auth.signOut();
-  return { error: error?.message || null };
+  try {
+    await fbSignOut(auth);
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 // ── Get Current Session ───────────────────────────────────────
 
 /**
- * Returns the current user from an active Supabase session,
+ * Returns the current user from an active Firebase session,
  * or from localStorage in offline mode.
  */
 export async function getCurrentUser() {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     try {
       const stored = localStorage.getItem('cz_user');
       return stored ? JSON.parse(stored) : null;
     } catch { return null; }
   }
 
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session?.user) return null;
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  return profile ? profileToUser(profile) : null;
+  await auth.authStateReady();
+  if (!auth.currentUser) return null;
+  try {
+    return profileToUser(await loadProfile(auth.currentUser));
+  } catch {
+    return null;
+  }
 }
 
 // ── Update Profile ────────────────────────────────────────────
 
 export async function updateProfile(userId, updates) {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     try {
       const stored = localStorage.getItem('cz_user');
       if (stored) {
@@ -364,20 +407,14 @@ export async function updateProfile(userId, updates) {
   if (updates.savedAddresses !== undefined) dbUpdates.saved_addresses = updates.savedAddresses;
   dbUpdates.updated_at = new Date().toISOString();
 
-  const { error } = await supabase
-    .from('profiles')
-    .update(dbUpdates)
-    .eq('id', userId);
-
-  if (error) return { user: null, error: error.message };
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single();
-
-  return { user: profile ? profileToUser(profile) : null, error: null };
+  try {
+    const ref = doc(db, 'profiles', userId);
+    await updateDoc(ref, dbUpdates);
+    const snap = await getDoc(ref);
+    return { user: snap.exists() ? profileToUser({ id: userId, ...snap.data() }) : null, error: null };
+  } catch (err) {
+    return { user: null, error: err.message };
+  }
 }
 
 // ── Auth State Listener ───────────────────────────────────────
@@ -387,26 +424,21 @@ export async function updateProfile(userId, updates) {
  * Returns an unsubscribe function.
  */
 export function onAuthStateChange(callback) {
-  if (!isSupabaseReady()) return () => {};
+  if (!isFirebaseReady()) return () => {};
 
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(
-    (event, session) => {
-      if (!session?.user) {
-        callback(event, null);
-        return;
-      }
-      // Supabase calls made directly inside this callback can deadlock the
-      // auth client (e.g. while it finishes a Google sign-in), so defer.
-      setTimeout(async () => {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        callback(event, profile ? profileToUser(profile) : null);
-      }, 0);
+  // Like Supabase, report the first (page-load) state as INITIAL_SESSION
+  let first = true;
+  return onAuthStateChanged(auth, async (fbUser) => {
+    const wasFirst = first;
+    first = false;
+    if (!fbUser) {
+      callback(wasFirst ? 'INITIAL_SESSION' : 'SIGNED_OUT', null);
+      return;
     }
-  );
-
-  return () => subscription.unsubscribe();
+    try {
+      callback('SIGNED_IN', profileToUser(await loadProfile(fbUser)));
+    } catch {
+      callback('SIGNED_IN', null);
+    }
+  });
 }

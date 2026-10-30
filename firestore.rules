@@ -1,0 +1,119 @@
+rules_version = '2';
+
+// Firestore security rules — the Firebase replacement for the Row Level
+// Security policies and protective triggers in the old supabase_schema.sql.
+// Deploy with: firebase deploy --only firestore
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function profilePath() { return /databases/$(database)/documents/profiles/$(request.auth.uid); }
+    function profile() { return get(profilePath()).data; }
+    function isAdmin() { return signedIn() && exists(profilePath()) && profile().role == 'admin'; }
+    // Rider record id linked to this login (profiles.rider_id, set by an admin)
+    function riderId() {
+      return signedIn() && exists(profilePath()) && profile().role == 'rider'
+        ? profile().get('rider_id', null) : null;
+    }
+    function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
+
+    // ── Profiles ──────────────────────────────────────────────
+    // New accounts are always customers; only an admin changes role / rider link.
+    match /profiles/{uid} {
+      allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == 'customer'
+        && !('rider_id' in request.resource.data);
+      allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
+        && !changed().hasAny(['role', 'rider_id', 'email']));
+      allow delete: if isAdmin();
+    }
+
+    // ── Products, delivery locations, store settings ──────────
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /delivery_locations/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /store_settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Riders ────────────────────────────────────────────────
+    // Riders may only change their availability and live location.
+    match /riders/{id} {
+      allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
+      allow update: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid
+        && changed().hasOnly(['availability_status', 'current_location', 'updated_at']));
+      allow create, delete: if isAdmin();
+    }
+
+    // ── Orders (items + tracking history embedded) ────────────
+    function riderCanAccess(o) {
+      return riderId() != null && (
+        o.accepted_by_rider_id == riderId()
+        || (o.assigned_rider != null && o.assigned_rider.get('id', null) == riderId())
+        || (o.accepted_by_rider_id == null && o.assignment_state == 'Pending')
+      );
+    }
+
+    match /orders/{id} {
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.customer_id == request.auth.uid)
+        || riderCanAccess(resource.data);
+
+      // Signed-in customers order in their own name; new orders start unpaid
+      // and unassigned. Only verifyPayment (admin SDK) or an admin marks Paid.
+      allow create: if isAdmin() || (signedIn()
+        && request.resource.data.customer_id == request.auth.uid
+        && request.resource.data.payment_status in ['Pending', 'Pending Verification', 'Awaiting Bank Confirmation']
+        && request.resource.data.status == 'Order Confirmed'
+        && request.resource.data.get('status_step', 0) == 0
+        && request.resource.data.get('assigned_rider', null) == null
+        && request.resource.data.get('accepted_by_rider_id', null) == null
+        && request.resource.data.get('bank_transfer_verified_by', null) == null
+        && request.resource.data.get('admin_payment_override', false) == false
+        && request.resource.data.get('cash_payment_confirmed_by_rider', false) == false
+        && request.resource.data.total >= 0);
+
+      // Riders change delivery fields only, and may mark Paid only for
+      // pay-on-delivery orders.
+      allow update: if isAdmin() || (riderCanAccess(resource.data)
+        && changed().hasOnly([
+          'status', 'status_step', 'assignment_state',
+          'accepted_by_rider_id', 'accepted_by_rider_name', 'assigned_rider',
+          'rider_location', 'failure_reason', 'cash_payment_confirmed_by_rider',
+          'payment_status', 'payment_confirmed_at', 'updated_at', 'tracking_history'
+        ])
+        && (request.resource.data.get('accepted_by_rider_id', null) == null
+            || request.resource.data.accepted_by_rider_id == riderId())
+        && (!('payment_status' in changed())
+            || (request.resource.data.payment_status == 'Paid'
+                && resource.data.get('payment_method', '').lower().matches('.*deliver.*'))));
+
+      allow delete: if isAdmin();
+    }
+
+    // ── Rider access requests ─────────────────────────────────
+    // Anyone signed in may ask once; only an admin decides.
+    match /rider_requests/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.uid == uid
+        && request.resource.data.status == 'pending';
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Feedback ──────────────────────────────────────────────
+    match /feedback/{id} {
+      allow create: if request.resource.data.get('customer_id', null) == null
+        || (signedIn() && request.resource.data.customer_id == request.auth.uid);
+      allow read: if isAdmin() || (signedIn() && resource.data.get('customer_id', null) == request.auth.uid);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

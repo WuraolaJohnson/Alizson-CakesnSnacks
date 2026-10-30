@@ -1,12 +1,13 @@
 /**
  * productService.js
  * ──────────────────────────────────────────────────────────────
- * CRUD operations for products against Supabase.
- * Falls back to the local static data arrays when Supabase is
+ * CRUD operations for products in Firestore (`products` collection).
+ * Falls back to the local static data arrays when Firebase is
  * not configured (i.e. during offline / development mode).
  */
 
-import { supabase, isSupabaseReady } from '../lib/supabase';
+import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch } from 'firebase/firestore';
+import { db, isFirebaseReady } from '../lib/firebase';
 import { initialBakeryProducts } from '../data/bakeryProducts';
 import { initialSupplyProducts } from '../data/supplyProducts';
 
@@ -46,9 +47,9 @@ function dbToProduct(row) {
   };
 }
 
-/** Map camelCase app object → snake_case DB row */
+/** Map camelCase app object → snake_case DB row (undefined fields dropped) */
 function productToDb(product) {
-  return {
+  return stripUndefined({
     id:                 product.id,
     store:              product.store,
     name:               product.name,
@@ -75,25 +76,36 @@ function productToDb(product) {
     weight:             product.weight,
     dimensions:         product.dimensions,
     material:           product.material,
+    created_at:         product.createdAt || new Date().toISOString(),
     updated_at:         new Date().toISOString()
-  };
+  });
 }
+
+/** Firestore rejects undefined values */
+function stripUndefined(obj) {
+  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+}
+
+const productsCol = () => collection(db, 'products');
 
 // ── Fetch Products ────────────────────────────────────────────
 
 /** Fetch all products for a given store ('bakery' | 'supplies') */
 export async function fetchProducts(store) {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     // Offline: return static local data
     const data = store === 'bakery' ? initialBakeryProducts : initialSupplyProducts;
     return { products: data, error: null };
   }
 
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .eq('store', store)
-    .order('created_at', { ascending: false });
+  let data, error = null;
+  try {
+    const snap = await getDocs(query(productsCol(), where('store', '==', store)));
+    data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  } catch (err) {
+    error = err;
+  }
 
   if (error) {
     console.error('[productService] fetchProducts error:', error);
@@ -112,22 +124,23 @@ export async function fetchProducts(store) {
   return { products: data.map(dbToProduct), error: null };
 }
 
-/** Seed products from local data arrays into Supabase (one-time setup) */
+/** Seed products from local data arrays into Firestore (one-time setup) */
 export async function seedProducts(store) {
-  if (!isSupabaseReady()) return { error: 'Supabase not configured' };
+  if (!isFirebaseReady()) return { error: 'Firebase not configured' };
 
   const source = store === 'bakery' ? initialBakeryProducts : initialSupplyProducts;
 
   const rows = source.map(productToDb);
 
-  const { error } = await supabase
-    .from('products')
-    .upsert(rows, { onConflict: 'id' });
-
-  if (error) {
-    console.error('[productService] seedProducts error:', error);
+  try {
+    const batch = writeBatch(db);
+    rows.forEach(row => batch.set(doc(db, 'products', String(row.id)), row, { merge: true }));
+    await batch.commit();
+    return { error: null };
+  } catch (err) {
+    console.error('[productService] seedProducts error:', err);
+    return { error: err.message };
   }
-  return { error: error?.message || null };
 }
 
 /** Seed ALL products (bakery + supplies) */
@@ -139,21 +152,19 @@ export async function seedAllProducts() {
 // ── Upsert / Update ───────────────────────────────────────────
 
 export async function upsertProduct(product) {
-  if (!isSupabaseReady()) return { product, error: null };
+  if (!isFirebaseReady()) return { product, error: null };
 
   const row = productToDb(product);
-  const { data, error } = await supabase
-    .from('products')
-    .upsert(row, { onConflict: 'id' })
-    .select()
-    .single();
-
-  if (error) return { product: null, error: error.message };
-  return { product: dbToProduct(data), error: null };
+  try {
+    await setDoc(doc(db, 'products', String(row.id)), row, { merge: true });
+    return { product: dbToProduct(row), error: null };
+  } catch (err) {
+    return { product: null, error: err.message };
+  }
 }
 
 export async function updateProduct(productId, changes) {
-  if (!isSupabaseReady()) return { error: null };
+  if (!isFirebaseReady()) return { error: null };
 
   // Map camelCase to snake_case
   const dbChanges = {};
@@ -173,31 +184,31 @@ export async function updateProduct(productId, changes) {
   if (changes.availableAddOns !== undefined)  dbChanges.available_add_ons = changes.availableAddOns;
   dbChanges.updated_at = new Date().toISOString();
 
-  const { error } = await supabase
-    .from('products')
-    .update(dbChanges)
-    .eq('id', productId);
-
-  return { error: error?.message || null };
+  try {
+    await updateDoc(doc(db, 'products', String(productId)), stripUndefined(dbChanges));
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 // ── Delete ────────────────────────────────────────────────────
 
 export async function deleteProduct(productId) {
-  if (!isSupabaseReady()) return { error: null };
+  if (!isFirebaseReady()) return { error: null };
 
-  const { error } = await supabase
-    .from('products')
-    .delete()
-    .eq('id', productId);
-
-  return { error: error?.message || null };
+  try {
+    await deleteDoc(doc(db, 'products', String(productId)));
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
 }
 
 // ── Search ────────────────────────────────────────────────────
 
 export async function searchProducts(query) {
-  if (!isSupabaseReady()) {
+  if (!isFirebaseReady()) {
     const q = query.toLowerCase();
     const matchFn = (p) =>
       p.name?.toLowerCase().includes(q) ||
@@ -211,14 +222,17 @@ export async function searchProducts(query) {
     };
   }
 
-  const { data, error } = await supabase
-    .from('products')
-    .select('*')
-    .or(`name.ilike.%${query}%,category.ilike.%${query}%,short_description.ilike.%${query}%,brand.ilike.%${query}%`);
-
-  if (error) return { bakery: [], supplies: [], error: error.message };
-
-  const products = data.map(dbToProduct);
+  // Firestore has no substring search; the catalogue is small, so filter here
+  let products;
+  try {
+    const snap = await getDocs(productsCol());
+    products = snap.docs.map(d => dbToProduct({ id: d.id, ...d.data() }));
+  } catch (err) {
+    return { bakery: [], supplies: [], error: err.message };
+  }
+  const q = query.toLowerCase();
+  products = products.filter(p =>
+    [p.name, p.category, p.shortDescription, p.brand].some(v => v?.toLowerCase().includes(q)));
   return {
     bakery:   products.filter(p => p.store === 'bakery'),
     supplies: products.filter(p => p.store === 'supplies'),

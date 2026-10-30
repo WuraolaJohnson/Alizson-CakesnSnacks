@@ -3,3 +3,6 @@ dist
 .env
 .env.*
 !.env.example
+service-account*.json
+functions/node_modules
+.firebase

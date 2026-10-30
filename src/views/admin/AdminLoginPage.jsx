@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Lock, Eye, EyeOff, ShieldCheck, AlertCircle } from 'lucide-react';
 import { signInAsRole } from '../../services/authService';
-import { isSupabaseReady } from '../../lib/supabase';
+import { isFirebaseReady } from '../../lib/firebase';
 import GoogleSignInButton from '../../components/Auth/GoogleSignInButton';
 
-// Local development without a Supabase project: allow entering the portal
+// Local development without a Firebase project: allow entering the portal
 // without an account. import.meta.env.DEV is false in production builds.
-const OFFLINE_DEV_MODE = import.meta.env.DEV && !isSupabaseReady();
+const OFFLINE_DEV_MODE = import.meta.env.DEV && !isFirebaseReady();
 
 const AdminLoginPage = ({ onLogin, initialError = '' }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -138,7 +138,7 @@ const AdminLoginPage = ({ onLogin, initialError = '' }) => {
             style={{ marginTop: '1rem', justifyContent: 'center' }}
             onClick={() => onLogin({ name: 'Dev Admin', role: 'admin' })}
           >
-            Continue in offline dev mode (Supabase not configured)
+            Continue in offline dev mode (Firebase not configured)
           </button>
         )}
       </div>

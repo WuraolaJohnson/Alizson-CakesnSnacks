@@ -340,9 +340,9 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
     setOrders(prev => [newOrder, ...prev]);
 
-    // Persist to Supabase (non-blocking)
+    // Persist to Firestore (non-blocking)
     createOrderInDb(newOrder).catch(err =>
-      console.warn('[OrderContext] Supabase createOrder failed (offline?):', err)
+      console.warn('[OrderContext] Firestore createOrder failed (offline?):', err)
     );
 
     return newOrder;
@@ -404,13 +404,13 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     if (transitionBlocked) {
       showToast(`⚠️ Invalid transition: Cannot change status to "${resolvedStatus}" from current state.`, 'error');
     } else {
-      // Persist status update to Supabase (non-blocking)
+      // Persist status update to Firestore (non-blocking)
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       updateOrderStatusInDb(
         orderId,
         { status: resolvedStatus, statusStep: stepNumber },
         { event: `Status updated to "${resolvedStatus}"`, statusStep: stepNumber, timestamp: timeStr, actor: actorName }
-      ).catch(err => console.warn('[OrderContext] Supabase updateStatus failed:', err));
+      ).catch(err => console.warn('[OrderContext] Firestore updateStatus failed:', err));
       showToast(`Order ${orderId} updated to "${resolvedStatus}"`, 'success');
     }
   };

@@ -4,6 +4,7 @@ import RiderLoginPage from './RiderLoginPage';
 import RiderPortal from '../RiderPortal';
 import { useApp } from '../../context/AppContext';
 import { getStaffUser, getRiderForUser, onSignedOut, signOut, isReturningFromPortalOAuth, clearPortalOAuthParams, hasSession } from '../../services/authService';
+import { requestRiderAccess, riderRequestMessage } from '../../services/riderAccessService';
 
 export default function RiderLayout() {
   const { showToast } = useApp();
@@ -26,11 +27,15 @@ export default function RiderLayout() {
         clearPortalOAuthParams('rider');
         if (!active) {
           const signedIn = await hasSession();
+          // Signed in but not a rider yet: file an access request for the admin
+          const requestStatus = signedIn && !user ? await requestRiderAccess() : null;
           await signOut();
           setLoginError(oauthError || (!signedIn
             ? 'Google sign-in did not complete. Please try again.'
             : record
             ? `Your rider account is ${record.accountStatus}. Please contact the admin.`
+            : !user
+            ? riderRequestMessage(requestStatus)
             : 'That Google account is not linked to a rider profile. Please contact the admin.'));
         }
       }

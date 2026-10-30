@@ -4,7 +4,7 @@
  * Paystack payment integration for Alizson marketplace.
  *
  * Uses the Paystack Popup (inline JS) for card payments and
- * provides server-side verification via Supabase Edge Functions
+ * provides server-side verification via a Firebase Cloud Function
  * (optional — can also verify client-side for test mode).
  *
  * Setup:
@@ -121,7 +121,7 @@ export function nairaToKobo(nairaAmount) {
  * Verify a Paystack payment reference against the Paystack API.
  *
  * ⚠️  In production, this MUST be done server-side to protect your secret key.
- *     Use a Supabase Edge Function, Next.js API route, or any backend.
+ *     This calls the verifyPayment Cloud Function (functions/index.js).
  *
  * For test mode, you can use the Paystack dashboard to verify.
  *
@@ -129,20 +129,16 @@ export function nairaToKobo(nairaAmount) {
  * @returns {{ verified: boolean, data: object, error: string | null }}
  */
 export async function verifyPaymentServerSide(reference) {
-  // This calls a Supabase Edge Function that holds your secret key
-  // Deploy: supabase/functions/verify-payment/index.ts
+  // The Cloud Function holds the Paystack secret key and marks the order Paid
   try {
-    const { supabase, isSupabaseReady } = await import('../lib/supabase');
-    if (!isSupabaseReady()) {
+    const { functions, isFirebaseReady } = await import('../lib/firebase');
+    if (!isFirebaseReady()) {
       // In development / test mode, assume payment is verified
       return { verified: true, data: { reference }, error: null };
     }
 
-    const { data, error } = await supabase.functions.invoke('verify-payment', {
-      body: { reference }
-    });
-
-    if (error) return { verified: false, data: null, error: error.message };
+    const { httpsCallable } = await import('firebase/functions');
+    const { data } = await httpsCallable(functions, 'verifyPayment')({ reference });
 
     return {
       verified: data?.status === 'success',

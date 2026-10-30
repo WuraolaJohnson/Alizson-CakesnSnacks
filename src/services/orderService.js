@@ -1,11 +1,15 @@
 /**
  * orderService.js
  * ──────────────────────────────────────────────────────────────
- * Supabase-backed order operations for the Alizson marketplace.
- * Falls back gracefully to localStorage when Supabase is offline.
+ * Firestore-backed order operations for the Alizson marketplace.
+ * Each orders/{id} doc embeds its `items` and `tracking_history` arrays.
+ * Falls back gracefully to localStorage when Firebase is not configured.
  */
 
-import { supabase, isSupabaseReady } from '../lib/supabase';
+import {
+  collection, doc, getDocs, setDoc, updateDoc, onSnapshot, query, where, orderBy, arrayUnion
+} from 'firebase/firestore';
+import { db, isFirebaseReady } from '../lib/firebase';
 
 // ── Helpers ───────────────────────────────────────────────────
 
@@ -51,10 +55,40 @@ export function dbToOrder(row) {
     adminPaymentOverride:      row.admin_payment_override,
     cashPaymentConfirmedByRider: row.cash_payment_confirmed_by_rider,
     failureReason:             row.failure_reason,
-    trackingHistory:           row.trackingHistory || [],  // joined separately
-    items:                     row.items || []              // joined separately
+    trackingHistory:           (row.tracking_history || []).map(dbToTracking),
+    items:                     (row.items || []).map(dbToItem)
   };
 }
+
+function dbToItem(i) {
+  return {
+    id:            i.product_id || i.id,
+    name:          i.name,
+    size:          i.size,
+    flavour:       i.flavour,
+    addOns:        i.add_ons || [],
+    customMessage: i.custom_message,
+    unitPrice:     Number(i.unit_price),
+    quantity:      i.quantity,
+    image:         i.image
+  };
+}
+
+function dbToTracking(h) {
+  return { event: h.event, statusStep: h.status_step, timestamp: h.timestamp, actor: h.actor };
+}
+
+function trackingToDb(h) {
+  return {
+    event:       h.event,
+    status_step: h.statusStep ?? null,
+    timestamp:   h.timestamp ?? null,
+    actor:       h.actor ?? null,
+    created_at:  new Date().toISOString()
+  };
+}
+
+const snapToOrders = (snap) => snap.docs.map(d => dbToOrder({ id: d.id, ...d.data() }));
 
 /** Map camelCase app order → DB row */
 function orderToDb(order) {
@@ -98,6 +132,7 @@ function orderToDb(order) {
     admin_payment_override:     order.adminPaymentOverride || false,
     cash_payment_confirmed_by_rider: order.cashPaymentConfirmedByRider || false,
     failure_reason:             order.failureReason || null,
+    created_at:                 new Date().toISOString(),
     updated_at:                 new Date().toISOString()
   };
 }
@@ -105,148 +140,71 @@ function orderToDb(order) {
 // ── Fetch All Orders ──────────────────────────────────────────
 
 export async function fetchAllOrders() {
-  if (!isSupabaseReady()) return { orders: null, error: 'Supabase not configured' };
+  if (!isFirebaseReady()) return { orders: null, error: 'Firebase not configured' };
 
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      *,
-      order_items(*),
-      order_tracking_history(*)
-    `)
-    .order('iso_date', { ascending: false });
-
-  if (error) return { orders: null, error: error.message };
-
-  const orders = data.map(row => ({
-    ...dbToOrder(row),
-    items: (row.order_items || []).map(i => ({
-      id:            i.product_id || i.id,
-      name:          i.name,
-      size:          i.size,
-      flavour:       i.flavour,
-      addOns:        i.add_ons || [],
-      customMessage: i.custom_message,
-      unitPrice:     Number(i.unit_price),
-      quantity:      i.quantity,
-      image:         i.image
-    })),
-    trackingHistory: (row.order_tracking_history || []).map(h => ({
-      event:       h.event,
-      statusStep:  h.status_step,
-      timestamp:   h.timestamp,
-      actor:       h.actor
-    }))
-  }));
-
-  return { orders, error: null };
+  try {
+    const snap = await getDocs(query(collection(db, 'orders'), orderBy('iso_date', 'desc')));
+    return { orders: snapToOrders(snap), error: null };
+  } catch (err) {
+    return { orders: null, error: err.message };
+  }
 }
 
 // ── Fetch Orders for a Customer ───────────────────────────────
 
 export async function fetchCustomerOrders(customerId) {
-  if (!isSupabaseReady()) return { orders: null, error: null };
+  if (!isFirebaseReady()) return { orders: null, error: null };
 
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`*, order_items(*), order_tracking_history(*)`)
-    .eq('customer_id', customerId)
-    .order('iso_date', { ascending: false });
-
-  if (error) return { orders: null, error: error.message };
-
-  const orders = data.map(row => ({
-    ...dbToOrder(row),
-    items: (row.order_items || []).map(i => ({
-      id: i.product_id || i.id,
-      name: i.name,
-      size: i.size,
-      flavour: i.flavour,
-      addOns: i.add_ons || [],
-      customMessage: i.custom_message,
-      unitPrice: Number(i.unit_price),
-      quantity: i.quantity,
-      image: i.image
-    })),
-    trackingHistory: (row.order_tracking_history || []).map(h => ({
-      event: h.event,
-      statusStep: h.status_step,
-      timestamp: h.timestamp,
-      actor: h.actor
-    }))
-  }));
-
-  return { orders, error: null };
+  try {
+    const snap = await getDocs(query(
+      collection(db, 'orders'),
+      where('customer_id', '==', customerId),
+      orderBy('iso_date', 'desc')
+    ));
+    return { orders: snapToOrders(snap), error: null };
+  } catch (err) {
+    return { orders: null, error: err.message };
+  }
 }
 
 // ── Create Order ──────────────────────────────────────────────
 
 export async function createOrderInDb(order) {
-  if (!isSupabaseReady()) return { error: null };
+  if (!isFirebaseReady()) return { error: null };
 
   const row = orderToDb(order);
 
-  // The database refuses orders that arrive already marked Paid — a browser
+  // Security rules refuse orders that arrive already marked Paid — a browser
   // can't be trusted to say a payment succeeded. Card orders are saved as
-  // 'Pending Verification' and the verify-payment Edge Function marks them Paid.
+  // 'Pending Verification' and the verifyPayment Cloud Function marks them Paid.
   if (row.payment_status === 'Paid') row.payment_status = 'Pending Verification';
 
-  // Insert order
-  const { error: orderError } = await supabase
-    .from('orders')
-    .insert(row);
+  row.items = (order.items || []).map(item => ({
+    product_id:     item.id ?? null,
+    name:           item.name ?? null,
+    size:           item.size || null,
+    flavour:        item.flavour || null,
+    add_ons:        item.addOns || [],
+    custom_message: item.customMessage || null,
+    unit_price:     item.unitPrice || 0,
+    quantity:       item.quantity || 1,
+    image:          item.image || null
+  }));
+  row.tracking_history = (order.trackingHistory || []).map(trackingToDb);
 
-  if (orderError) {
-    console.error('[orderService] insert order error:', orderError);
-    return { error: orderError.message };
+  try {
+    await setDoc(doc(db, 'orders', String(order.id)), JSON.parse(JSON.stringify(row)));
+    return { error: null };
+  } catch (err) {
+    console.error('[orderService] create order error:', err);
+    return { error: err.message };
   }
-
-  // Insert order items
-  if (order.items && order.items.length > 0) {
-    const itemRows = order.items.map(item => ({
-      order_id:       order.id,
-      product_id:     item.id,
-      name:           item.name,
-      size:           item.size || null,
-      flavour:        item.flavour || null,
-      add_ons:        item.addOns || [],
-      custom_message: item.customMessage || null,
-      unit_price:     item.unitPrice || 0,
-      quantity:       item.quantity || 1,
-      image:          item.image || null
-    }));
-
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(itemRows);
-
-    if (itemsError) console.error('[orderService] insert items error:', itemsError);
-  }
-
-  // Insert initial tracking event
-  if (order.trackingHistory && order.trackingHistory.length > 0) {
-    const historyRows = order.trackingHistory.map(h => ({
-      order_id:    order.id,
-      event:       h.event,
-      status_step: h.statusStep,
-      timestamp:   h.timestamp,
-      actor:       h.actor
-    }));
-
-    const { error: histError } = await supabase
-      .from('order_tracking_history')
-      .insert(historyRows);
-
-    if (histError) console.error('[orderService] insert tracking history error:', histError);
-  }
-
-  return { error: null };
 }
 
 // ── Update Order Status ───────────────────────────────────────
 
 export async function updateOrderStatusInDb(orderId, updates, trackingEvent) {
-  if (!isSupabaseReady()) return { error: null };
+  if (!isFirebaseReady()) return { error: null };
 
   const dbUpdates = {};
   if (updates.status !== undefined)              dbUpdates.status = updates.status;
@@ -264,29 +222,14 @@ export async function updateOrderStatusInDb(orderId, updates, trackingEvent) {
   if (updates.cashPaymentConfirmedByRider !== undefined) dbUpdates.cash_payment_confirmed_by_rider = updates.cashPaymentConfirmedByRider;
   dbUpdates.updated_at = new Date().toISOString();
 
-  const { error: updateError } = await supabase
-    .from('orders')
-    .update(dbUpdates)
-    .eq('id', orderId);
+  if (trackingEvent) dbUpdates.tracking_history = arrayUnion(trackingToDb(trackingEvent));
 
-  if (updateError) return { error: updateError.message };
-
-  // Append tracking event
-  if (trackingEvent) {
-    const { error: histError } = await supabase
-      .from('order_tracking_history')
-      .insert({
-        order_id:    orderId,
-        event:       trackingEvent.event,
-        status_step: trackingEvent.statusStep,
-        timestamp:   trackingEvent.timestamp,
-        actor:       trackingEvent.actor
-      });
-
-    if (histError) console.error('[orderService] tracking history error:', histError);
+  try {
+    await updateDoc(doc(db, 'orders', String(orderId)), dbUpdates);
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
   }
-
-  return { error: null };
 }
 
 // ── Real-time Subscription ────────────────────────────────────
@@ -297,57 +240,28 @@ export async function updateOrderStatusInDb(orderId, updates, trackingEvent) {
  * @returns {function} unsubscribe
  */
 export function subscribeToOrders(onOrderChange) {
-  if (!isSupabaseReady()) return () => {};
+  if (!isFirebaseReady()) return () => {};
 
-  const channel = supabase
-    .channel('orders-realtime')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'orders' },
-      async (payload) => {
-        const { eventType, new: newRow, old: oldRow } = payload;
-        onOrderChange(eventType, newRow ? dbToOrder(newRow) : null, oldRow ? dbToOrder(oldRow) : null);
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeChannel(channel);
-  };
+  const typeMap = { added: 'INSERT', modified: 'UPDATE', removed: 'DELETE' };
+  let initial = true;
+  return onSnapshot(collection(db, 'orders'), (snap) => {
+    // Skip the first snapshot: it lists existing orders, not changes
+    if (initial) { initial = false; return; }
+    snap.docChanges().forEach(({ type, doc: d }) => {
+      const order = dbToOrder({ id: d.id, ...d.data() });
+      onOrderChange(typeMap[type], type === 'removed' ? null : order, type === 'removed' ? order : null);
+    });
+  }, (err) => console.error('[orderService] subscribeToOrders error:', err));
 }
 
 /**
  * Subscribe to real-time changes on a specific order.
  */
 export function subscribeToOrder(orderId, onUpdate) {
-  if (!isSupabaseReady()) return () => {};
+  if (!isFirebaseReady()) return () => {};
 
-  const channel = supabase
-    .channel(`order-${orderId}`)
-    .on(
-      'postgres_changes',
-      { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${orderId}` },
-      (payload) => {
-        if (payload.new) onUpdate(dbToOrder(payload.new));
-      }
-    )
-    .on(
-      'postgres_changes',
-      { event: 'INSERT', schema: 'public', table: 'order_tracking_history', filter: `order_id=eq.${orderId}` },
-      (payload) => {
-        if (payload.new) {
-          onUpdate(null, {
-            event:      payload.new.event,
-            statusStep: payload.new.status_step,
-            timestamp:  payload.new.timestamp,
-            actor:      payload.new.actor
-          });
-        }
-      }
-    )
-    .subscribe();
-
-  return () => {
-    supabase.removeChannel(channel);
-  };
+  // Tracking history is embedded, so the updated order carries any new events
+  return onSnapshot(doc(db, 'orders', String(orderId)), (d) => {
+    if (d.exists()) onUpdate(dbToOrder({ id: d.id, ...d.data() }));
+  }, (err) => console.error('[orderService] subscribeToOrder error:', err));
 }
