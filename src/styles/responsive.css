@@ -570,3 +570,12 @@
     padding-bottom: calc(1rem + 74px + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
+
+/* Footer: smaller type on phones */
+@media (max-width: 640px) {
+  .footer-col button { font-size: 0.76rem !important; }
+  .footer-col h4 { font-size: 0.68rem !important; }
+  .footer-col ul { gap: 0.35rem !important; }
+  .footer-brand p, .footer-contact > div { font-size: 0.74rem !important; }
+  .footer-bottom { font-size: 0.68rem !important; }
+}
