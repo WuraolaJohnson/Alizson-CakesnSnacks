@@ -260,12 +260,12 @@ export default function AdminRiders() {
   const totalCompletedToday = riders.reduce((acc, r) => acc + (r.completedCount || 0), 0);
 
   return (
-    <div style={{ padding: '1.5rem', background: 'var(--cream-50)', minHeight: '85vh' }}>
+    <div className="admin-page" style={{ padding: '1.5rem', background: 'var(--cream-50)', minHeight: '85vh' }}>
       
       {/* Top Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <h1 className="admin-page-title" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
             <Bike size={26} color="var(--gold-600)" /> Rider Fleet & GPS Live Monitoring
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
@@ -294,8 +294,8 @@ export default function AdminRiders() {
       <RiderAccessPanel />
 
       {/* Metrics Banner */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-        <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div className="admin-metric-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+        <div className="card admin-metric-card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(229,138,19,0.12)', color: 'var(--text-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Bike size={22} />
           </div>
@@ -305,7 +305,7 @@ export default function AdminRiders() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="card admin-metric-card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(16,185,129,0.12)', color: 'var(--status-success)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Navigation size={22} />
           </div>
@@ -315,7 +315,7 @@ export default function AdminRiders() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="card admin-metric-card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(59,130,246,0.12)', color: 'var(--status-info)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Package size={22} />
           </div>
@@ -325,7 +325,7 @@ export default function AdminRiders() {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div className="card admin-metric-card" style={{ padding: '1.1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: 44, height: 44, borderRadius: '12px', background: 'rgba(245,158,11,0.12)', color: 'var(--status-warning)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CheckCircle2 size={22} />
           </div>
@@ -337,11 +337,11 @@ export default function AdminRiders() {
       </div>
 
       {/* Main Grid: Live Map + Rider Directory */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(340px, 100%), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         
         {/* Map Container */}
         <div className="card" style={{ padding: 0, overflow: 'hidden', minHeight: 460, display: 'flex', flexDirection: 'column', position: 'relative' }}>
-          <div style={{ padding: '0.85rem 1.25rem', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ padding: '0.85rem 1.25rem', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.25rem 0.75rem' }}>
             <div style={{ fontWeight: 800, fontSize: '0.88rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <MapPin size={18} color="var(--gold-600)" /> Ogun State Rider Fleet Tracking Map
             </div>
@@ -383,7 +383,7 @@ export default function AdminRiders() {
                 <select
                   value={hubFilter}
                   onChange={e => setHubFilter(e.target.value)}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
+                  style={{ flex: 1, minWidth: 0, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="All">All Hubs</option>
                   <option value="Abeokuta Central Hub">Abeokuta Central Hub</option>
@@ -394,7 +394,7 @@ export default function AdminRiders() {
                 <select
                   value={statusFilter}
                   onChange={e => setStatusFilter(e.target.value)}
-                  style={{ flex: 1, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
+                  style={{ flex: 1, minWidth: 0, padding: '0.4rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--cream-300)', fontSize: '0.78rem', background: 'var(--bg-surface)' }}
                 >
                   <option value="All">All Statuses</option>
                   <option value="Available">Available</option>
@@ -431,14 +431,15 @@ export default function AdminRiders() {
                     transition: 'all 0.2s ease',
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'center'
+                    alignItems: 'flex-start',
+                    gap: '0.5rem'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 }}>
                     <img
                       src={rdr.avatar}
                       alt={rdr.name}
-                      style={{ width: 42, height: 42, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold-400)' }}
+                      style={{ width: 42, height: 42, flexShrink: 0, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold-400)' }}
                     />
                     <div>
                       <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--charcoal-900)' }}>
@@ -457,6 +458,7 @@ export default function AdminRiders() {
                   <div style={{ textAlign: 'right' }}>
                     <span
                       style={{
+                        whiteSpace: 'nowrap',
                         fontSize: '0.7rem',
                         fontWeight: 800,
                         padding: '0.2rem 0.5rem',
@@ -534,7 +536,7 @@ export default function AdminRiders() {
           </div>
 
           {/* Rider Deep Information Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: '1.25rem', marginBottom: '1.75rem' }}>
             
             {/* Live Device GPS Telemetry */}
             <div style={{ padding: '1rem', background: 'var(--bg-surface)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>

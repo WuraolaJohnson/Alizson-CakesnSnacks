@@ -4,13 +4,14 @@ import { initialFeedback } from '../data/initialFeedback';
 import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb } from '../services/orderService';
+import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
 
 const OrderContext = createContext();
 
 export const DEFAULT_STORE_BANK_ACCOUNT = {
-  bankName: 'Guaranty Trust Bank (GTBank)',
-  accountNumber: '0123456789',
-  accountName: 'Alizson Cakes & Baking Supplies',
+  bankName: 'OPay',
+  accountNumber: '7030144746',
+  accountName: 'Elizabeth Ajoke Johnson',
   narrationPrompt: 'Your Full Name or Order ID'
 };
 
@@ -242,22 +243,38 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const [storeBankAccount, setStoreBankAccount] = useState(() => {
     try {
-      const saved = localStorage.getItem('cz_store_bank_account');
+      const saved = localStorage.getItem('cz_store_bank_account_v2');
       return saved ? JSON.parse(saved) : DEFAULT_STORE_BANK_ACCOUNT;
     } catch {
       return DEFAULT_STORE_BANK_ACCOUNT;
     }
   });
 
-  const updateStoreBankAccount = (newDetails) => {
+  // The account lives in Firestore so an admin's change reaches every
+  // customer; localStorage only caches it for a fast first paint.
+  useEffect(() => subscribeBankAccount((account) => {
+    if (!account) return;
+    setStoreBankAccount(account);
+    try {
+      localStorage.setItem('cz_store_bank_account_v2', JSON.stringify(account));
+    } catch { /* ignore */ }
+  }), []);
+
+  const updateStoreBankAccount = async (newDetails) => {
     const updated = { ...storeBankAccount, ...newDetails };
+    const { error } = await saveBankAccount(updated);
+    if (error) {
+      showToast(`Could not save the bank account: ${error}`, 'error');
+      return false;
+    }
     setStoreBankAccount(updated);
     try {
-      localStorage.setItem('cz_store_bank_account', JSON.stringify(updated));
+      localStorage.setItem('cz_store_bank_account_v2', JSON.stringify(updated));
     } catch (e) {
       console.error(e);
     }
-    showToast('Store Bank Account updated successfully! 🏦', 'success');
+    showToast('Store Bank Account updated for all customers! 🏦', 'success');
+    return true;
   };
 
   const confirmBankTransferPayment = (orderId, adminName = 'Admin Finance') => {

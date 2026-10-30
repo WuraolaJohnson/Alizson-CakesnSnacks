@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Check, ChevronRight, CreditCard, Truck, User, ClipboardList, Sparkles, MapPin, Store, ShieldAlert, Navigation, Building2, Copy } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { useOrders } from '../context/OrderContext';
+import { useOrders, DEFAULT_STORE_BANK_ACCOUNT } from '../context/OrderContext';
 import { useApp } from '../context/AppContext';
 import { OGUN_DELIVERY_LOCATIONS, ALIZSON_OFFICIAL_CONTACTS } from '../data/ogunLocations';
 import OgunLocationMapPicker from '../components/Common/OgunLocationMapPicker';
@@ -10,10 +10,8 @@ import { initializePayment, nairaToKobo, isPaystackConfigured } from '../service
 const STEPS = ['Customer Info', 'Order Method', 'Review Order', 'Payment', 'Confirmation'];
 
 const PAYMENT_METHODS = [
+  // Bank transfer to the store account is the only method for now
   { id: 'transfer', label: 'Direct Bank Transfer', icon: '🏦' },
-  { id: 'card', label: 'Debit / Credit Card', icon: '💳' },
-  { id: 'ussd', label: 'USSD Banking', icon: '📱' },
-  { id: 'cod', label: 'Pay on Delivery', icon: '💵' },
 ];
 
 const CheckoutPage = () => {
@@ -80,7 +78,7 @@ const CheckoutPage = () => {
   };
 
   const handleCopyAccount = () => {
-    const acc = storeBankAccount?.accountNumber || '0123456789';
+    const acc = storeBankAccount?.accountNumber || DEFAULT_STORE_BANK_ACCOUNT.accountNumber;
     navigator.clipboard.writeText(acc);
     setCopiedAccount(true);
     showToast('Store Account Number copied to clipboard! 📋', 'success');
@@ -205,16 +203,16 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div style={{ background: 'var(--cream-50)', minHeight: '85vh', padding: '2.5rem 0 5rem' }}>
+    <div style={{ background: 'var(--cream-50)', minHeight: '85vh', padding: 'clamp(1.25rem, 4vw, 2.5rem) 0 6rem' }}>
       <div className="container-narrow">
         {/* Step Indicator */}
         {step < 4 && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.35rem', marginBottom: '2.5rem', flexWrap: 'wrap' }}>
+          <div className="checkout-stepper" style={{ display: 'flex', alignItems: 'flex-start', maxWidth: 560, margin: '0 auto clamp(1.25rem, 4vw, 2.25rem)' }}>
             {STEPS.slice(0, 4).map((label, i) => (
               <React.Fragment key={i}>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem' }}>
+                <div className="checkout-step" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.35rem', flex: '0 0 auto', width: 72 }}>
                   <div style={{
-                    width: 34, height: 34, borderRadius: '50%',
+                    width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
                     background: i < step ? '#047857' : i === step ? 'var(--gold-action)' : 'var(--cream-200)',
                     color: i <= step ? 'white' : 'var(--charcoal-700)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -223,9 +221,9 @@ const CheckoutPage = () => {
                   }}>
                     {i < step ? <Check size={16} /> : i + 1}
                   </div>
-                  <span style={{ fontSize: '0.7rem', fontWeight: 700, color: i === step ? 'var(--text-gold)' : 'var(--text-muted)', whiteSpace: 'nowrap' }}>{label}</span>
+                  <span style={{ fontSize: '0.7rem', fontWeight: 700, lineHeight: 1.2, textAlign: 'center', color: i === step ? 'var(--text-gold)' : 'var(--text-muted)' }}>{label}</span>
                 </div>
-                {i < 3 && <div style={{ width: 40, height: 2, background: i < step ? 'var(--status-success)' : 'var(--cream-300)', borderRadius: 'var(--radius-full)', alignSelf: 'center', marginBottom: '1.2rem', transition: 'all 0.3s' }} />}
+                {i < 3 && <div style={{ flex: 1, minWidth: 12, height: 2, marginTop: 15, background: i < step ? 'var(--status-success)' : 'var(--cream-300)', borderRadius: 'var(--radius-full)', transition: 'all 0.3s' }} />}
               </React.Fragment>
             ))}
           </div>
@@ -391,7 +389,7 @@ const CheckoutPage = () => {
                 </div>
 
                 {/* State & Ogun LGA Dropdowns */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '0 1rem', marginBottom: '1rem' }}>
                   <div className="form-group">
                     <label className="form-label">State / Region *</label>
                     <select
@@ -495,8 +493,8 @@ const CheckoutPage = () => {
               </>
             )}
 
-            <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
-              <button className="btn btn-secondary" onClick={() => setStep(0)}>← Back</button>
+            <div className="checkout-actions" style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+              <button className="btn btn-secondary" style={{ flexShrink: 0 }} onClick={() => setStep(0)}>← Back</button>
               <button
                 className="btn btn-primary"
                 style={{ flex: 1, justifyContent: 'center' }}
@@ -518,34 +516,34 @@ const CheckoutPage = () => {
               </div>
               {activeCart.map(item => (
                 <div key={item.cartItemId} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--cream-200)' }}>
-                  <img src={item.image} alt={item.name} style={{ width: 55, height: 55, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
-                  <div style={{ flex: 1 }}>
+                  <img src={item.image} alt={item.name} style={{ width: 52, height: 52, flexShrink: 0, objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--charcoal-900)' }}>{item.name}</div>
                     <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                       {item.size}{item.flavour ? ` · ${item.flavour}` : ''} · Qty: {item.quantity}
                     </div>
                     {item.customMessage && <div style={{ fontSize: '0.75rem', color: 'var(--text-gold)', fontStyle: 'italic' }}>"{item.customMessage}"</div>}
                   </div>
-                  <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>₦{(item.unitPrice * item.quantity).toLocaleString()}</span>
+                  <span style={{ fontWeight: 800, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>₦{(item.unitPrice * item.quantity).toLocaleString()}</span>
                 </div>
               ))}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.875rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Subtotal</span>
                   <span>₦{activeSubtotal.toLocaleString()}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.875rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Fulfillment Mode</span>
-                  <span style={{ fontWeight: 700 }}>
+                  <span style={{ fontWeight: 700, textAlign: 'right' }}>
                     {fulfillmentType === 'pickup' ? '🏬 Store Pick-Up (Free)' : `🚚 Ogun Delivery (${selectedOgunLocation.lga})`}
                   </span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.875rem' }}>
                   <span style={{ color: 'var(--text-muted)' }}>Delivery Fee</span>
                   <span>{fulfillmentType === 'pickup' ? 'FREE' : `₦${DELIVERY_FEE.toLocaleString()}`}</span>
                 </div>
                 {giftConfig?.isGift && totalGiftFee > 0 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', color: '#7E152B', fontWeight: 600 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', fontSize: '0.875rem', color: '#7E152B', fontWeight: 600 }}>
                     <span>🎁 Personalized Gift Package ({giftConfig.packaging?.name || 'Gift Packaging'})</span>
                     <span>₦{totalGiftFee.toLocaleString()}</span>
                   </div>
@@ -556,8 +554,8 @@ const CheckoutPage = () => {
                 </div>
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button className="btn btn-secondary" onClick={() => setStep(1)}>← Back</button>
+            <div className="checkout-actions" style={{ display: 'flex', gap: '0.75rem' }}>
+              <button className="btn btn-secondary" style={{ flexShrink: 0 }} onClick={() => setStep(1)}>← Back</button>
               <button className="btn btn-primary" style={{ flex: 1, justifyContent: 'center' }} onClick={() => setStep(3)}>
                 Proceed to Payment <ChevronRight size={17} />
               </button>
@@ -583,7 +581,7 @@ const CheckoutPage = () => {
                     </div>
                     {pm.id === 'transfer' && (
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                        Pay directly to store verified bank account · Instant verification
+                        Transfer to the store's OPay account · confirmed by our team once received
                       </div>
                     )}
                   </div>
@@ -598,7 +596,7 @@ const CheckoutPage = () => {
                 background: 'var(--status-warning-bg)',
                 border: '1.5px solid var(--gold-400)',
                 borderRadius: 'var(--radius-lg)',
-                padding: '1.25rem',
+                padding: 'clamp(1rem, 3.5vw, 1.25rem)',
                 marginBottom: '1.5rem',
                 animation: 'slideDown 0.25s ease'
               }}>
@@ -613,19 +611,19 @@ const CheckoutPage = () => {
                   Please transfer exactly <strong>₦{TOTAL.toLocaleString()}</strong> to the account below, then enter your sender name for verification.
                 </p>
 
-                <div style={{ background: 'var(--bg-surface)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gold-200)', marginBottom: '1.25rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
+                <div style={{ background: 'var(--bg-surface)', padding: '0.9rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--gold-200)', marginBottom: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  <div className="checkout-bank-row">
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Bank Name</span>
                     <span style={{ fontWeight: 800, fontSize: '0.875rem', color: 'var(--charcoal-900)' }}>
-                      {storeBankAccount?.bankName || 'Guaranty Trust Bank (GTBank)'}
+                      {storeBankAccount?.bankName || DEFAULT_STORE_BANK_ACCOUNT.bankName}
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.45rem' }}>
+                  <div className="checkout-bank-row">
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Account Number</span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                       <span style={{ fontWeight: 900, fontSize: '1.15rem', color: 'var(--text-gold)', fontFamily: 'monospace', letterSpacing: '0.06em' }}>
-                        {storeBankAccount?.accountNumber || '0123456789'}
+                        {storeBankAccount?.accountNumber || DEFAULT_STORE_BANK_ACCOUNT.accountNumber}
                       </span>
                       <button
                         type="button"
@@ -650,10 +648,10 @@ const CheckoutPage = () => {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div className="checkout-bank-row">
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Account Name</span>
                     <span style={{ fontWeight: 700, fontSize: '0.825rem', color: 'var(--charcoal-800)' }}>
-                      {storeBankAccount?.accountName || 'Alizson Cakes & Baking Supplies'}
+                      {storeBankAccount?.accountName || DEFAULT_STORE_BANK_ACCOUNT.accountName}
                     </span>
                   </div>
                 </div>
@@ -688,13 +686,13 @@ const CheckoutPage = () => {
               </div>
             )}
 
-            <div style={{ padding: '1rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-200)', display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+            <div style={{ padding: '1rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
               <span style={{ fontWeight: 600, fontSize: '0.925rem' }}>Order Total to Pay</span>
               <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'var(--text-gold)' }}>₦{TOTAL.toLocaleString()}</span>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button className="btn btn-secondary" onClick={() => setStep(2)}>← Back</button>
+            <div className="checkout-actions" style={{ display: 'flex', gap: '0.75rem' }}>
+              <button className="btn btn-secondary" style={{ flexShrink: 0 }} onClick={() => setStep(2)}>← Back</button>
               <button
                 className="btn btn-primary btn-lg"
                 style={{ flex: 1, justifyContent: 'center' }}
@@ -734,14 +732,14 @@ const OrderConfirmationStep = ({ navigateTo }) => {
   return (
     <div style={{ textAlign: 'center', animation: 'slideUp 0.5s ease-out' }}>
       <div style={{
-        width: 90, height: 90, borderRadius: '50%',
+        width: 'clamp(64px, 18vw, 90px)', height: 'clamp(64px, 18vw, 90px)', borderRadius: '50%',
         background: 'linear-gradient(135deg, var(--status-success), #059669)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         margin: '0 auto 1.25rem', fontSize: '2.5rem',
         boxShadow: '0 0 40px rgba(16,185,129,0.4)'
       }}>✓</div>
 
-      <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.1rem', color: 'var(--charcoal-900)', marginBottom: '0.4rem' }}>
+      <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.5rem, 5vw, 2.1rem)', lineHeight: 1.2, color: 'var(--charcoal-900)', marginBottom: '0.4rem' }}>
         Order Placed Successfully! 🎉
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '1.75rem' }}>
@@ -784,11 +782,11 @@ const OrderConfirmationStep = ({ navigateTo }) => {
               If you haven't transferred yet, please transfer <strong>₦{(order?.total || 0).toLocaleString()}</strong> to:
             </p>
             <div style={{ background: 'var(--bg-surface)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid #FDE68A', fontSize: '0.85rem' }}>
-              <div>🏦 <strong>{storeBankAccount?.bankName || 'Guaranty Trust Bank (GTBank)'}</strong></div>
+              <div>🏦 <strong>{storeBankAccount?.bankName || DEFAULT_STORE_BANK_ACCOUNT.bankName}</strong></div>
               <div style={{ fontSize: '1.05rem', fontWeight: 900, color: 'var(--text-gold)', margin: '0.2rem 0', fontFamily: 'monospace' }}>
-                {storeBankAccount?.accountNumber || '0123456789'}
+                {storeBankAccount?.accountNumber || DEFAULT_STORE_BANK_ACCOUNT.accountNumber}
               </div>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{storeBankAccount?.accountName || 'Alizson Cakes & Baking Supplies'}</div>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{storeBankAccount?.accountName || DEFAULT_STORE_BANK_ACCOUNT.accountName}</div>
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.6rem' }}>
               Sender: <strong>{order?.transferSenderName || order?.customerName}</strong> · Our finance team confirms received transfers promptly.
@@ -798,7 +796,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
       )}
 
       {order && (
-        <div className="card" style={{ padding: '1.75rem', maxWidth: 500, margin: '0 auto 2rem', textAlign: 'left', border: '2px solid var(--status-success-bg)' }}>
+        <div className="card" style={{ padding: 'clamp(1.1rem, 4vw, 1.75rem)', maxWidth: 500, margin: '0 auto 2rem', textAlign: 'left', border: '2px solid var(--status-success-bg)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--cream-200)' }}>
             <div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Order ID</div>
@@ -827,11 +825,11 @@ const OrderConfirmationStep = ({ navigateTo }) => {
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-        <button className="btn btn-primary btn-lg" onClick={() => navigateTo('dashboard')}>
+      <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '0.75rem', maxWidth: 500, margin: '0 auto' }}>
+        <button className="btn btn-primary btn-lg" style={{ flex: '1 1 200px', justifyContent: 'center' }} onClick={() => navigateTo('dashboard')}>
           📦 Track My Order
         </button>
-        <button className="btn btn-outline btn-lg" onClick={() => navigateTo('home')}>
+        <button className="btn btn-outline btn-lg" style={{ flex: '1 1 200px', justifyContent: 'center' }} onClick={() => navigateTo('home')}>
           ← Continue Shopping
         </button>
       </div>
@@ -840,9 +838,9 @@ const OrderConfirmationStep = ({ navigateTo }) => {
 };
 
 const StepCard = ({ title, icon, children }) => (
-  <div className="card" style={{ padding: '2rem', maxWidth: 600, margin: '0 auto' }}>
-    <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1.25rem', color: 'var(--charcoal-900)', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-      <span style={{ fontSize: '1.5rem' }}>{icon}</span> {title}
+  <div className="card" style={{ padding: 'clamp(1.1rem, 4vw, 2rem)', maxWidth: 640, margin: '0 auto' }}>
+    <h2 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: 'clamp(1.1rem, 3.5vw, 1.3rem)', lineHeight: 1.25, color: 'var(--charcoal-900)', marginBottom: 'clamp(1rem, 3vw, 1.5rem)', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+      <span style={{ fontSize: '1.35rem', flexShrink: 0 }}>{icon}</span> {title}
     </h2>
     {children}
   </div>

@@ -42,7 +42,7 @@ const AdminFeedback = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0 }}>
+          <h1 className="admin-page-title" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0 }}>
             Customer Feedback & Reviews
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.2rem' }}>
@@ -52,7 +52,7 @@ const AdminFeedback = () => {
       </div>
 
       {/* Ratings Summary Card */}
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '1.5rem', marginBottom: '2rem', alignItems: 'stretch' }}>
+      <div className="admin-review-summary" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: '1.5rem', marginBottom: '2rem', alignItems: 'stretch' }}>
         <div className="card" style={{ padding: '1.75rem', textAlign: 'center', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ fontSize: '3rem', fontWeight: 800, color: 'var(--charcoal-900)', lineHeight: 1 }}>
             {avgRating}

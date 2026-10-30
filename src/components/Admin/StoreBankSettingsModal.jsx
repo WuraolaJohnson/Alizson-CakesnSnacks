@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Building2, Save, Check, Copy, AlertCircle, Sparkles } from 'lucide-react';
-import { useOrders } from '../../context/OrderContext';
+import { useOrders, DEFAULT_STORE_BANK_ACCOUNT } from '../../context/OrderContext';
 import { useApp } from '../../context/AppContext';
 
 const NIGERIAN_BANKS = [
@@ -10,7 +10,7 @@ const NIGERIAN_BANKS = [
   'First Bank of Nigeria',
   'United Bank for Africa (UBA)',
   'Kuda Microfinance Bank',
-  'OPay Digital Services',
+  'OPay',
   'Moniepoint Microfinance Bank',
   'Fidelity Bank',
   'Stanbic IBTC Bank',
@@ -37,9 +37,9 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
   useEffect(() => {
     if (storeBankAccount) {
       setForm({
-        bankName: storeBankAccount.bankName || 'Guaranty Trust Bank (GTBank)',
-        accountNumber: storeBankAccount.accountNumber || '0123456789',
-        accountName: storeBankAccount.accountName || 'Alizson Cakes & Baking Supplies',
+        bankName: storeBankAccount.bankName || DEFAULT_STORE_BANK_ACCOUNT.bankName,
+        accountNumber: storeBankAccount.accountNumber || DEFAULT_STORE_BANK_ACCOUNT.accountNumber,
+        accountName: storeBankAccount.accountName || DEFAULT_STORE_BANK_ACCOUNT.accountName,
         narrationPrompt: storeBankAccount.narrationPrompt || 'Your Full Name or Order ID'
       });
     }
@@ -47,14 +47,14 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!form.bankName.trim() || !form.accountNumber.trim() || !form.accountName.trim()) {
       showToast('Please fill in Bank Name, Account Number, and Account Name.', 'error');
       return;
     }
-    updateStoreBankAccount(form);
-    onClose();
+    // Keep the form open if saving failed, so nothing typed is lost
+    if (await updateStoreBankAccount(form)) onClose();
   };
 
   const handleCopyAccount = () => {
@@ -140,7 +140,7 @@ const StoreBankSettingsModal = ({ isOpen, onClose }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--charcoal-900)', fontFamily: 'monospace', letterSpacing: '0.08em' }}>
-                {form.accountNumber || '0123456789'}
+                {form.accountNumber || DEFAULT_STORE_BANK_ACCOUNT.accountNumber}
               </div>
               <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-gold)' }}>
                 {form.bankName || 'Select a Bank'}

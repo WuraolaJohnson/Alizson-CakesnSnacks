@@ -176,18 +176,18 @@ export default function AdminFleetMap() {
   }, [mapType]);
 
   return (
-    <div style={{ padding: '1.5rem', background: 'var(--cream-50)', minHeight: '85vh' }}>
+    <div className="admin-page" style={{ padding: '1.5rem', background: 'var(--cream-50)', minHeight: '85vh' }}>
       
       {/* Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
-            <span style={{ background: 'var(--gold-action)', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.6rem', borderRadius: 'var(--radius-full)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem 0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
+            <span style={{ background: 'var(--gold-action)', color: 'white', fontSize: '0.72rem', fontWeight: 800, padding: '0.25rem 0.7rem', whiteSpace: 'nowrap', borderRadius: 'var(--radius-full)' }}>
               Live Fleet Management
             </span>
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Ogun State Real-Time Map</span>
           </div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', margin: 0 }}>
+          <h1 className="admin-page-title" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', margin: 0 }}>
             Active Delivery Fleet & Route Monitor
           </h1>
         </div>
@@ -227,7 +227,7 @@ export default function AdminFleetMap() {
       </div>
 
       {/* Main Grid Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.5rem' }}>
         
         {/* Map Canvas */}
         <div className="card" style={{ padding: 0, overflow: 'hidden', minHeight: 520, display: 'flex', flexDirection: 'column' }}>
@@ -264,9 +264,9 @@ export default function AdminFleetMap() {
                       transition: 'all 0.15s'
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
-                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-gold)', fontFamily: 'var(--font-sans)' }}>{ord.id}</span>
-                      <span style={{ fontSize: '0.72rem', fontWeight: 800, color: ord.status === 'Delivered' ? 'var(--status-success)' : 'var(--text-gold)' }}>{ord.status}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--text-gold)', fontFamily: 'var(--font-sans)', whiteSpace: 'nowrap' }}>{ord.id}</span>
+                      <span style={{ fontSize: '0.72rem', fontWeight: 800, textAlign: 'right', color: ord.status === 'Delivered' ? 'var(--status-success)' : 'var(--text-gold)' }}>{ord.status}</span>
                     </div>
 
                     <div style={{ fontSize: '0.8rem', color: 'var(--charcoal-900)', fontWeight: 600 }}>{ord.customerName}</div>

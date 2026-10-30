@@ -36,7 +36,7 @@ const AdminRecords = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0 }}>
+          <h1 className="admin-page-title" style={{ fontFamily: 'var(--font-serif)', fontSize: '1.85rem', color: 'var(--charcoal-900)', margin: 0 }}>
             Financial Records & Analytics
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '0.2rem' }}>
@@ -58,7 +58,7 @@ const AdminRecords = () => {
       </div>
 
       {/* Overview Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
         <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, var(--ink) 0%, #2A1F18 100%)', color: 'white' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--gold-400)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             Total Marketplace Volume
@@ -71,7 +71,7 @@ const AdminRecords = () => {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.5rem)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             🍰 Bakery Revenue Share
           </div>
@@ -83,7 +83,7 @@ const AdminRecords = () => {
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.5rem)' }}>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-burgundy)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
             🧁 Supplies Revenue Share
           </div>
@@ -97,17 +97,17 @@ const AdminRecords = () => {
       </div>
 
       {/* Revenue Breakdown & Fulfillment Progress */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
         {/* Store Comparison Progress Bar */}
-        <div className="card" style={{ padding: '1.75rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.75rem)' }}>
           <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--charcoal-900)', marginBottom: '1.25rem' }}>
             Store Channel Performance
           </h3>
 
           <div style={{ marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>
               <span>🍰 Bakery Store ({totalSales > 0 ? ((bakerySales / totalSales) * 100).toFixed(1) : 0}%)</span>
-              <span>₦{bakerySales.toLocaleString()}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>₦{bakerySales.toLocaleString()}</span>
             </div>
             <div style={{ height: 12, background: 'var(--cream-200)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
               <div
@@ -123,9 +123,9 @@ const AdminRecords = () => {
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', fontSize: '0.85rem', fontWeight: 700, marginBottom: '0.5rem' }}>
               <span>🧁 Baking Supplies Store ({totalSales > 0 ? ((suppliesSales / totalSales) * 100).toFixed(1) : 0}%)</span>
-              <span>₦{suppliesSales.toLocaleString()}</span>
+              <span style={{ whiteSpace: 'nowrap' }}>₦{suppliesSales.toLocaleString()}</span>
             </div>
             <div style={{ height: 12, background: 'var(--cream-200)', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
               <div
@@ -142,23 +142,23 @@ const AdminRecords = () => {
         </div>
 
         {/* Fulfillment Health */}
-        <div className="card" style={{ padding: '1.75rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.75rem)' }}>
           <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', color: 'var(--charcoal-900)', marginBottom: '1.25rem' }}>
             Fulfillment Health
           </h3>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', fontWeight: 600 }}>Completed Orders</span>
               <span style={{ fontWeight: 800, color: 'var(--status-success)', fontSize: '1rem' }}>{completedOrders}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', fontWeight: 600 }}>In Preparation / Transit</span>
               <span style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '1rem' }}>{inProgressOrders}</span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.8rem', background: 'var(--cream-50)', borderRadius: 'var(--radius-md)' }}>
               <span style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', fontWeight: 600 }}>Fulfillment Rate</span>
               <span style={{ fontWeight: 800, color: 'var(--charcoal-900)', fontSize: '1rem' }}>
                 {orders.length > 0 ? (((completedOrders + inProgressOrders) / orders.length) * 100).toFixed(0) : 100}%
@@ -169,9 +169,9 @@ const AdminRecords = () => {
       </div>
 
       {/* Top Performers Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.5rem' }}>
         {/* Top Bakery Items */}
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.5rem)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <Award size={18} color="var(--gold-600)" />
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--charcoal-900)', margin: 0 }}>
@@ -181,18 +181,18 @@ const AdminRecords = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {topBakery.map((item, i) => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 0', borderBottom: '1px solid var(--cream-100)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--cream-200)', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.6rem 0', borderBottom: '1px solid var(--cream-100)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 }}>
+                  <span style={{ width: 22, height: 22, flexShrink: 0, borderRadius: '50%', background: 'var(--cream-200)', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {i + 1}
                   </span>
-                  <img src={item.image} alt={item.name} style={{ width: 36, height: 36, borderRadius: '6px', objectFit: 'cover' }} />
+                  <img src={item.image} alt={item.name} style={{ width: 36, height: 36, flexShrink: 0, borderRadius: '6px', objectFit: 'cover' }} />
                   <div>
                     <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--charcoal-900)' }}>{item.name}</div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.category}</div>
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '0.85rem' }}>
+                <div style={{ fontWeight: 800, color: 'var(--text-gold)', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                   ₦{(item.price || 0).toLocaleString()}
                 </div>
               </div>
@@ -201,7 +201,7 @@ const AdminRecords = () => {
         </div>
 
         {/* Top Supplies Items */}
-        <div className="card" style={{ padding: '1.5rem' }}>
+        <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.5rem)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
             <Award size={18} color="var(--burgundy-700)" />
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--charcoal-900)', margin: 0 }}>
@@ -211,18 +211,18 @@ const AdminRecords = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {topSupplies.map((item, i) => (
-              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.6rem 0', borderBottom: '1px solid var(--cream-100)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--cream-200)', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', padding: '0.6rem 0', borderBottom: '1px solid var(--cream-100)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 }}>
+                  <span style={{ width: 22, height: 22, flexShrink: 0, borderRadius: '50%', background: 'var(--cream-200)', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {i + 1}
                   </span>
-                  <img src={item.image} alt={item.name} style={{ width: 36, height: 36, borderRadius: '6px', objectFit: 'cover' }} />
+                  <img src={item.image} alt={item.name} style={{ width: 36, height: 36, flexShrink: 0, borderRadius: '6px', objectFit: 'cover' }} />
                   <div>
                     <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--charcoal-900)' }}>{item.name}</div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{item.brand || item.category}</div>
                   </div>
                 </div>
-                <div style={{ fontWeight: 800, color: 'var(--text-burgundy)', fontSize: '0.85rem' }}>
+                <div style={{ fontWeight: 800, color: 'var(--text-burgundy)', fontSize: '0.85rem', whiteSpace: 'nowrap' }}>
                   ₦{(item.price || item.basePrice || 0).toLocaleString()}
                 </div>
               </div>
@@ -232,7 +232,7 @@ const AdminRecords = () => {
       </div>
 
       {/* Complete Historical Purchase Audit Ledger */}
-      <div className="card" style={{ padding: '1.75rem', marginTop: '1.5rem' }}>
+      <div className="card" style={{ padding: 'clamp(1rem, 4vw, 1.75rem)', marginTop: '1.5rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', color: 'var(--charcoal-900)', margin: 0 }}>
@@ -248,7 +248,7 @@ const AdminRecords = () => {
         </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+          <table className="admin-nowrap-table" style={{ width: '100%', minWidth: 760, borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
             <thead>
               <tr style={{ background: 'var(--cream-100)', color: 'var(--charcoal-900)', borderBottom: '2px solid var(--cream-300)' }}>
                 <th style={{ padding: '0.75rem 1rem', fontWeight: 800 }}>Order ID</th>
