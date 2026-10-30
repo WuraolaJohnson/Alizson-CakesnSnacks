@@ -268,7 +268,7 @@ const OverviewTab = ({ userOrders, activeOrders, completedOrders, bakeryOrders, 
         <div style={{ background: 'var(--bg-card)', padding: '1.15rem 1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', minWidth: 0 }}>
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Phone Contact</div>
           <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', marginTop: '0.35rem' }}>
-            {currentUser.phone || '+234 803 555 0192'}
+            {currentUser.phone || 'Not added yet'}
           </div>
         </div>
 

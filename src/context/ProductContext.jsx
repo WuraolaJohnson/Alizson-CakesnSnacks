@@ -8,11 +8,11 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [bakeryProducts, setBakeryProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem('cz_bakery_products');
+      const saved = localStorage.getItem('cz_bakery_products_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.length < initialBakeryProducts.length) {
-          localStorage.setItem('cz_bakery_products', JSON.stringify(initialBakeryProducts));
+          localStorage.setItem('cz_bakery_products_v2', JSON.stringify(initialBakeryProducts));
           return initialBakeryProducts;
         }
         return parsed;
@@ -23,11 +23,11 @@ export const ProductProvider = ({ children }) => {
 
   const [supplyProducts, setSupplyProducts] = useState(() => {
     try {
-      const saved = localStorage.getItem('cz_supply_products');
+      const saved = localStorage.getItem('cz_supply_products_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.length !== initialSupplyProducts.length) {
-          localStorage.setItem('cz_supply_products', JSON.stringify(initialSupplyProducts));
+          localStorage.setItem('cz_supply_products_v2', JSON.stringify(initialSupplyProducts));
           return initialSupplyProducts;
         }
         return parsed;
@@ -52,7 +52,7 @@ export const ProductProvider = ({ children }) => {
         const updated = prev.map(p =>
           p.id === id ? { ...p, inStock: !p.inStock } : p
         );
-        localStorage.setItem('cz_bakery_products', JSON.stringify(updated));
+        localStorage.setItem('cz_bakery_products_v2', JSON.stringify(updated));
         const changed = updated.find(p => p.id === id);
         if (changed) updateProductInDb(id, { inStock: changed.inStock }).catch(() => {});
         return updated;
@@ -62,7 +62,7 @@ export const ProductProvider = ({ children }) => {
         const updated = prev.map(p =>
           p.id === id ? { ...p, inStock: !p.inStock } : p
         );
-        localStorage.setItem('cz_supply_products', JSON.stringify(updated));
+        localStorage.setItem('cz_supply_products_v2', JSON.stringify(updated));
         const changed = updated.find(p => p.id === id);
         if (changed) updateProductInDb(id, { inStock: changed.inStock }).catch(() => {});
         return updated;
@@ -78,7 +78,7 @@ export const ProductProvider = ({ children }) => {
         const updated = prev.map(p =>
           p.id === id ? { ...p, ...changes } : p
         );
-        localStorage.setItem('cz_bakery_products', JSON.stringify(updated));
+        localStorage.setItem('cz_bakery_products_v2', JSON.stringify(updated));
         updateProductInDb(id, changes).catch(() => {});
         return updated;
       });
@@ -87,7 +87,7 @@ export const ProductProvider = ({ children }) => {
         const updated = prev.map(p =>
           p.id === id ? { ...p, ...changes } : p
         );
-        localStorage.setItem('cz_supply_products', JSON.stringify(updated));
+        localStorage.setItem('cz_supply_products_v2', JSON.stringify(updated));
         updateProductInDb(id, changes).catch(() => {});
         return updated;
       });
@@ -103,13 +103,13 @@ export const ProductProvider = ({ children }) => {
     if (store === 'bakery') {
       setBakeryProducts(prev => {
         const updated = [pWithStore, ...prev];
-        localStorage.setItem('cz_bakery_products', JSON.stringify(updated));
+        localStorage.setItem('cz_bakery_products_v2', JSON.stringify(updated));
         return updated;
       });
     } else {
       setSupplyProducts(prev => {
         const updated = [pWithStore, ...prev];
-        localStorage.setItem('cz_supply_products', JSON.stringify(updated));
+        localStorage.setItem('cz_supply_products_v2', JSON.stringify(updated));
         return updated;
       });
     }
@@ -121,14 +121,14 @@ export const ProductProvider = ({ children }) => {
     if (store === 'bakery') {
       setBakeryProducts(prev => {
         const updated = prev.filter(p => p.id !== id);
-        localStorage.setItem('cz_bakery_products', JSON.stringify(updated));
+        localStorage.setItem('cz_bakery_products_v2', JSON.stringify(updated));
         deleteProductInDb(id).catch(() => {});
         return updated;
       });
     } else {
       setSupplyProducts(prev => {
         const updated = prev.filter(p => p.id !== id);
-        localStorage.setItem('cz_supply_products', JSON.stringify(updated));
+        localStorage.setItem('cz_supply_products_v2', JSON.stringify(updated));
         deleteProductInDb(id).catch(() => {});
         return updated;
       });

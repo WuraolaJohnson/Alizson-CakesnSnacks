@@ -301,7 +301,7 @@ export const OrderConfirmationPage = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
                 <div><strong>Name:</strong> {currentOrder.customerName}</div>
                 <div><strong>Email:</strong> {currentOrder.customerEmail}</div>
-                <div><strong>Phone:</strong> {currentOrder.customerPhone || '+234 803 555 0192'}</div>
+                <div><strong>Phone:</strong> {currentOrder.customerPhone || '—'}</div>
                 <div><strong>Payment Method:</strong> {currentOrder.paymentMethod}</div>
               </div>
             </div>

@@ -3,7 +3,7 @@ import L from 'leaflet';
 import { 
   Compass, MapPin, Navigation, RefreshCw, Filter, Layers, CheckCircle2, AlertTriangle, User 
 } from 'lucide-react';
-import { useOrders, ORDER_STATUS_STEPS, AVAILABLE_RIDERS } from '../../context/OrderContext';
+import { useOrders, ORDER_STATUS_STEPS } from '../../context/OrderContext';
 import { OGUN_STATE_BOUNDARY, OGUN_STATE_CENTER } from '../../utils/ogunGeoValidation';
 import { formatLocationAge, isLocationStale, fetchOSRMRoute } from '../../utils/trackingRouting';
 
@@ -19,7 +19,8 @@ const TILE_LAYERS = {
 };
 
 export default function AdminFleetMap() {
-  const { orders, updateOrderStatus, assignRiderToOrder } = useOrders();
+  const { orders, updateOrderStatus, assignRiderToOrder, riders, watchRiders } = useOrders();
+  useEffect(() => watchRiders(), []);
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -86,7 +87,7 @@ export default function AdminFleetMap() {
       const dLat = order.latitude || 7.1557;
       const dLng = order.longitude || 3.3458;
       const riderLoc = order.riderLocation || { lat: dLat - 0.015, lng: dLng - 0.015, timestamp: new Date().toISOString() };
-      const rider = order.assignedRider || AVAILABLE_RIDERS[0];
+      const rider = order.assignedRider || { name: 'Unassigned', vehicle: '' };
       const isStale = isLocationStale(riderLoc.timestamp, 5);
 
       // Customer Pin
@@ -311,7 +312,8 @@ export default function AdminFleetMap() {
                   value={selectedOrder.assignedRider?.id || ''}
                   onChange={(e) => assignRiderToOrder(selectedOrder.id, e.target.value)}
                 >
-                  {AVAILABLE_RIDERS.map(r => (
+                  <option value="" disabled>{riders.length ? 'Choose a rider' : 'No approved riders yet'}</option>
+                  {riders.map(r => (
                     <option key={r.id} value={r.id}>
                       {r.name} ({r.vehicle})
                     </option>

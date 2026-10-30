@@ -15,7 +15,7 @@ const OFFLINE_DEV_MODE = import.meta.env.DEV && !isFirebaseReady();
  */
 export default function RiderLoginPage({ onLogin, initialError = '' }) {
   const [form, setForm] = useState({ email: '', password: '' });
-  const [devRiderId, setDevRiderId] = useState(AVAILABLE_RIDERS[0].id);
+  const [devRiderId, setDevRiderId] = useState(AVAILABLE_RIDERS[0]?.id);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(initialError);

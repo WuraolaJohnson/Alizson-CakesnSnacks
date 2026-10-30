@@ -26,7 +26,8 @@ const TILE_LAYERS = {
 };
 
 export default function AdminRiders() {
-  const { riders, orders, updateRiderAvailability } = useOrders();
+  const { riders, orders, updateRiderAvailability, watchRiders } = useOrders();
+  useEffect(() => watchRiders(), []);
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -560,7 +561,7 @@ export default function AdminRiders() {
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                 <div><strong>Driver License:</strong> {selectedRider.licenseNo}</div>
                 <div><strong>Joined Date:</strong> {selectedRider.dateJoined}</div>
-                <div><strong>Rating:</strong> ⭐ {selectedRider.rating} / 5.0</div>
+                <div><strong>Rating:</strong> ⭐ {selectedRider.rating != null ? `${selectedRider.rating} / 5.0` : 'No ratings yet'}</div>
                 <div><strong>Emergency Contact:</strong> {selectedRider.emergencyContactName} ({selectedRider.emergencyContactPhone})</div>
                 <div><strong>Account Status:</strong> <span style={{ color: 'var(--status-success)', fontWeight: 700 }}>{selectedRider.accountStatus}</span></div>
               </div>

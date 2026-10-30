@@ -28,7 +28,7 @@ const AdminFeedback = () => {
 
   const avgRating = feedbackList.length > 0
     ? (feedbackList.reduce((sum, f) => sum + (f.rating || 5), 0) / feedbackList.length).toFixed(1)
-    : '4.9';
+    : '0.0';
 
   const handleSendReply = (feedbackId) => {
     if (!replyText.trim()) return;

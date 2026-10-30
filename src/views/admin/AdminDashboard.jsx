@@ -33,7 +33,7 @@ const AdminDashboard = ({ setActiveTab }) => {
   
   const avgRating = feedbackList.length > 0
     ? (feedbackList.reduce((sum, f) => sum + (f.rating || 5), 0) / feedbackList.length).toFixed(1)
-    : '4.9';
+    : null;
 
   // Low stock items
   const allProducts = [
@@ -142,10 +142,10 @@ const AdminDashboard = ({ setActiveTab }) => {
             </div>
           </div>
           <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--charcoal-900)', display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
-            {avgRating} <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 500 }}>/ 5.0</span>
+            {avgRating ?? '—'} {avgRating && <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 500 }}>/ 5.0</span>}
           </div>
           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.4rem' }}>
-            {feedbackList.length} verified reviews
+            {feedbackList.length > 0 ? `${feedbackList.length} verified reviews` : 'No reviews yet'}
           </div>
         </div>
       </div>

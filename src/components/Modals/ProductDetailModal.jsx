@@ -151,7 +151,9 @@ const ProductDetailModal = () => {
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-burgundy)', fontWeight: 700, marginBottom: '0.35rem' }}>by {product.brand}</div>
               )}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <RatingStars rating={product.rating} count={product.reviewsCount} size={15} />
+                {product.reviewsCount > 0
+                  ? <RatingStars rating={product.rating} count={product.reviewsCount} size={15} />
+                  : <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>No reviews yet</span>}
               </div>
               {product.packQuantity > 1 && (
                 <div style={{ marginTop: '0.5rem' }}>

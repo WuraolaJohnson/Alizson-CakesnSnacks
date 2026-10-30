@@ -105,12 +105,16 @@ const ProductCard = ({ product, store, compact = false }) => {
       <div className="shop-card__body">
         <h3 className="shop-card__title">{product.name}</h3>
 
-        {product.reviewsCount > 0 && (
-          <div className="shop-card__rating">
-            <RatingStars rating={product.rating} size={11} />
-            <span>({product.reviewsCount})</span>
-          </div>
-        )}
+        <div className="shop-card__rating">
+          {product.reviewsCount > 0 ? (
+            <>
+              <RatingStars rating={product.rating} size={11} />
+              <span>({product.reviewsCount})</span>
+            </>
+          ) : (
+            <span>No reviews yet</span>
+          )}
+        </div>
 
         <div className="shop-card__footer">
           <div className="shop-card__price">

@@ -71,7 +71,7 @@ export default function OrderTrackingPage({ orderId }) {
   const destLat = order.latitude || 7.1557;
   const destLng = order.longitude || 3.3458;
   const riderLoc = order.riderLocation || { lat: destLat - 0.015, lng: destLng - 0.015, timestamp: new Date().toISOString() };
-  const rider = order.assignedRider || { name: 'Dispatch Rider', phone: '+234 803 555 0192', vehicle: 'Express Delivery Bike', rating: 4.9 };
+  const rider = order.assignedRider || { name: 'Awaiting rider', phone: '', vehicle: 'Not assigned yet', rating: null };
 
   const isStale = isLocationStale(riderLoc.timestamp, 5);
   const locationAgeText = formatLocationAge(riderLoc.timestamp);
@@ -573,7 +573,7 @@ export default function OrderTrackingPage({ orderId }) {
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{rider.name}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700 }}>
-                    {rider.vehicle} · {rider.rating} ★
+                    {rider.vehicle}{rider.rating != null ? ` · ${rider.rating} ★` : ''}
                   </div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
                     Hub: {rider.hub || 'Ogun Central Dispatch'}
@@ -581,13 +581,15 @@ export default function OrderTrackingPage({ orderId }) {
                 </div>
               </div>
 
-              <a
-                href={`tel:${rider.phone}`}
-                className="btn btn-primary"
-                style={{ width: '100%', justifyContent: 'center', fontSize: '0.875rem' }}
-              >
-                <Phone size={16} /> Call Delivery Rider ({rider.phone})
-              </a>
+              {rider.phone && (
+                <a
+                  href={`tel:${rider.phone}`}
+                  className="btn btn-primary"
+                  style={{ width: '100%', justifyContent: 'center', fontSize: '0.875rem' }}
+                >
+                  <Phone size={16} /> Call Delivery Rider ({rider.phone})
+                </a>
+              )}
             </div>
 
             {/* Destination Address Card */}

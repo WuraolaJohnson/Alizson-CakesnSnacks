@@ -54,6 +54,40 @@ export function subscribeRiderRequests(callback) {
   }, (err) => console.error('[riderAccess] subscribe failed:', err));
 }
 
+/** Firestore rider doc → the camelCase shape the admin and rider screens use. */
+export function dbToRider(d) {
+  const loc = d.current_location || d.initial_location || null;
+  return {
+    id:                    d.id,
+    name:                  d.name || 'Rider',
+    email:                 d.email || '',
+    phone:                 d.phone || '',
+    vehicle:               d.vehicle || '',
+    vehicleType:           d.vehicle_type || 'Motorcycle',
+    licenseNo:             d.license_no || '',
+    emergencyContactName:  d.emergency_contact_name || '',
+    emergencyContactPhone: d.emergency_contact_phone || '',
+    dateJoined:            d.date_joined || '',
+    rating:                d.rating == null ? null : Number(d.rating),
+    hub:                   d.hub || '',
+    accountStatus:         d.account_status || 'Active',
+    availabilityStatus:    d.availability_status || 'Offline',
+    avatar:                d.avatar || '/logo.jpeg',
+    initialLocation:       d.initial_location || loc,
+    currentLocation:       loc,
+    completedCount:        d.completed_count ?? 0,
+    todayEarnings:         Number(d.today_earnings ?? 0)
+  };
+}
+
+/** Admin: live list of rider records. Returns unsubscribe. */
+export function subscribeRiders(callback) {
+  if (!isFirebaseReady()) return () => {};
+  return onSnapshot(collection(db, 'riders'),
+    (snap) => callback(snap.docs.map(d => dbToRider({ id: d.id, ...d.data() }))),
+    (err) => console.error('[riderAccess] riders subscribe failed:', err));
+}
+
 /** Admin: rider records from Firestore (id, name, email, user_id). */
 export async function fetchRiderRecords() {
   if (!isFirebaseReady()) return [];
@@ -83,7 +117,7 @@ export async function approveRiderRequest(request, riderId = null) {
         phone: '',
         account_status: 'Active',
         availability_status: 'Offline',
-        rating: 5,
+        rating: null,
         completed_count: 0,
         today_earnings: 0,
         date_joined: now.slice(0, 10),

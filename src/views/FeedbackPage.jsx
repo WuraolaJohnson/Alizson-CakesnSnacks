@@ -92,8 +92,14 @@ const FeedbackPage = () => {
               <div style={{ display: 'flex', color: 'var(--gold-400)' }}>
                 {[1, 2, 3, 4, 5].map(s => <Star key={s} size={16} fill="currentColor" />)}
               </div>
-              <span style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem' }}>{avgRating} / 5.0</span>
-              <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>({feedbackList.length} verified reviews)</span>
+              {feedbackList.length > 0 ? (
+                <>
+                  <span style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem' }}>{avgRating} / 5.0</span>
+                  <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.8rem' }}>({feedbackList.length} verified reviews)</span>
+                </>
+              ) : (
+                <span style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem' }}>No reviews yet — be the first!</span>
+              )}
             </div>
           </div>
         </div>

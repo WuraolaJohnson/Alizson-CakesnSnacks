@@ -5,6 +5,8 @@ import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb } from '../services/orderService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
+import { subscribeRiders } from '../services/riderAccessService';
+import { isFirebaseReady } from '../lib/firebase';
 
 const OrderContext = createContext();
 
@@ -36,6 +38,7 @@ export const VALID_TRANSITIONS = {
   'Delivered': []
 };
 
+// Sample riders for offline development only (no Firebase project configured)
 export const INITIAL_RIDERS = [
   {
     id: 'rdr-001',
@@ -102,7 +105,7 @@ export const INITIAL_RIDERS = [
   }
 ];
 
-export const AVAILABLE_RIDERS = INITIAL_RIDERS;
+export const AVAILABLE_RIDERS = isFirebaseReady() ? [] : INITIAL_RIDERS;
 
 export const OrderProvider = ({ children, showToast = () => {} }) => {
   const sanitizeOrder = (o, idx = 0) => {
@@ -190,7 +193,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   };
 
   const [orders, setOrders] = useState(() => {
-    const CACHE_VERSION = '3'; // bump when sanitizeOrder logic changes
+    const CACHE_VERSION = '4'; // bump when sanitizeOrder logic changes
     const savedVersion = localStorage.getItem('cz_orders_ver');
     const saved = localStorage.getItem('cz_orders');
     if (saved && savedVersion === CACHE_VERSION) {
@@ -209,7 +212,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   });
 
   const [feedbackList, setFeedbackList] = useState(() => {
-    const saved = localStorage.getItem('cz_feedback');
+    const saved = localStorage.getItem('cz_feedback_v2');
     return saved ? JSON.parse(saved) : initialFeedback;
   });
 
@@ -238,7 +241,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('cz_feedback', JSON.stringify(feedbackList));
+    localStorage.setItem('cz_feedback_v2', JSON.stringify(feedbackList));
   }, [feedbackList]);
 
   const [storeBankAccount, setStoreBankAccount] = useState(() => {
@@ -434,7 +437,11 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   // Assign Rider to Order
   const assignRiderToOrder = (orderId, riderId) => {
-    const matchedRider = AVAILABLE_RIDERS.find(r => r.id === riderId) || AVAILABLE_RIDERS[0];
+    const matchedRider = riders.find(r => r.id === riderId);
+    if (!matchedRider) {
+      showToast('Choose an approved rider to assign.', 'error');
+      return;
+    }
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     setOrders(prev => prev.map(order => {
@@ -565,14 +572,17 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const [riders, setRiders] = useState(() => {
     try {
-      const saved = localStorage.getItem('cz_riders');
-      return saved ? JSON.parse(saved) : INITIAL_RIDERS;
-    } catch { return INITIAL_RIDERS; }
+      const saved = localStorage.getItem('cz_riders_v2');
+      return saved ? JSON.parse(saved) : AVAILABLE_RIDERS;
+    } catch { return AVAILABLE_RIDERS; }
   });
 
   useEffect(() => {
-    localStorage.setItem('cz_riders', JSON.stringify(riders));
+    localStorage.setItem('cz_riders_v2', JSON.stringify(riders));
   }, [riders]);
+
+  /** Admin: keep `riders` in sync with Firestore. Returns unsubscribe. */
+  const watchRiders = () => subscribeRiders(setRiders);
 
   const updateRiderAvailability = (riderId, newStatus) => {
     setRiders(prev => prev.map(r => r.id === riderId ? { ...r, availabilityStatus: newStatus } : r));
@@ -603,7 +613,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setOrders(prev => prev.map(order => {
       if (order.id === orderId) {
-        const matchedRider = riders.find(r => r.id === effectiveRiderId) || AVAILABLE_RIDERS.find(r => r.id === effectiveRiderId) || AVAILABLE_RIDERS[0];
+        const matchedRider = riders.find(r => r.id === effectiveRiderId) || { id: effectiveRiderId, name: riderName };
         const eventLog = {
           event: `Rider ${riderName} (${effectiveRiderId}) accepted delivery assignment`,
           statusStep: Math.max(order.statusStep, 2),
@@ -813,6 +823,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
         overridePaymentByAdmin,
         storeBankAccount,
         updateStoreBankAccount,
+        watchRiders,
         confirmBankTransferPayment,
         feedbackList,
         addFeedback,

@@ -57,6 +57,9 @@ function interleave(a, b) {
   return out;
 }
 
+// Turn on once public/whatsapp-1.jpg … whatsapp-3.jpg are real customer screenshots
+const SHOW_WHATSAPP_SCREENSHOTS = false;
+
 const byPopularity = (a, b) => (b.reviewsCount || 0) - (a.reviewsCount || 0);
 
 /** Round category photo; shows an emoji if the photo link is broken */
@@ -250,7 +253,8 @@ const HomePage = () => {
         </section>
       </div>
 
-      {/* === WHATSAPP TESTIMONIALS === */}
+      {/* === WHATSAPP TESTIMONIALS === hidden until real screenshots are added to public/ */}
+      {SHOW_WHATSAPP_SCREENSHOTS && (
       <section className="section-py" style={{ background: 'var(--bg-surface-soft)', marginTop: '1.5rem' }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
@@ -295,6 +299,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+      )}
     </div>
   );
 };

@@ -1241,7 +1241,7 @@ const RiderEarningsTab = ({ rider, assignedOrders, completedOrders }) => {
 
         <div className="card" style={{ padding: '1.35rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '0.35rem' }}>⭐</div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{rider.rating || 4.9}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{rider.rating ?? '—'}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Rating Score</div>
         </div>
 
