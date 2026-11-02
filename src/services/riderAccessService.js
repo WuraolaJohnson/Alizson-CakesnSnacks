@@ -9,7 +9,7 @@
 
 import {
   collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteField,
-  onSnapshot, writeBatch
+  onSnapshot, writeBatch, query, where
 } from 'firebase/firestore';
 import { auth, db, isFirebaseReady } from '../lib/firebase';
 
@@ -137,6 +137,14 @@ export async function saveRiderProfile(riderId, profile) {
   } catch (err) {
     return { error: err.message };
   }
+}
+
+/** Rider: live copy of their own rider record. Returns unsubscribe. */
+export function subscribeOwnRider(uid, callback) {
+  if (!isFirebaseReady()) return () => {};
+  return onSnapshot(query(collection(db, 'riders'), where('user_id', '==', uid)),
+    (snap) => { if (!snap.empty) callback(dbToRider({ id: snap.docs[0].id, ...snap.docs[0].data() })); },
+    (err) => console.error('[riderAccess] own rider subscribe failed:', err));
 }
 
 /** Admin: rider records from Firestore (id, name, email, user_id). */

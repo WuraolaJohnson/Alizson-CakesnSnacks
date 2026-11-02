@@ -6,7 +6,7 @@ import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb, subscribeOrdersForUser } from '../services/orderService';
 import { onAuthStateChange } from '../services/authService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
-import { subscribeRiders, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
+import { subscribeRiders, subscribeOwnRider, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
 import { useProducts } from './ProductContext';
 
@@ -219,12 +219,23 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   useEffect(() => {
     if (!isFirebaseReady()) return undefined;
     let unsubscribeOrders = () => {};
+    let unsubscribeRiders = () => {};
     const unsubscribeAuth = onAuthStateChange((_event, user) => {
       unsubscribeOrders();
+      unsubscribeRiders();
+      unsubscribeRiders = () => {};
       if (!user) { setOrders([]); return; }
       unsubscribeOrders = subscribeOrdersForUser(user, list => setOrders(list.map((o, idx) => sanitizeOrder(o, idx))));
+      // Riders' duty status and details come live from Firestore: every
+      // rider for the admin, and the rider's own record for a rider
+      if (user.role === 'admin') {
+        unsubscribeRiders = subscribeRiders(setRiders);
+      } else if (user.role === 'rider') {
+        unsubscribeRiders = subscribeOwnRider(user.id, own =>
+          setRiders(prev => [...prev.filter(r => r.id !== own.id), own]));
+      }
     });
-    return () => { unsubscribeAuth(); unsubscribeOrders(); };
+    return () => { unsubscribeAuth(); unsubscribeOrders(); unsubscribeRiders(); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
