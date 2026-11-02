@@ -411,7 +411,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
             <StatusBadge status={order.status} />
             {order.paymentStatus === 'Paid' ? (
               <span style={{ fontSize: '0.7rem', fontWeight: 700, background: 'var(--status-success-bg)', color: 'var(--status-success)', border: '1px solid #10B981', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
-                ✅ Verified Paid
+                ✅ Payment Verified
               </span>
             ) : (
               <span style={{ fontSize: '0.7rem', fontWeight: 700, background: 'var(--status-warning-bg)', color: 'var(--status-warning)', border: '1px solid #F59E0B', padding: '0.15rem 0.5rem', borderRadius: '999px', display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -480,7 +480,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)' }}>
               {order.paymentStatus === 'Paid' ? (
                 <>
-                  <span>✅ Bank Transfer Verified & Paid</span>
+                  <span>✅ Payment Verified</span>
                   {order.bankTransferVerifiedBy && (
                     <span style={{ fontWeight: 400, color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                       (Confirmed by {order.bankTransferVerifiedBy})

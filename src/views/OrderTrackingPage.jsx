@@ -355,7 +355,7 @@ export default function OrderTrackingPage({ orderId }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: order.paymentStatus === 'Paid' ? 'var(--status-success)' : 'var(--status-warning)', fontSize: '0.95rem' }}>
             {order.paymentStatus === 'Paid' ? (
               <>
-                <span>✅ Bank Transfer Verified & Paid</span>
+                <span>✅ Payment Verified</span>
                 {order.bankTransferVerifiedBy && (
                   <span style={{ fontWeight: 500, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                     (Confirmed by {order.bankTransferVerifiedBy})

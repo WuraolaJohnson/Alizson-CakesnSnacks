@@ -5,6 +5,13 @@ export const StatusBadge = ({ status = '', type = 'order' }) => {
   const s = String(status || '').toLowerCase().trim();
 
   if (type === 'store') {
+    if (s === 'mixed') {
+      return (
+        <span className="badge badge-gold" style={{ gap: '5px' }}>
+          <span>🍰🧁</span> Bakery + Supplies
+        </span>
+      );
+    }
     if (s.includes('bakery')) {
       return (
         <span className="badge badge-gold" style={{ gap: '5px' }}>
