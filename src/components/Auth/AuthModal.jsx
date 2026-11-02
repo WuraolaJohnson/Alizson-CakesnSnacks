@@ -151,7 +151,7 @@ const AuthModal = () => {
           </div>
         )}
 
-        {isFirebaseReady() && <GoogleSignInButton onError={setError} />}
+        {isFirebaseReady() && <GoogleSignInButton onError={setError} onSuccess={u => { login(u); setIsAuthModalOpen(false); }} />}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {!isLogin && (

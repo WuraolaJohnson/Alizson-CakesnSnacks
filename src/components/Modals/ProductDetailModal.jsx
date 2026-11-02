@@ -25,19 +25,26 @@ const ProductDetailModal = () => {
   if (!isQuickViewOpen || !product) return null;
 
   const isWishlisted = wishlist.includes(product.id);
-  const gallery = product.gallery?.length ? product.gallery : [product.image];
+  // Admin-defined options (pack sizes / sets, each with its own price & picture)
+  const hasVariants = isSupply || product.variants?.length > 0;
 
   const initSize = product.sizes?.[0] || null;
-  const initFlavour = product.flavours?.[0] || null;
+  const flavourChoices = product.mixFlavours && product.flavours?.length > 1 && !product.flavours.some(f => f.includes('Mix'))
+    ? [...product.flavours, 'Mix & Match']
+    : product.flavours;
+  const initFlavour = flavourChoices?.[0] || null;
   const initVariant = product.variants?.[0] || null;
   const activeSize = selectedSize ?? initSize;
   const activeFlavour = selectedFlavour ?? initFlavour;
   const activeVariant = selectedVariant ?? initVariant;
+  const baseGallery = (product.gallery?.length ? product.gallery : [product.image]).filter(Boolean);
+  const gallery = activeVariant?.image ? [activeVariant.image, ...baseGallery.filter(i => i !== activeVariant.image)] : baseGallery;
 
   // Dynamic Price Calculation
   const calculatePrice = () => {
-    if (isSupply) {
-      return (activeVariant?.price || product.basePrice || product.price || 0) * quantity;
+    const addOns = selectedAddOns.reduce((sum, a) => sum + (a.price || 0), 0);
+    if (hasVariants) {
+      return ((activeVariant?.price || product.basePrice || product.price || 0) + (isSupply ? 0 : addOns)) * quantity;
     }
     const basePrice = product.price || 0;
     const sizeMultiplier = activeSize?.priceMultiplier || 1.0;
@@ -78,6 +85,7 @@ const ProductDetailModal = () => {
 
       addToBakeryCart(product, {
         size: activeSize,
+        variant: product.variants?.length ? activeVariant : undefined,
         flavour: finalFlavour,
         addOns: selectedAddOns,
         customMessage,
@@ -105,9 +113,9 @@ const ProductDetailModal = () => {
           {/* Left — Image Gallery */}
           <div style={{ background: 'var(--cream-100)', padding: '1.25rem' }}>
             <div style={{ position: 'relative', aspectRatio: '1', overflow: 'hidden', borderRadius: 'var(--radius-lg)', background: 'var(--cream-200)' }}>
-              <img src={gallery[activeImg]} alt={product.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
+              {gallery[activeImg]
+                ? <img src={gallery[activeImg]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '4rem' }} aria-hidden="true">{isSupply ? '🧁' : '🍰'}</div>}
               {gallery.length > 1 && (
                 <>
                   <button onClick={() => setActiveImg(p => (p - 1 + gallery.length) % gallery.length)}
@@ -169,7 +177,7 @@ const ProductDetailModal = () => {
             </p>
 
             {/* Size Selector (Bakery) */}
-            {!isSupply && product.sizes && (
+            {!hasVariants && product.sizes && (
               <div>
                 <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--charcoal-800)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Select Size</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -194,7 +202,7 @@ const ProductDetailModal = () => {
               <div>
                 <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Select Flavour</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: activeFlavour?.includes('Mix') ? '0.75rem' : 0 }}>
-                  {product.flavours.map((f, i) => (
+                  {flavourChoices.map((f, i) => (
                     <button key={i} onClick={() => setSelectedFlavour(f)} style={{
                       padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
                       border: `1.5px solid ${activeFlavour === f ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
@@ -253,12 +261,12 @@ const ProductDetailModal = () => {
             )}
 
             {/* Variant Selector (Supply) */}
-            {isSupply && product.variants && (
+            {hasVariants && product.variants && (
               <div>
-                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--charcoal-800)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Select Size / Weight</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--charcoal-800)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{product.soldInSets ? 'Select Set' : isSupply ? 'Select Size / Weight' : 'Select Option'}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                   {product.variants.map((v, i) => (
-                    <button key={i} onClick={() => setSelectedVariant(v)} style={{
+                    <button key={i} onClick={() => { setSelectedVariant(v); setActiveImg(0); }} style={{
                       padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
                       border: `1.5px solid ${activeVariant?.size === v.size ? 'var(--burgundy-700)' : 'var(--cream-300)'}`,
                       background: activeVariant?.size === v.size ? 'var(--burgundy-100)' : 'transparent',
@@ -267,7 +275,7 @@ const ProductDetailModal = () => {
                       fontFamily: 'var(--font-sans)', transition: 'all 0.15s',
                       whiteSpace: 'nowrap'
                     }}>
-                      {v.size} — ₦{v.price.toLocaleString()}
+                      {v.size}{product.soldInSets && v.units > 0 ? ` (${v.units} ${product.unitLabel || 'pcs'})` : ''} — ₦{Number(v.price).toLocaleString()}
                     </button>
                   ))}
                 </div>
@@ -348,7 +356,7 @@ const ProductDetailModal = () => {
                 className={`btn ${cartAdded ? 'btn-dark' : isSupply ? 'btn-burgundy' : 'btn-primary'} btn-lg`}
                 style={{ flex: 1, justifyContent: 'center', minWidth: '160px' }}
                 onClick={handleAddToCart}
-                disabled={!product.inStock}
+                disabled={!product.inStock || product.isPreview}
               >
                 <ShoppingCart size={18} />
                 {cartAdded ? '✓ Added to Cart!' : 'Add to Cart'}

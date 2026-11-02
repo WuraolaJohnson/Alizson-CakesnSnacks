@@ -1,23 +1,36 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Plus, Search, Edit3, Trash2, Check, X, Filter,
   Cake, Package, Image as ImageIcon, Sparkles, Eye, AlertCircle, UploadCloud
 } from 'lucide-react';
-import { useProducts } from '../../context/ProductContext';
+import { useProducts, totalStock, LOW_STOCK_AT } from '../../context/ProductContext';
+import CategoriesModal from '../../components/Admin/CategoriesModal';
+import BulkEditBar from '../../components/Admin/BulkEditBar';
+import AddOnsEditor from '../../components/Admin/AddOnsEditor';
 import { useApp } from '../../context/AppContext';
+import { seedCatalogOnce } from '../../services/productService';
+import { compressImage } from '../../utils/imageCompress';
+import ProductOptionsEditor, { optionsToVariants, variantsToOptions } from '../../components/Admin/ProductOptionsEditor';
 
 const AdminProducts = () => {
   const {
-    bakeryProducts,
-    supplyProducts,
+    allBakeryProducts: bakeryProducts,
+    allSupplyProducts: supplyProducts,
     addProduct,
     updateProduct,
     deleteProduct,
-    toggleAvailability
+    toggleAvailability,
+    categories: categoryLists
   } = useProducts();
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
-  const { showToast } = useApp();
+  const { showToast, openProductModal } = useApp();
+  const [selectedIds, setSelectedIds] = useState([]);
   const fileInputRef = useRef(null);
+  const [saving, setSaving] = useState(false);
+
+  // First run only: put the starter catalogue in the database
+  useEffect(() => { seedCatalogOnce(); }, []);
 
   const [activeStoreTab, setActiveStoreTab] = useState('bakery'); // 'bakery' or 'supplies'
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,42 +47,40 @@ const AdminProducts = () => {
     description: '',
     image: '',
     inStock: true,
-    stockQuantity: 20,
+    stockQuantity: '',
+    hidden: false,
+    mixFlavours: false,
+    addOns: [],
     flavours: 'Belgian Chocolate, Vanilla Bean, Red Velvet',
     sizes: '6 inch (Feeds 6-8):1.0, 8 inch (Feeds 12-16):1.45, 10 inch (Feeds 20-25):1.9',
     packQuantity: 12,
     packLabel: '12 pieces',
-    brand: ''
+    brand: '',
+    options: { soldInSets: false, unitLabel: 'pieces', options: [] }
   });
 
-  const handleLocalImageUpload = (e) => {
+  const handleLocalImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Check size (e.g. max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Image file size should be under 5MB.', 'warning');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target.result;
+    try {
+      // Shrunk so the product fits in the database
+      const dataUrl = await compressImage(file);
       setForm(prev => ({ ...prev, image: dataUrl }));
-      showToast('Local picture loaded successfully! 📸', 'success');
-    };
-    reader.readAsDataURL(file);
+      showToast('Picture added 📸', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
   };
 
   const currentProducts = activeStoreTab === 'bakery' ? bakeryProducts : supplyProducts;
 
-  const categories = activeStoreTab === 'bakery'
-    ? ['All', 'Celebration Cakes', 'Wedding Cakes', 'Cupcakes & Boxes', 'Pastries & Tarts', 'Dessert Jars', 'Custom Cakes']
-    : ['All', 'Dry Ingredients', 'Wet Ingredients', 'Decorations', 'Packaging', 'Tools'];
+  // The list from "Manage categories" — the same one the store shows
+  const categoryList = categoryLists[activeStoreTab].map(c => c.name);
+  const categories = ['All', ...categoryList];
 
   const filteredProducts = currentProducts.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (p.category || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === 'All' || p.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
@@ -78,20 +89,22 @@ const AdminProducts = () => {
     setEditingProduct(null);
     setForm({
       name: '',
-      category: activeStoreTab === 'bakery' ? 'Celebration Cakes' : 'Dry Ingredients',
+      category: categoryList[0] || '',
       price: '',
       shortDescription: '',
       description: '',
-      image: activeStoreTab === 'bakery'
-        ? 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80'
-        : 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
+      image: '',
       inStock: true,
-      stockQuantity: 25,
+      stockQuantity: '',
+      hidden: false,
+      mixFlavours: false,
+      addOns: [],
       flavours: 'Belgian Chocolate, Vanilla Bean, Red Velvet',
       sizes: '6 inch (Feeds 6-8):1.0, 8 inch (Feeds 12-16):1.45, 10 inch (Feeds 20-25):1.9',
       packQuantity: 12,
       packLabel: '12 pieces per box',
-      brand: activeStoreTab === 'supplies' ? 'Artisan Brand' : ''
+      brand: '',
+      options: { soldInSets: false, unitLabel: 'pieces', options: [] }
     });
     setIsModalOpen(true);
   };
@@ -100,29 +113,45 @@ const AdminProducts = () => {
     setEditingProduct(product);
     setForm({
       name: product.name || '',
-      category: product.category || categories[1],
+      category: product.category || categoryList[0] || '',
       price: product.price || product.basePrice || '',
       shortDescription: product.shortDescription || '',
       description: product.description || '',
       image: product.image || '',
       inStock: product.inStock !== false,
-      stockQuantity: product.stockQuantity || 20,
+      stockQuantity: typeof product.stockQuantity === 'number' ? product.stockQuantity : '',
+      hidden: !!product.hidden,
+      mixFlavours: !!product.mixFlavours,
+      addOns: (product.availableAddOns || []).map(a => ({ ...a, price: a.price ?? '' })),
       flavours: product.flavours ? product.flavours.join(', ') : '',
       sizes: product.sizes
         ? product.sizes.map(s => `${s.name}:${s.priceMultiplier || 1.0}`).join(', ')
         : '',
       packQuantity: product.packQuantity || 12,
       packLabel: product.packLabel || (product.packQuantity ? `${product.packQuantity} pieces` : '12 pieces per box'),
-      brand: product.brand || ''
+      brand: product.brand || '',
+      options: {
+        soldInSets: !!product.soldInSets,
+        unitLabel: product.unitLabel || 'pieces',
+        options: variantsToOptions(product.variants)
+      }
     });
     setIsModalOpen(true);
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    if (!form.name || !form.price) {
+  /** Turns the form into a product, or shows what's missing and returns null. */
+  const buildPayload = () => {
+    const { soldInSets, unitLabel, options } = form.options;
+    const variants = optionsToVariants(options, soldInSets);
+    if (options.length !== variants.length) {
+      showToast('Every option needs a name and a price (or remove the empty row).', 'error');
+      return null;
+    }
+    // With options, the base price is the cheapest option
+    const price = variants.length ? Math.min(...variants.map(v => v.price)) : parseFloat(form.price);
+    if (!form.name || !price) {
       showToast('Please fill in required fields (Name and Price).', 'error');
-      return;
+      return null;
     }
 
     // Parse sizes
@@ -145,32 +174,68 @@ const AdminProducts = () => {
     const isPastryCategory = form.category === 'Pastries & Tarts' || form.category.toLowerCase().includes('pastr');
     if (isPastryCategory && (!form.packQuantity || parseInt(form.packQuantity) < 1)) {
       showToast('Please specify the required Pack Quantity (e.g. 12 pieces) for Pastry products.', 'error');
-      return;
+      return null;
     }
+
+    const addOns = form.addOns
+      .filter(a => a.name.trim())
+      .map((a, i) => ({ id: a.id || `addon_${Date.now()}_${i}`, name: a.name.trim(), price: Number(a.price) || 0 }));
 
     const productPayload = {
       name: form.name,
       category: form.category,
-      price: parseFloat(form.price) || 0,
-      basePrice: parseFloat(form.price) || 0,
+      price,
+      basePrice: price,
       shortDescription: form.shortDescription,
       description: form.description || form.shortDescription,
       image: form.image,
       inStock: form.inStock,
-      stockQuantity: parseInt(form.stockQuantity) || 10,
+      // Empty = stock isn't counted for this product
+      stockQuantity: form.stockQuantity === '' ? null : Math.max(0, parseInt(form.stockQuantity) || 0),
+      hidden: form.hidden,
+      mixFlavours: activeStoreTab === 'bakery' && form.mixFlavours,
+      availableAddOns: addOns,
       flavours: parsedFlavours,
       sizes: parsedSizes.length > 0 ? parsedSizes : [{ name: 'Standard', priceMultiplier: 1.0 }],
-      packQuantity: parseInt(form.packQuantity) || (isPastryCategory ? 12 : 1),
-      packLabel: form.packLabel || (form.packQuantity ? `${form.packQuantity} pieces` : ''),
-      brand: form.brand
+      // Pack size only applies to pastries sold without sets/options
+      packQuantity: isPastryCategory && !variants.length ? parseInt(form.packQuantity) || 12 : 1,
+      packLabel: isPastryCategory && !variants.length ? form.packLabel || `${form.packQuantity} pieces` : '',
+      brand: form.brand,
+      soldInSets,
+      unitLabel: soldInSets ? (unitLabel.trim() || 'pieces') : '',
+      variants: variants.length ? variants
+        // Supplies always sell through a variant; keep a single standard one
+        : activeStoreTab === 'supplies' ? [{ size: 'Standard', price }] : []
     };
+    // Counted stock decides availability: 0 left = out of stock, restocked = back in
+    const left = totalStock(productPayload);
+    if (left === 0) productPayload.inStock = false;
+    else if (left > 0 && editingProduct && totalStock(editingProduct) === 0) productPayload.inStock = true;
 
-    if (editingProduct) {
-      updateProduct(activeStoreTab, editingProduct.id, productPayload);
-    } else {
-      addProduct(activeStoreTab, productPayload);
+    return productPayload;
+  };
+
+  const handlePreview = () => {
+    const draft = buildPayload();
+    if (draft) openProductModal({ ...draft, id: editingProduct?.id || 'preview', store: activeStoreTab, isSupply: activeStoreTab === 'supplies', isPreview: true });
+  };
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    const productPayload = buildPayload();
+    if (!productPayload) return;
+
+    setSaving(true);
+    const { error } = editingProduct
+      ? await updateProduct(activeStoreTab, editingProduct.id, productPayload)
+      : await addProduct(activeStoreTab, productPayload);
+    setSaving(false);
+
+    if (error) {
+      showToast(`Could not save: ${error}`, 'error');
+      return;
     }
-
+    showToast(editingProduct ? 'Changes saved and live on the site' : 'Product added and live on the site', 'success');
     setIsModalOpen(false);
   };
 
@@ -187,15 +252,20 @@ const AdminProducts = () => {
           </p>
         </div>
 
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <button className="btn btn-secondary" onClick={() => setIsCategoriesOpen(true)}>
+          <Filter size={17} /> Manage categories
+        </button>
         <button className="btn btn-primary" onClick={handleOpenAdd}>
           <Plus size={17} /> Add New {activeStoreTab === 'bakery' ? 'Bakery Item' : 'Supply Product'}
         </button>
+        </div>
       </div>
 
       {/* Store Selector Tabs */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
         <button
-          onClick={() => { setActiveStoreTab('bakery'); setCategoryFilter('All'); }}
+          onClick={() => { setActiveStoreTab('bakery'); setCategoryFilter('All'); setSelectedIds([]); }}
           style={{
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.75rem 1.4rem', borderRadius: 'var(--radius-lg)',
@@ -212,7 +282,7 @@ const AdminProducts = () => {
         </button>
 
         <button
-          onClick={() => { setActiveStoreTab('supplies'); setCategoryFilter('All'); }}
+          onClick={() => { setActiveStoreTab('supplies'); setCategoryFilter('All'); setSelectedIds([]); }}
           style={{
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.75rem 1.4rem', borderRadius: 'var(--radius-lg)',
@@ -269,12 +339,31 @@ const AdminProducts = () => {
         </div>
       </div>
 
+      {selectedIds.length > 0 && (
+        <BulkEditBar
+          products={currentProducts.filter(p => selectedIds.includes(p.id))}
+          categories={categories.filter(c => c !== 'All')}
+          onUpdate={(id, changes) => updateProduct(activeStoreTab, id, changes)}
+          onDelete={id => deleteProduct(activeStoreTab, id)}
+          onDone={msg => { setSelectedIds([]); if (msg) showToast(msg, 'success'); }}
+          onError={msg => showToast(msg, 'error')}
+        />
+      )}
+
       {/* Products Table */}
       <div className="card" style={{ overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
             <thead>
               <tr style={{ background: 'var(--cream-100)', borderBottom: '1px solid var(--cream-200)', color: 'var(--charcoal-700)' }}>
+                <th style={{ padding: '0.85rem 0 0.85rem 1rem', width: 28 }}>
+                  <input
+                    type="checkbox"
+                    aria-label="Select all"
+                    checked={filteredProducts.length > 0 && filteredProducts.every(p => selectedIds.includes(p.id))}
+                    onChange={e => setSelectedIds(e.target.checked ? filteredProducts.map(p => p.id) : [])}
+                  />
+                </th>
                 <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Product</th>
                 <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Category</th>
                 <th style={{ padding: '0.85rem 1rem', fontWeight: 700 }}>Price</th>
@@ -286,22 +375,31 @@ const AdminProducts = () => {
             <tbody>
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                  <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
                     No products found matching your filters.
                   </td>
                 </tr>
               ) : (
                 filteredProducts.map(product => (
-                  <tr key={product.id} style={{ borderBottom: '1px solid var(--cream-100)' }}>
+                  <tr key={product.id} style={{ borderBottom: '1px solid var(--cream-100)', opacity: product.hidden ? 0.6 : 1 }}>
+                    <td style={{ padding: '0.85rem 0 0.85rem 1rem' }}>
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${product.name}`}
+                        checked={selectedIds.includes(product.id)}
+                        onChange={e => setSelectedIds(prev => e.target.checked ? [...prev, product.id] : prev.filter(id => id !== product.id))}
+                      />
+                    </td>
                     <td style={{ padding: '0.85rem 1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          style={{ width: 44, height: 44, borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }}
-                        />
+                        {product.image
+                          ? <img src={product.image} alt={product.name} style={{ width: 44, height: 44, borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }} />
+                          : <div style={{ width: 44, height: 44, borderRadius: '8px', flexShrink: 0, background: 'var(--cream-100)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ImageIcon size={18} color="var(--charcoal-400)" /></div>}
                         <div>
-                          <div style={{ fontWeight: 700, color: 'var(--charcoal-900)' }}>{product.name}</div>
+                          <div style={{ fontWeight: 700, color: 'var(--charcoal-900)' }}>
+                            {product.name}
+                            {product.hidden && <span className="badge badge-secondary" style={{ fontSize: '0.65rem', marginLeft: '0.4rem' }}>Hidden</span>}
+                          </div>
                           <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', maxWidth: '280px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                             {product.shortDescription}
                           </div>
@@ -315,6 +413,11 @@ const AdminProducts = () => {
                     </td>
                     <td style={{ padding: '0.85rem 1rem', fontWeight: 800, color: 'var(--text-gold)' }}>
                       ₦{(product.price || product.basePrice || 0).toLocaleString()}
+                      {product.variants?.length > 1 && (
+                        <div style={{ fontSize: '0.72rem', color: 'var(--charcoal-600)', fontWeight: 600 }}>
+                          from · {product.variants.length} {product.soldInSets ? 'sets' : 'options'}
+                        </div>
+                      )}
                       {product.packQuantity > 1 && (
                         <div style={{ fontSize: '0.72rem', color: 'var(--charcoal-600)', fontWeight: 600 }}>
                           ({product.packQuantity} pcs per pack)
@@ -322,11 +425,22 @@ const AdminProducts = () => {
                       )}
                     </td>
                     <td style={{ padding: '0.85rem 1rem' }}>
-                      <span style={{ fontWeight: 600 }}>{product.stockQuantity || 15} units</span>
+                      {(() => {
+                        const left = totalStock(product);
+                        if (left === null) return <span style={{ color: 'var(--text-muted)' }}>Not counted</span>;
+                        return (
+                          <span style={{ fontWeight: 600, color: left <= LOW_STOCK_AT ? 'var(--status-danger)' : undefined }}>
+                            {left} left{left > 0 && left <= LOW_STOCK_AT ? ' · low' : ''}
+                          </span>
+                        );
+                      })()}
                     </td>
                     <td style={{ padding: '0.85rem 1rem' }}>
                       <button
-                        onClick={() => toggleAvailability(activeStoreTab, product.id)}
+                        onClick={async () => {
+                          const { error } = await toggleAvailability(activeStoreTab, product.id);
+                          if (error) showToast(`Could not save: ${error}`, 'error');
+                        }}
                         style={{
                           display: 'inline-flex',
                           alignItems: 'center',
@@ -363,7 +477,9 @@ const AdminProducts = () => {
                         <button
                           onClick={() => {
                             if (window.confirm(`Are you sure you want to delete "${product.name}"?`)) {
-                              deleteProduct(activeStoreTab, product.id);
+                              deleteProduct(activeStoreTab, product.id).then(({ error }) => {
+                                if (error) showToast(`Could not delete: ${error}`, 'error');
+                              });
                             }
                           }}
                           style={{
@@ -435,23 +551,33 @@ const AdminProducts = () => {
                     Category *
                   </label>
                   <select
+                    required
                     value={form.category}
                     onChange={e => setForm({ ...form, category: e.target.value })}
                     style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem', background: 'var(--bg-surface)' }}
                   >
-                    {categories.filter(c => c !== 'All').map(c => (
+                    {/* A product whose category was removed keeps it until changed */}
+                    {form.category && !categoryList.includes(form.category) && (
+                      <option value={form.category}>{form.category} (not on list)</option>
+                    )}
+                    {categoryList.map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
+                  <button type="button" onClick={() => setIsCategoriesOpen(true)}
+                    style={{ background: 'none', border: 'none', padding: 0, marginTop: '0.3rem', fontSize: '0.72rem', color: 'var(--text-gold)', fontWeight: 700, cursor: 'pointer' }}>
+                    Edit categories list
+                  </button>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--charcoal-700)' }}>
-                    Base Price (₦) *
+                    Base Price (₦) {form.options.options.length ? '(from options)' : '*'}
                   </label>
                   <input
                     type="number"
-                    required
+                    required={!form.options.options.length}
+                    disabled={form.options.options.length > 0}
                     value={form.price}
                     onChange={e => setForm({ ...form, price: e.target.value })}
                     style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem' }}
@@ -471,9 +597,34 @@ const AdminProducts = () => {
                 />
               </div>
 
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'flex-end' }}>
+                {!form.options.options.length && (
+                  <div style={{ flex: '1 1 180px' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--charcoal-700)' }}>
+                      Stock quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={form.stockQuantity}
+                      placeholder="Leave empty if you don't count it"
+                      onChange={e => setForm({ ...form, stockQuantity: e.target.value })}
+                      style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem' }}
+                    />
+                  </div>
+                )}
+                <label style={{ flex: '1 1 180px', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', fontWeight: 600, cursor: 'pointer', paddingBottom: '0.6rem' }}>
+                  <input type="checkbox" checked={form.hidden} onChange={e => setForm({ ...form, hidden: e.target.checked })} />
+                  Hide from store (draft)
+                </label>
+              </div>
+              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '-0.6rem' }}>
+                Stock goes down by itself when you confirm an order's payment. Change it here any time, e.g. after an in-shop sale.
+              </div>
+
               <div>
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--charcoal-700)' }}>
-                  Product Picture (Local File or Web URL) *
+                  Product Picture (Local File or Web URL)
                 </label>
                 
                 {/* Local Upload Area */}
@@ -584,11 +735,17 @@ const AdminProducts = () => {
                       placeholder="e.g. Belgian Chocolate, Vanilla Bean, Red Velvet"
                       style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--cream-300)', fontSize: '0.875rem' }}
                     />
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', fontWeight: 600, marginTop: '0.5rem', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={form.mixFlavours} onChange={e => setForm({ ...form, mixFlavours: e.target.checked })} />
+                      Customers can mix flavours in one order (Mix &amp; Match, e.g. a box of 12 with 3 flavours)
+                    </label>
                   </div>
+
+                  <AddOnsEditor value={form.addOns} onChange={addOns => setForm(prev => ({ ...prev, addOns }))} />
 
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.3rem', color: 'var(--charcoal-700)' }}>
-                      Sizes & Multipliers (Format: Name:Multiplier, ...)
+                      Sizes & Multipliers (Format: Name:Multiplier, ...), ignored when options are set below
                     </label>
                     <input
                       type="text"
@@ -616,17 +773,35 @@ const AdminProducts = () => {
                 </div>
               )}
 
+              <ProductOptionsEditor
+                value={form.options}
+                onChange={options => setForm(prev => ({ ...prev, options }))}
+                onError={msg => showToast(msg, 'error')}
+              />
+
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
                 <button type="button" className="btn btn-secondary" onClick={() => setIsModalOpen(false)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  {editingProduct ? 'Save Changes' : 'Create Product'}
+                <button type="button" className="btn btn-secondary" onClick={handlePreview}>
+                  <Eye size={16} /> Preview
+                </button>
+                <button type="submit" className="btn btn-primary" disabled={saving}>
+                  {saving ? 'Saving…' : editingProduct ? 'Save Changes' : 'Create Product'}
                 </button>
               </div>
             </form>
           </div>
         </div>
+      )}
+      {/* After the product editor so it opens on top of it */}
+      {isCategoriesOpen && (
+        <CategoriesModal
+          store={activeStoreTab}
+          list={categoryLists[activeStoreTab]}
+          products={currentProducts}
+          onClose={() => setIsCategoriesOpen(false)}
+        />
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PortalLoader from '../../components/Splash/PortalLoader';
 import { LogOut, Navigation, UserCheck, Shield, Compass } from 'lucide-react';
 import RiderLoginPage from './RiderLoginPage';
 import RiderPortal from '../RiderPortal';
@@ -53,9 +54,7 @@ export default function RiderLayout() {
 
   if (rider === undefined) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-        Checking session…
-      </div>
+      <PortalLoader label="Opening Rider Terminal…" />
     );
   }
 

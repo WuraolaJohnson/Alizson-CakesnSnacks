@@ -38,8 +38,12 @@ const StorePage = ({ store, products, title, subtitle, categoryEmojis = {}, pric
   const categories = useMemo(() => {
     const names = [];
     products.forEach(p => { if (p.category && !names.includes(p.category)) names.push(p.category); });
+    // In the admin's order; categories not on her list go last
+    const order = Object.keys(categoryEmojis);
+    const rank = n => (order.includes(n) ? order.indexOf(n) : order.length);
+    names.sort((a, b) => rank(a) - rank(b));
     return ['All', ...names];
-  }, [products]);
+  }, [products, categoryEmojis]);
 
   // A category chosen in the other store may not exist here
   const activeCategory = categories.includes(activeCategoryFilter) ? activeCategoryFilter : 'All';

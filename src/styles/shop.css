@@ -140,6 +140,7 @@
   top: 0;
   bottom: 0;
   width: 48%;
+  height: 100%;
   object-fit: cover;
   z-index: -1;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 35%);
@@ -665,7 +666,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  padding: 0.7rem 0;
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
 }
 
 .store-header {

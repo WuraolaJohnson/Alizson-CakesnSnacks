@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Grid3X3, Gift, ShoppingCart, User } from 'lucide-react';
+import { Home, Cake, Package, Gift, ShoppingCart, User } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useCart } from '../../context/CartContext';
 
@@ -9,8 +9,9 @@ const MobileNav = () => {
 
   const items = [
     { id: 'home', label: 'Home', icon: <Home size={22} /> },
-    { id: 'bakery', label: 'Store', icon: <Grid3X3 size={22} /> },
-    { id: 'gift', label: 'Gift Studio', icon: <Gift size={22} />, isGift: true },
+    { id: 'bakery', label: 'Bakery', icon: <Cake size={22} /> },
+    { id: 'supplies', label: 'Supplies', icon: <Package size={22} /> },
+    { id: 'gift', label: 'Gifts', icon: <Gift size={22} />, isGift: true },
     { id: 'cart', label: 'Cart', icon: <ShoppingCart size={22} />, badge: totalItemsCount > 0 ? totalItemsCount : null },
     { id: 'dashboard', label: 'Account', icon: <User size={22} /> },
   ];

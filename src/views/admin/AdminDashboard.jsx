@@ -10,7 +10,7 @@ import { StatusBadge } from '../../components/Common/StatusBadge';
 
 const AdminDashboard = ({ setActiveTab }) => {
   const { orders, updateOrderStatus, feedbackList } = useOrders();
-  const { bakeryProducts, supplyProducts, toggleAvailability } = useProducts();
+  const { allBakeryProducts: bakeryProducts, allSupplyProducts: supplyProducts, toggleAvailability } = useProducts();
   const { navigateTo } = useApp();
 
   const handleTabNav = (tab) => {

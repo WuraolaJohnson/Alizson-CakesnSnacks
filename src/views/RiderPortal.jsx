@@ -120,11 +120,11 @@ export default function RiderPortal({ authRider }) {
 
     if (hasActiveDelivery) {
       if (activeRider.availabilityStatus !== 'Busy') {
-        updateRiderAvailability(activeRider.id, 'Busy');
+        updateRiderAvailability(activeRider.id, 'Busy', activeRider);
       }
     } else {
       if (activeRider.availabilityStatus === 'Busy') {
-        updateRiderAvailability(activeRider.id, 'Available');
+        updateRiderAvailability(activeRider.id, 'Available', activeRider);
       }
     }
   }, [isTrackingGps, activeOrders, activeRider?.id, activeRider?.availabilityStatus]);
@@ -274,8 +274,8 @@ export default function RiderPortal({ authRider }) {
                 <span className="badge badge-gold" style={{ fontSize: '0.7rem' }}>Rider ID: {activeRider.id}</span>
               </div>
               <div style={{ fontSize: '0.8rem', color: '#E8D8C0', display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                <span>🏢 Hub: {activeRider.hub}</span>
-                <span>🛵 {activeRider.vehicle}</span>
+                <span>🏢 Hub: {activeRider.hub || 'Not assigned yet'}</span>
+                {activeRider.vehicle && <span>🛵 {activeRider.vehicle}</span>}
               </div>
             </div>
           </div>
@@ -287,7 +287,7 @@ export default function RiderPortal({ authRider }) {
               <select
                 value={activeRider.availabilityStatus || 'Available'}
                 disabled={activeOrders.length > 0} // Locked to BUSY if active delivery is in progress
-                onChange={e => updateRiderAvailability(activeRider.id, e.target.value)}
+                onChange={e => updateRiderAvailability(activeRider.id, e.target.value, activeRider)}
                 style={{
                   background: activeRider.availabilityStatus === 'Available' ? '#10B981' : activeRider.availabilityStatus === 'Busy' ? '#F59E0B' : '#EF4444',
                   color: 'white',
@@ -1058,7 +1058,7 @@ export default function RiderPortal({ authRider }) {
           <RiderProfileTab
             rider={activeRider}
             onOpenEdit={() => setEditProfileModalOpen(true)}
-            onUpdateAvailability={(val) => updateRiderAvailability(activeRider.id, val)}
+            onUpdateAvailability={(val) => updateRiderAvailability(activeRider.id, val, activeRider)}
           />
         )}
 
@@ -1208,7 +1208,7 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
           <div><strong>Vehicle Description:</strong> {rider.vehicle}</div>
           <div><strong>Vehicle Type:</strong> {rider.vehicleType || 'Motorcycle'}</div>
           <div><strong>License Registration:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rider.licenseNo || 'OG-DRV-882091'}</span></div>
-          <div><strong>Assigned Dispatch Hub:</strong> {rider.hub}</div>
+          <div><strong>Assigned Dispatch Hub:</strong> {rider.hub || 'Not assigned yet'}</div>
           <div><strong>Emergency Contact:</strong> {rider.emergencyContactName || 'Family Member'}</div>
           <div><strong>Emergency Phone:</strong> {rider.emergencyContactPhone || rider.phone}</div>
         </div>
@@ -1219,7 +1219,8 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
 );
 
 const RiderEarningsTab = ({ rider, assignedOrders, completedOrders }) => {
-  const totalEarned = (completedOrders.length * 1500) + (rider.todayEarnings || 7500);
+  // Allowance per completed delivery, plus anything the admin has recorded
+  const totalEarned = (completedOrders.length * 1500) + (rider.todayEarnings || 0);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -1241,7 +1242,7 @@ const RiderEarningsTab = ({ rider, assignedOrders, completedOrders }) => {
 
         <div className="card" style={{ padding: '1.35rem', textAlign: 'center' }}>
           <div style={{ fontSize: '1.8rem', marginBottom: '0.35rem' }}>⭐</div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{rider.rating ?? '—'}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-gold)' }}>{rider.rating ?? <span style={{ fontSize: '1rem' }}>No ratings yet</span>}</div>
           <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Customer Rating Score</div>
         </div>
 
@@ -1885,7 +1886,7 @@ const RiderHistoryTab = ({ historyOrders, rider }) => {
             <div style={{ fontSize: '0.85rem', marginBottom: '1rem', color: 'var(--text-secondary)' }}>
               <div><strong>Customer:</strong> {selectedAuditOrder.customerName}</div>
               <div><strong>Delivery Fee:</strong> ₦{(selectedAuditOrder.deliveryFee || 1500).toLocaleString()}</div>
-              <div><strong>Assigned Hub:</strong> {rider.hub}</div>
+              <div><strong>Assigned Hub:</strong> {rider.hub || 'Not assigned yet'}</div>
             </div>
 
             <div style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>

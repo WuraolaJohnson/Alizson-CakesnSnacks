@@ -47,38 +47,14 @@ export const CartProvider = ({ children }) => {
   // Distinct Carts
   const [bakeryCart, setBakeryCart] = useState(() => {
     const saved = localStorage.getItem('cz_bakery_cart');
-    return saved ? JSON.parse(saved) : [
-      {
-        cartItemId: 'bak_cart_1',
-        id: 'bak-001',
-        store: 'bakery',
-        name: 'Chocolate Fudge Decadence Cake',
-        image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
-        size: '8 inch (Feeds 12-16)',
-        flavour: 'Belgian Chocolate',
-        addOns: ['Extra Silk Frosting'],
-        customMessage: 'Happy Birthday Grace!',
-        unitPrice: 28325,
-        quantity: 1
-      }
-    ];
+    // Drop the old demo item that earlier versions pre-filled
+    return saved ? JSON.parse(saved).filter(i => i.cartItemId !== 'bak_cart_1') : [];
   });
 
   const [suppliesCart, setSuppliesCart] = useState(() => {
     const saved = localStorage.getItem('cz_supplies_cart');
-    return saved ? JSON.parse(saved) : [
-      {
-        cartItemId: 'sup_cart_1',
-        id: 'sup-001',
-        store: 'supplies',
-        name: 'Premium Grass-Fed Bakery Butter',
-        brand: 'Lurpak Artisan',
-        image: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=800&q=80',
-        size: '500g Block',
-        unitPrice: 7500,
-        quantity: 2
-      }
-    ];
+    // Drop the old demo item that earlier versions pre-filled
+    return saved ? JSON.parse(saved).filter(i => i.cartItemId !== 'sup_cart_1') : [];
   });
 
   // Active Cart Tab in Drawer/Page
@@ -94,15 +70,16 @@ export const CartProvider = ({ children }) => {
 
   // Add Bakery Product to Bakery Cart
   const addToBakeryCart = (product, config = {}) => {
-    const sizeName = config.size?.name || product.sizes?.[0]?.name || 'Standard';
-    const sizeMultiplier = config.size?.priceMultiplier || 1.0;
+    const variant = config.variant;
+    const sizeName = variant?.size || config.size?.name || product.sizes?.[0]?.name || 'Standard';
+    const sizeMultiplier = variant ? 1.0 : (config.size?.priceMultiplier || 1.0);
     const flavourName = config.flavour || product.flavours?.[0] || 'Original';
     const selectedAddOns = config.addOns || [];
     const customMessage = config.customMessage || '';
     const quantity = config.quantity || 1;
 
     // Calculate unit price: (basePrice * multiplier) + addOns sum
-    const basePrice = product.price;
+    const basePrice = variant ? Number(variant.price) || 0 : product.price;
     const addOnsTotal = selectedAddOns.reduce((sum, item) => sum + (item.price || 0), 0);
     const calculatedUnitPrice = Math.round((basePrice * sizeMultiplier) + addOnsTotal);
 
@@ -113,7 +90,7 @@ export const CartProvider = ({ children }) => {
       id: product.id,
       store: 'bakery',
       name: product.name,
-      image: product.image,
+      image: variant?.image || product.image,
       size: sizeName,
       flavour: flavourName,
       addOns: selectedAddOns.map(a => a.name),
@@ -151,7 +128,7 @@ export const CartProvider = ({ children }) => {
         store: 'supplies',
         name: product.name,
         brand: product.brand || 'Alizson Supplies',
-        image: product.image,
+        image: selectedVariant.image || product.image,
         size: selectedVariant.size,
         unitPrice,
         quantity

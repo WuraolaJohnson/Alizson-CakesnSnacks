@@ -26,11 +26,11 @@ const ProductCard = ({ product, store, compact = false }) => {
   let price;
   let hasOptions;
   let priceVaries;
-  if (isSupply) {
+  if (isSupply || product.variants?.length) {
     const variants = product.variants?.length ? product.variants : [{ size: 'Standard', price: product.basePrice ?? product.price ?? 0 }];
     const prices = variants.map(v => Number(v.price) || 0);
     price = Math.min(...prices);
-    hasOptions = variants.length > 1;
+    hasOptions = variants.length > 1 || (!isSupply && (product.flavours?.length || 0) > 1);
     priceVaries = new Set(prices).size > 1;
   } else {
     price = product.price ?? product.basePrice ?? 0;
@@ -56,6 +56,7 @@ const ProductCard = ({ product, store, compact = false }) => {
     } else {
       addToBakeryCart(product, {
         size: product.sizes?.[0],
+        variant: product.variants?.[0],
         flavour: product.flavours?.[0] || 'Original',
         addOns: [],
         quantity: 1
@@ -137,7 +138,7 @@ const ProductCard = ({ product, store, compact = false }) => {
 
         {hasOptions && product.inStock && (
           <div className="shop-card__options">
-            {isSupply ? `${product.variants.length} sizes` : 'Choose size & flavour'}
+            {product.variants?.length ? `${product.variants.length} ${product.soldInSets ? 'sets' : 'options'}` : 'Choose size & flavour'}
           </div>
         )}
       </div>

@@ -241,7 +241,7 @@ export async function getRiderForUser(userId) {
       emergencyContactName:  data.emergency_contact_name,
       emergencyContactPhone: data.emergency_contact_phone,
       dateJoined:            data.date_joined,
-      rating:                Number(data.rating ?? 5),
+      rating:                data.rating == null ? null : Number(data.rating),
       hub:                   data.hub,
       accountStatus:         data.account_status,
       availabilityStatus:    data.availability_status,
@@ -266,13 +266,14 @@ export async function getRiderForUser(userId) {
  * "returning from Google" logic runs just as it did with the redirect flow.
  *
  * @param {'admin'|'rider'|null} portal - staff portal to return to
- * @returns {{ error }} only if sign-in failed or was cancelled.
+ * @returns {{ user, error }}
  */
 export async function signInWithGoogle(portal = null) {
   if (!isFirebaseReady()) {
     return { error: 'Google sign-in is unavailable: Firebase is not configured.' };
   }
 
+  let user = null;
   try {
     if (portal) {
       localStorage.setItem(OAUTH_PORTAL_KEY, JSON.stringify({ portal, at: Date.now() }));
@@ -283,13 +284,13 @@ export async function signInWithGoogle(portal = null) {
 
   try {
     const cred = await signInWithPopup(auth, new GoogleAuthProvider());
-    await loadProfile(cred.user);
+    user = await loadProfile(cred.user);
   } catch (err) {
     return { error: authMessage(err) };
   }
 
   if (portal) window.location.assign(window.location.origin + `/?portal=${portal}`);
-  return { error: null };
+  return { user, error: null };
 }
 
 const OAUTH_PORTAL_KEY = 'cz_oauth_portal';

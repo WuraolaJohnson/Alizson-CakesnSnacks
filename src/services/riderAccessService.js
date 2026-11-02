@@ -88,6 +88,20 @@ export function subscribeRiders(callback) {
     (err) => console.error('[riderAccess] riders subscribe failed:', err));
 }
 
+/** Rider (or admin): save a rider's duty status so it survives reloads and the admin sees it. */
+export async function saveRiderAvailability(riderId, status) {
+  if (!isFirebaseReady()) return { error: null };
+  try {
+    await updateDoc(doc(db, 'riders', String(riderId)), {
+      availability_status: status,
+      updated_at: new Date().toISOString()
+    });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
 /** Admin: rider records from Firestore (id, name, email, user_id). */
 export async function fetchRiderRecords() {
   if (!isFirebaseReady()) return [];

@@ -5,8 +5,9 @@ import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb } from '../services/orderService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
-import { subscribeRiders } from '../services/riderAccessService';
+import { subscribeRiders, saveRiderAvailability } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
+import { useProducts } from './ProductContext';
 
 const OrderContext = createContext();
 
@@ -108,6 +109,7 @@ export const INITIAL_RIDERS = [
 export const AVAILABLE_RIDERS = isFirebaseReady() ? [] : INITIAL_RIDERS;
 
 export const OrderProvider = ({ children, showToast = () => {} }) => {
+  const { deductStock } = useProducts();
   const sanitizeOrder = (o, idx = 0) => {
     const itemsSubtotal = (o.items || []).reduce((acc, i) => acc + (i.unitPrice || 0) * (i.quantity || 1), 0);
     const giftFee = o.giftFee || 0;
@@ -282,6 +284,15 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const confirmBankTransferPayment = (orderId, adminName = 'Admin Finance') => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const paidOrder = orders.find(o => o.id === orderId);
+    // Paid orders take their items out of stock, once per order
+    const deductNow = paidOrder && !paidOrder.stockDeducted;
+    if (deductNow) deductStock(paidOrder.items);
+    updateOrderStatusInDb(
+      orderId,
+      { paymentStatus: 'Paid', bankTransferVerifiedBy: adminName, ...(deductNow && { stockDeducted: true }) },
+      { event: `🏦 Direct Bank Transfer Verified & Confirmed by ${adminName}`, statusStep: paidOrder?.statusStep ?? 0, timestamp: timeStr, actor: adminName }
+    ).catch(err => console.warn('[OrderContext] Firestore confirmPayment failed:', err));
     setOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
@@ -293,6 +304,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
         return {
           ...order,
           paymentStatus: 'Paid',
+          stockDeducted: true,
           bankTransferVerifiedBy: adminName,
           paymentConfirmedAt: timeStr,
           trackingHistory: [...(order.trackingHistory || []), eventLog]
@@ -584,9 +596,17 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   /** Admin: keep `riders` in sync with Firestore. Returns unsubscribe. */
   const watchRiders = () => subscribeRiders(setRiders);
 
-  const updateRiderAvailability = (riderId, newStatus) => {
-    setRiders(prev => prev.map(r => r.id === riderId ? { ...r, availabilityStatus: newStatus } : r));
-    showToast(`Duty Status updated to ${newStatus} 🛵`, 'info');
+  /**
+   * `rider` is the signed-in rider's record: riders only load their own,
+   * so it's added to the list if missing, then the change is saved.
+   */
+  const updateRiderAvailability = async (riderId, newStatus, rider = null) => {
+    setRiders(prev => prev.some(r => r.id === riderId)
+      ? prev.map(r => r.id === riderId ? { ...r, availabilityStatus: newStatus } : r)
+      : rider ? [...prev, { ...rider, availabilityStatus: newStatus }] : prev);
+    const { error } = await saveRiderAvailability(riderId, newStatus);
+    if (error) showToast(`Could not save duty status: ${error}`, 'error');
+    else showToast(`Duty Status updated to ${newStatus} 🛵`, 'info');
   };
 
   const updateRiderProfile = (riderId, profileData) => {

@@ -119,6 +119,13 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
             <Truck size={16} /> Manage Delivery Prices
           </button>
           <button
+            onClick={() => setIsBankModalOpen(true)}
+            className="btn btn-outline"
+            style={{ fontSize: '0.85rem', padding: '0.55rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700 }}
+          >
+            🏦 Bank Details
+          </button>
+          <button
             onClick={() => setIsSalesExportModalOpen(true)}
             className="btn btn-gold"
             style={{ fontSize: '0.85rem', padding: '0.55rem 1rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontWeight: 800 }}
@@ -582,6 +589,11 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
       <DeliveryPricesModal
         isOpen={isDeliveryModalOpen}
         onClose={() => setIsDeliveryModalOpen(false)}
+      />
+
+      <StoreBankSettingsModal
+        isOpen={isBankModalOpen}
+        onClose={() => setIsBankModalOpen(false)}
       />
 
       <SalesExportModal

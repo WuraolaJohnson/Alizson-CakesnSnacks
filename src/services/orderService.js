@@ -52,6 +52,7 @@ export function dbToOrder(row) {
     riderLocation:             row.rider_location,
     giftOptions:               row.gift_options,
     bankTransferVerifiedBy:    row.bank_transfer_verified_by,
+    stockDeducted:             row.stock_deducted === true,
     adminPaymentOverride:      row.admin_payment_override,
     cashPaymentConfirmedByRider: row.cash_payment_confirmed_by_rider,
     failureReason:             row.failure_reason,
@@ -218,6 +219,7 @@ export async function updateOrderStatusInDb(orderId, updates, trackingEvent) {
   if (updates.riderLocation !== undefined)       dbUpdates.rider_location = updates.riderLocation;
   if (updates.failureReason !== undefined)       dbUpdates.failure_reason = updates.failureReason;
   if (updates.bankTransferVerifiedBy !== undefined) dbUpdates.bank_transfer_verified_by = updates.bankTransferVerifiedBy;
+  if (updates.stockDeducted !== undefined)       dbUpdates.stock_deducted = updates.stockDeducted;
   if (updates.adminPaymentOverride !== undefined) dbUpdates.admin_payment_override = updates.adminPaymentOverride;
   if (updates.cashPaymentConfirmedByRider !== undefined) dbUpdates.cash_payment_confirmed_by_rider = updates.cashPaymentConfirmedByRider;
   dbUpdates.updated_at = new Date().toISOString();

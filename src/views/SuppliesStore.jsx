@@ -1,10 +1,8 @@
 import React from 'react';
 import { useProducts } from '../context/ProductContext';
 import StorePage from '../components/Common/StorePage';
+import { categoryEmojiMap } from '../data/categories';
 
-const CATEGORY_EMOJIS = {
-  All: '🛍️', 'Dry Ingredients': '🌾', 'Wet Ingredients': '🥛', Decorations: '🎨', Packaging: '📦', Tools: '🔧'
-};
 
 // Cheapest variant, matching the "From ₦…" price on the card
 const priceOf = p => {
@@ -13,14 +11,14 @@ const priceOf = p => {
 };
 
 const SuppliesStore = () => {
-  const { supplyProducts } = useProducts();
+  const { supplyProducts, categories } = useProducts();
   return (
     <StorePage
       store="supplies"
       products={supplyProducts}
       title="🧁 Alizson Baking Supplies"
       subtitle="Ingredients, decorations, packaging and professional tools — delivered across Ogun State."
-      categoryEmojis={CATEGORY_EMOJIS}
+      categoryEmojis={categoryEmojiMap(categories.supplies)}
       priceOf={priceOf}
     />
   );

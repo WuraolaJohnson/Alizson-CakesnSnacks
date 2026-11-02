@@ -28,3 +28,26 @@ export async function saveBankAccount(account) {
     return { error: err.message };
   }
 }
+
+// ── Product categories ────────────────────────────────────────
+
+const categoriesRef = () => doc(db, 'store_settings', 'categories');
+
+/** Live category lists { bakery: [{name, emoji}], supplies: [...] }; null until saved. */
+export function subscribeCategories(callback) {
+  if (!isFirebaseReady()) return () => {};
+  return onSnapshot(categoriesRef(),
+    (snap) => callback(snap.exists() ? snap.data().value : null),
+    (err) => console.error('[settings] categories subscribe failed:', err));
+}
+
+/** Admin: save both stores' category lists. */
+export async function saveCategoriesInDb(value) {
+  if (!isFirebaseReady()) return { error: null };
+  try {
+    await setDoc(categoriesRef(), { value, updated_at: new Date().toISOString() });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}

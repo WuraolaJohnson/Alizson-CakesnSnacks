@@ -13,19 +13,19 @@ const GoogleLogo = () => (
 /**
  * "Continue with Google" button followed by an "or" divider.
  * @param {'admin'|'rider'|null} portal - staff portal to return to after Google
- * @param {function} onError - receives an error message if the redirect fails
+ * @param {function} onError - receives an error message if sign-in fails
+ * @param {function} onSuccess - receives the signed-in user (customer sign-in)
  */
-const GoogleSignInButton = ({ portal = null, onError }) => {
+const GoogleSignInButton = ({ portal = null, onError, onSuccess }) => {
   const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
     setLoading(true);
-    const { error } = await signInWithGoogle(portal);
-    // On success the browser navigates away to Google, so only errors land here
-    if (error) {
-      onError?.(error);
-      setLoading(false);
-    }
+    const { user, error } = await signInWithGoogle(portal);
+    // Staff portals reload the page on success; customers stay here
+    if (error) onError?.(error);
+    else if (user && !portal) onSuccess?.(user);
+    if (error || !portal) setLoading(false);
   };
 
   return (
@@ -38,7 +38,7 @@ const GoogleSignInButton = ({ portal = null, onError }) => {
         style={{ width: '100%', justifyContent: 'center', gap: '0.6rem' }}
       >
         <GoogleLogo />
-        {loading ? 'Redirecting to Google…' : 'Continue with Google'}
+        {loading ? 'Signing in with Google…' : 'Continue with Google'}
       </button>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', margin: '1.1rem 0', color: 'var(--text-muted)', fontSize: '0.78rem' }}>

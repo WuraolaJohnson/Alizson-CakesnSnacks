@@ -11,7 +11,7 @@ import DeliveryPricesModal from '../../components/Admin/DeliveryPricesModal';
 
 const AdminRecords = () => {
   const { orders } = useOrders();
-  const { bakeryProducts, supplyProducts } = useProducts();
+  const { allBakeryProducts: bakeryProducts, allSupplyProducts: supplyProducts } = useProducts();
   const { showToast } = useApp();
   const [timeframe, setTimeframe] = useState('month'); // 'week', 'month', 'year'
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);

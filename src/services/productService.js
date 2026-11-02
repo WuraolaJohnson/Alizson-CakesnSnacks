@@ -6,84 +6,47 @@
  * not configured (i.e. during offline / development mode).
  */
 
-import { collection, doc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, writeBatch, onSnapshot } from 'firebase/firestore';
 import { db, isFirebaseReady } from '../lib/firebase';
 import { initialBakeryProducts } from '../data/bakeryProducts';
 import { initialSupplyProducts } from '../data/supplyProducts';
 
 // ── Helpers ───────────────────────────────────────────────────
 
-/** Map snake_case DB row → camelCase app object */
+// Older documents were written with snake_case keys; new ones store the
+// product exactly as the app uses it, so options, sets and supply variants
+// are never dropped on save.
+const LEGACY_KEYS = {
+  reviews_count: 'reviewsCount', short_description: 'shortDescription',
+  in_stock: 'inStock', stock_quantity: 'stockQuantity',
+  available_add_ons: 'availableAddOns', prep_time: 'prepTime',
+  created_at: 'createdAt', updated_at: 'updatedAt'
+};
+
+/** Firestore document → app product */
 function dbToProduct(row) {
+  const product = {};
+  for (const [key, value] of Object.entries(row)) product[LEGACY_KEYS[key] || key] = value;
   return {
-    id:                row.id,
-    store:             row.store,
-    name:              row.name,
-    slug:              row.slug,
-    category:          row.category,
-    price:             Number(row.price) || 0,
-    rating:            Number(row.rating) || 0,
-    reviewsCount:      row.reviews_count || 0,
-    badge:             row.badge,
-    shortDescription:  row.short_description,
-    description:       row.description,
-    image:             row.image,
-    gallery:           row.gallery || [],
-    sku:               row.sku,
-    inStock:           row.in_stock !== false,
-    stockQuantity:     row.stock_quantity || 0,
-    sizes:             row.sizes || [],
-    flavours:          row.flavours || [],
-    availableAddOns:   row.available_add_ons || [],
-    ingredients:       row.ingredients,
-    prepTime:          row.prep_time,
-    dietary:           row.dietary || [],
-    brand:             row.brand,
-    weight:            row.weight,
-    dimensions:        row.dimensions,
-    material:          row.material,
-    createdAt:         row.created_at,
-    updatedAt:         row.updated_at
+    ...product,
+    price:        Number(product.price ?? product.basePrice) || 0,
+    rating:       Number(product.rating) || 0,
+    reviewsCount: product.reviewsCount || 0,
+    inStock:      product.inStock !== false,
+    gallery:      product.gallery || [],
+    sizes:        product.sizes || [],
+    flavours:     product.flavours || [],
+    dietary:      product.dietary || []
   };
 }
 
-/** Map camelCase app object → snake_case DB row (undefined fields dropped) */
+/** App product → Firestore document (undefined values dropped, even nested) */
 function productToDb(product) {
-  return stripUndefined({
-    id:                 product.id,
-    store:              product.store,
-    name:               product.name,
-    slug:               product.slug,
-    category:           product.category,
-    price:              product.price,
-    rating:             product.rating,
-    reviews_count:      product.reviewsCount,
-    badge:              product.badge,
-    short_description:  product.shortDescription,
-    description:        product.description,
-    image:              product.image,
-    gallery:            product.gallery,
-    sku:                product.sku,
-    in_stock:           product.inStock !== false,
-    stock_quantity:     product.stockQuantity,
-    sizes:              product.sizes,
-    flavours:           product.flavours,
-    available_add_ons:  product.availableAddOns,
-    ingredients:        product.ingredients,
-    prep_time:          product.prepTime,
-    dietary:            product.dietary,
-    brand:              product.brand,
-    weight:             product.weight,
-    dimensions:         product.dimensions,
-    material:           product.material,
-    created_at:         product.createdAt || new Date().toISOString(),
-    updated_at:         new Date().toISOString()
-  });
-}
-
-/** Firestore rejects undefined values */
-function stripUndefined(obj) {
-  return Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined));
+  return JSON.parse(JSON.stringify({
+    ...product,
+    createdAt: product.createdAt || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }));
 }
 
 const productsCol = () => collection(db, 'products');
@@ -102,7 +65,8 @@ export async function fetchProducts(store) {
   try {
     const snap = await getDocs(query(productsCol(), where('store', '==', store)));
     data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-      .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+      .map(dbToProduct)
+      .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')));
   } catch (err) {
     error = err;
   }
@@ -114,14 +78,7 @@ export async function fetchProducts(store) {
     return { products: fallback, error: error.message };
   }
 
-  // If no products seeded yet, seed from local data
-  if (!data || data.length === 0) {
-    await seedProducts(store);
-    const fallback = store === 'bakery' ? initialBakeryProducts : initialSupplyProducts;
-    return { products: fallback, error: null };
-  }
-
-  return { products: data.map(dbToProduct), error: null };
+  return { products: data, error: null };
 }
 
 /** Seed products from local data arrays into Firestore (one-time setup) */
@@ -143,10 +100,26 @@ export async function seedProducts(store) {
   }
 }
 
-/** Seed ALL products (bakery + supplies) */
-export async function seedAllProducts() {
-  await seedProducts('bakery');
-  await seedProducts('supplies');
+/**
+ * First-run setup: copies the starter catalogue into Firestore once (admin only).
+ * A marker in store_settings stops it from ever running again, so products the
+ * admin deletes stay deleted.
+ */
+export async function seedCatalogOnce() {
+  if (!isFirebaseReady()) return;
+  const marker = doc(db, 'store_settings', 'catalog');
+  try {
+    if ((await getDoc(marker)).exists()) return;
+    if (!(await getDocs(productsCol())).empty) {
+      await setDoc(marker, { seeded: true, at: new Date().toISOString() });
+      return;
+    }
+    await seedProducts('bakery');
+    await seedProducts('supplies');
+    await setDoc(marker, { seeded: true, at: new Date().toISOString() });
+  } catch (err) {
+    console.error('[productService] seedCatalogOnce error:', err);
+  }
 }
 
 // ── Upsert / Update ───────────────────────────────────────────
@@ -156,7 +129,7 @@ export async function upsertProduct(product) {
 
   const row = productToDb(product);
   try {
-    await setDoc(doc(db, 'products', String(row.id)), row, { merge: true });
+    await setDoc(doc(db, 'products', String(row.id)), row);
     return { product: dbToProduct(row), error: null };
   } catch (err) {
     return { product: null, error: err.message };
@@ -165,31 +138,25 @@ export async function upsertProduct(product) {
 
 export async function updateProduct(productId, changes) {
   if (!isFirebaseReady()) return { error: null };
-
-  // Map camelCase to snake_case
-  const dbChanges = {};
-  if (changes.name !== undefined)             dbChanges.name = changes.name;
-  if (changes.price !== undefined)            dbChanges.price = changes.price;
-  if (changes.inStock !== undefined)          dbChanges.in_stock = changes.inStock;
-  if (changes.stockQuantity !== undefined)    dbChanges.stock_quantity = changes.stockQuantity;
-  if (changes.shortDescription !== undefined) dbChanges.short_description = changes.shortDescription;
-  if (changes.description !== undefined)      dbChanges.description = changes.description;
-  if (changes.image !== undefined)            dbChanges.image = changes.image;
-  if (changes.gallery !== undefined)          dbChanges.gallery = changes.gallery;
-  if (changes.badge !== undefined)            dbChanges.badge = changes.badge;
-  if (changes.rating !== undefined)           dbChanges.rating = changes.rating;
-  if (changes.reviewsCount !== undefined)     dbChanges.reviews_count = changes.reviewsCount;
-  if (changes.sizes !== undefined)            dbChanges.sizes = changes.sizes;
-  if (changes.flavours !== undefined)         dbChanges.flavours = changes.flavours;
-  if (changes.availableAddOns !== undefined)  dbChanges.available_add_ons = changes.availableAddOns;
-  dbChanges.updated_at = new Date().toISOString();
-
   try {
-    await updateDoc(doc(db, 'products', String(productId)), stripUndefined(dbChanges));
+    await updateDoc(doc(db, 'products', String(productId)),
+      JSON.parse(JSON.stringify({ ...changes, updatedAt: new Date().toISOString() })));
     return { error: null };
   } catch (err) {
     return { error: err.message };
   }
+}
+
+// ── Live updates ──────────────────────────────────────────────
+
+/**
+ * Calls onChange(products) now and whenever any product changes in Firestore,
+ * so admin edits show on every open storefront. Returns the unsubscribe fn.
+ */
+export function subscribeToProducts(onChange, onError) {
+  return onSnapshot(productsCol(),
+    snap => onChange(snap.docs.map(d => dbToProduct({ id: d.id, ...d.data() }))),
+    err => { console.error('[productService] subscribe error:', err); onError?.(err); });
 }
 
 // ── Delete ────────────────────────────────────────────────────

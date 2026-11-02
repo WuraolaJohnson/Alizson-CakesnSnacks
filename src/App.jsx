@@ -51,6 +51,7 @@ const AppInner = () => {
     return (
       <>
         <AdminLayout />
+        <ProductDetailModal />
         <Toast />
       </>
     );
