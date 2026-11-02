@@ -107,8 +107,10 @@ export async function saveRiderAvailability(riderId, status) {
 
 /** What a rider must fill in before taking orders. */
 export const REQUIRED_RIDER_FIELDS = {
-  avatar: 'Profile photo', phone: 'Phone number', vehicle: 'Vehicle', bankName: 'Bank name',
-  bankAccountNumber: 'Account number', bankAccountName: 'Account name'
+  avatar: 'Profile photo', name: 'Full name', phone: 'Phone number', vehicle: 'Vehicle',
+  vehicleType: 'Vehicle type', licenseNo: 'Licence number',
+  emergencyContactName: 'Emergency contact', emergencyContactPhone: 'Emergency phone',
+  bankName: 'Bank name', bankAccountNumber: 'Account number', bankAccountName: 'Account name'
 };
 
 /** Labels of required details the rider hasn't given yet (empty = complete). */

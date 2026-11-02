@@ -47,7 +47,9 @@ service cloud.firestore {
     // Riders may only change their availability and live location.
     match /riders/{id} {
       allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
-      allow update: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid
+      // Duty status belongs to the rider; the admin can change everything else
+      allow update: if (isAdmin() && !changed().hasAny(['availability_status']))
+        || (signedIn() && resource.data.user_id == request.auth.uid
         && changed().hasOnly(['availability_status', 'current_location', 'updated_at',
           'name', 'phone', 'vehicle', 'vehicle_type', 'license_no', 'emergency_contact_name',
           'emergency_contact_phone', 'avatar', 'bank_name', 'bank_account_number', 'bank_account_name']));

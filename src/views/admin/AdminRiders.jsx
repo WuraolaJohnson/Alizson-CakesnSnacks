@@ -27,7 +27,7 @@ const TILE_LAYERS = {
 };
 
 export default function AdminRiders() {
-  const { riders, orders, updateRiderAvailability, watchRiders } = useOrders();
+  const { riders, orders, watchRiders } = useOrders();
   useEffect(() => watchRiders(), []);
 
   const mapContainerRef = useRef(null);
@@ -507,16 +507,13 @@ export default function AdminRiders() {
             </div>
 
             <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-              <select
-                value={selectedRider.availabilityStatus}
-                onChange={e => updateRiderAvailability(selectedRider.id, e.target.value)}
-                style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-400)', fontWeight: 700, fontSize: '0.82rem', background: 'var(--bg-surface)', cursor: 'pointer' }}
+              {/* Only the rider sets their duty status */}
+              <span
+                title="Set by the rider"
+                style={{ padding: '0.45rem 0.75rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--gold-400)', fontWeight: 700, fontSize: '0.82rem', background: 'var(--bg-surface)' }}
               >
-                <option value="Available">Set Duty: Available</option>
-                <option value="Busy">Set Duty: Busy (On Delivery)</option>
-                <option value="Offline">Set Duty: Offline</option>
-                <option value="Break">Set Duty: On Break</option>
-              </select>
+                Duty: {selectedRider.availabilityStatus || 'Offline'}
+              </span>
 
               <button
                 className="btn btn-outline"

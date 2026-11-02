@@ -136,11 +136,6 @@ export default function RiderPortal({ authRider }) {
   // New riders fill in their details (photo, vehicle, payout account) first
   const missingDetails = missingRiderDetails(activeRider);
   const profileComplete = missingDetails.length === 0;
-  useEffect(() => {
-    if (!profileComplete) setEditProfileModalOpen(true);
-    // Only on first load; afterwards the banner below reminds them
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   // Accept Order Handler with Service Area & Active Delivery Limit Validation
   const handleAcceptOrder = (orderToAccept) => {
@@ -264,6 +259,20 @@ export default function RiderPortal({ authRider }) {
     stopGpsTracking(); // GPS tracking stops automatically on failed delivery
     setActiveDeliveryId(null);
   };
+
+
+  // Nothing else opens until every detail is filled in
+  if (!profileComplete) {
+    return (
+      <EditRiderProfileModal
+        rider={activeRider}
+        isOpen
+        locked
+        onClose={() => {}}
+        onSave={(updated) => updateRiderProfile(activeRider.id, updated, activeRider)}
+      />
+    );
+  }
 
   return (
     <div style={{ background: 'var(--cream-50)', minHeight: '85vh', paddingBottom: '4rem' }}>
@@ -423,16 +432,6 @@ export default function RiderPortal({ authRider }) {
       <div className="container" style={{ paddingTop: '1.75rem' }}>
         
         {/* TAB 1: AVAILABLE ORDERS */}
-        {!profileComplete && (
-          <div className="card" style={{ padding: '0.9rem 1.1rem', marginBottom: '1.25rem', border: '1.5px solid var(--gold-500)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-              <strong>Finish setting up your profile to start taking orders.</strong>
-              <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Still needed: {missingDetails.join(', ')}</div>
-            </div>
-            <button className="btn btn-primary btn-sm" onClick={() => setEditProfileModalOpen(true)}>Complete profile</button>
-          </div>
-        )}
-
         {activeTab === 'available' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.75rem' }}>
             
@@ -1293,7 +1292,8 @@ const RiderEarningsTab = ({ rider, assignedOrders, completedOrders }) => {
   );
 };
 
-const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
+/** `locked`: first-time setup — can't be closed until saved. */
+const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave, locked = false }) => {
   const [form, setForm] = useState({
     name: rider.name || '',
     phone: rider.phone || '',
@@ -1328,6 +1328,7 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
     e.preventDefault();
     if (!form.avatar) { setPhotoError('Please add a clear photo of your face.'); return; }
     if (!/^\d{10}$/.test(form.bankAccountNumber.trim())) { setPhotoError('Account number must be 10 digits.'); return; }
+    if (missing.length) { setPhotoError(`Please fill in: ${missing.join(', ')}.`); return; }
     setSaving(true);
     const { error } = await onSave({ ...form, bankAccountNumber: form.bankAccountNumber.trim() }) || {};
     setSaving(false);
@@ -1341,7 +1342,7 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
         background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem'
       }}
-      onClick={onClose}
+      onClick={locked ? undefined : onClose}
     >
       <div
         className="card"
@@ -1352,15 +1353,17 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
           <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', margin: 0, color: 'var(--text-primary)' }}>
             {missingRiderDetails(rider).length ? '👋 Complete your rider profile' : '✏️ Edit Rider Profile & Vehicle'}
           </h3>
-          <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onClose}>
-            <X size={20} />
-          </button>
+          {!locked && (
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onClose}>
+              <X size={20} />
+            </button>
+          )}
         </div>
 
         <form onSubmit={handleSubmit}>
           {missing.length > 0 && (
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '-0.5rem 0 1rem' }}>
-              Fill in your details so the admin knows who you are and can pay your allowances. Still needed: {missing.join(', ')}.
+              Your account opens once every detail is filled in, so the admin knows who you are and can pay your allowances. Still needed: {missing.join(', ')}.
             </p>
           )}
 
@@ -1412,9 +1415,9 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
 
           <div className="form-group" style={{ marginBottom: '1rem' }}>
             <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              Vehicle Type
+              Vehicle Type *
             </label>
-            <select className="form-input" value={form.vehicleType} onChange={e => setForm(p => ({ ...p, vehicleType: e.target.value }))}>
+            <select className="form-input" required value={form.vehicleType} onChange={e => setForm(p => ({ ...p, vehicleType: e.target.value }))}>
               <option value="">Choose…</option>
               <option>Motorcycle</option>
               <option>Tricycle (Keke)</option>
@@ -1425,10 +1428,11 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
 
           <div className="form-group" style={{ marginBottom: '1rem' }}>
             <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              Driver License No.
+              Driver License No. *
             </label>
             <input
               className="form-input"
+              required
               value={form.licenseNo}
               onChange={e => setForm(p => ({ ...p, licenseNo: e.target.value }))}
             />
@@ -1437,10 +1441,11 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
             <div className="form-group">
               <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Emergency Contact Name
+                Emergency Contact Name *
               </label>
               <input
                 className="form-input"
+                required
                 value={form.emergencyContactName}
                 onChange={e => setForm(p => ({ ...p, emergencyContactName: e.target.value }))}
               />
@@ -1448,10 +1453,11 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
 
             <div className="form-group">
               <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                Emergency Phone
+                Emergency Phone *
               </label>
               <input
                 className="form-input"
+                required
                 value={form.emergencyContactPhone}
                 onChange={e => setForm(p => ({ ...p, emergencyContactPhone: e.target.value }))}
               />
@@ -1481,9 +1487,11 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
           </div>
 
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
-            <button type="button" className="btn btn-ghost" onClick={onClose}>
-              {missingRiderDetails(rider).length ? 'Later' : 'Cancel'}
-            </button>
+            {!locked && (
+              <button type="button" className="btn btn-ghost" onClick={onClose}>
+                Cancel
+              </button>
+            )}
             <button type="submit" className="btn btn-primary" disabled={saving}>
               {saving ? 'Saving…' : 'Save Profile'}
             </button>
