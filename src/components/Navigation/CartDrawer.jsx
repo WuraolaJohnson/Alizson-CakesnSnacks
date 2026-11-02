@@ -17,6 +17,7 @@ export const CartDrawer = () => {
     suppliesCart,
     activeCartTab,
     setActiveCartTab,
+    setCheckoutBothStores,
     updateCartQuantity,
     removeFromCart,
     clearCart,
@@ -35,7 +36,8 @@ export const CartDrawer = () => {
   const currentSubtotal = activeCartTab === 'bakery' ? bakerySubtotal : suppliesSubtotal;
   const otherCartCount = activeCartTab === 'bakery' ? suppliesItemsCount : bakeryItemsCount;
 
-  const handleCheckout = () => {
+  const handleCheckout = (both = false) => {
+    setCheckoutBothStores(both);
     setIsCartDrawerOpen(false);
     goToCheckout();
   };
@@ -447,10 +449,20 @@ export const CartDrawer = () => {
               <button
                 className={`btn ${activeCartTab === 'bakery' ? 'btn-primary' : 'btn-burgundy'}`}
                 style={{ width: '100%', padding: '0.9rem', fontSize: '0.95rem' }}
-                onClick={handleCheckout}
+                onClick={() => handleCheckout(false)}
               >
-                Proceed to Checkout <ArrowRight size={17} />
+                Checkout {activeCartTab === 'bakery' ? 'Bakery' : 'Supplies'} only <ArrowRight size={17} />
               </button>
+
+              {bakeryCart.length > 0 && suppliesCart.length > 0 && (
+                <button
+                  className="btn btn-dark"
+                  style={{ width: '100%', padding: '0.9rem', fontSize: '0.9rem' }}
+                  onClick={() => handleCheckout(true)}
+                >
+                  Checkout both carts together
+                </button>
+              )}
 
               <button
                 className="btn btn-secondary"

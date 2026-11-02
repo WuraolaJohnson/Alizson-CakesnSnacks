@@ -23,8 +23,9 @@ const AdminDashboard = ({ setActiveTab }) => {
 
   // Metrics Calculations
   const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-  const bakeryOrders = orders.filter(o => o.store === 'bakery');
-  const suppliesOrders = orders.filter(o => o.store === 'supplies');
+  // Orders from both stores count in each
+  const bakeryOrders = orders.filter(o => o.store === 'bakery' || o.store === 'mixed');
+  const suppliesOrders = orders.filter(o => o.store === 'supplies' || o.store === 'mixed');
 
   const bakeryRevenue = bakeryOrders.reduce((sum, o) => sum + (o.total || 0), 0);
   const suppliesRevenue = suppliesOrders.reduce((sum, o) => sum + (o.total || 0), 0);
@@ -193,7 +194,7 @@ const AdminDashboard = ({ setActiveTab }) => {
                     </td>
                     <td style={{ padding: '0.75rem 0.5rem' }}>
                       <span className={`badge ${order.store === 'bakery' ? 'badge-gold' : 'badge-burgundy'}`} style={{ fontSize: '0.7rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem', whiteSpace: 'nowrap' }}>
-                        {order.store === 'bakery' ? '🍰 Bakery' : '🧁 Supplies'}
+                        {order.store === 'bakery' ? '🍰 Bakery' : order.store === 'mixed' ? '🍰🧁 Both' : '🧁 Supplies'}
                       </span>
                     </td>
                     <td style={{ padding: '0.75rem 0.5rem', fontWeight: 700, color: 'var(--text-gold)' }}>

@@ -10,16 +10,16 @@ const CartPage = () => {
     bakerySubtotal, suppliesSubtotal,
     updateCartQuantity, removeFromCart,
     bakeryItemsCount, suppliesItemsCount,
-    activeCartTab, setActiveCartTab,
+    activeCartTab, setActiveCartTab, setCheckoutBothStores,
     giftConfig, toggleGiftService, totalGiftFee
   } = useCart();
   const { navigateTo, openGiftStudio, goToCheckout } = useApp();
 
-  const DELIVERY_FEE = 1500;
 
   const activeCart = activeCartTab === 'bakery' ? bakeryCart : suppliesCart;
   const activeSubtotal = activeCartTab === 'bakery' ? bakerySubtotal : suppliesSubtotal;
-  const total = activeSubtotal + (activeCart.length > 0 ? DELIVERY_FEE : 0) + totalGiftFee;
+  // Delivery depends on the area, so it's added at checkout
+  const total = activeSubtotal + totalGiftFee;
 
   return (
     <div style={{ background: 'var(--cream-50)', minHeight: '80vh', paddingBottom: '4rem' }}>
@@ -203,7 +203,7 @@ const CartPage = () => {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.25rem' }}>
                   <SummaryRow label="Subtotal" value={`₦${activeSubtotal.toLocaleString()}`} />
-                  <SummaryRow label="Delivery Fee" value={`₦${DELIVERY_FEE.toLocaleString()}`} />
+                  <SummaryRow label="Delivery Fee" value="Added at checkout" />
                   
                   {giftConfig.isGift && totalGiftFee > 0 && (
                     <SummaryRow 
@@ -223,10 +223,20 @@ const CartPage = () => {
                 <button
                   className={`btn ${activeCartTab === 'bakery' ? 'btn-primary' : 'btn-burgundy'} btn-lg`}
                   style={{ width: '100%', justifyContent: 'center' }}
-                  onClick={goToCheckout}
+                  onClick={() => { setCheckoutBothStores(false); goToCheckout(); }}
                 >
-                  Proceed to Checkout <ArrowRight size={17} />
+                  Checkout {activeCartTab === 'bakery' ? 'Bakery' : 'Supplies'} only <ArrowRight size={17} />
                 </button>
+
+                {bakeryCart.length > 0 && suppliesCart.length > 0 && (
+                  <button
+                    className="btn btn-dark"
+                    style={{ width: '100%', justifyContent: 'center', marginTop: '0.6rem' }}
+                    onClick={() => { setCheckoutBothStores(true); goToCheckout(); }}
+                  >
+                    Checkout both carts together (₦{(bakerySubtotal + suppliesSubtotal).toLocaleString()} + delivery)
+                  </button>
+                )}
 
                 <button className="btn btn-ghost" style={{ width: '100%', justifyContent: 'center', marginTop: '0.6rem', fontSize: '0.875rem', color: 'var(--text-muted)' }}
                   onClick={() => navigateTo(activeCartTab)}>

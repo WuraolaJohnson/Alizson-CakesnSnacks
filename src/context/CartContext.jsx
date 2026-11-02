@@ -59,6 +59,8 @@ export const CartProvider = ({ children }) => {
 
   // Active Cart Tab in Drawer/Page
   const [activeCartTab, setActiveCartTab] = useState('bakery'); // 'bakery' or 'supplies'
+  // true = check out the bakery and supplies carts as one order
+  const [checkoutBothStores, setCheckoutBothStores] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('cz_bakery_cart', JSON.stringify(bakeryCart));
@@ -198,6 +200,8 @@ export const CartProvider = ({ children }) => {
         totalItemsCount,
         activeCartTab,
         setActiveCartTab,
+        checkoutBothStores,
+        setCheckoutBothStores,
         // Gift Service Exports
         giftConfig,
         updateGiftConfig,

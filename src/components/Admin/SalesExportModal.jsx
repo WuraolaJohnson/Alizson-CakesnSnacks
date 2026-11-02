@@ -24,7 +24,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
   // Filter orders based on timeframe
   const filteredOrders = orders.filter(order => {
     // Store filter
-    if (storeFilter !== 'all' && order.store !== storeFilter) {
+    if (storeFilter !== 'all' && order.store !== storeFilter && order.store !== 'mixed') {
       return false;
     }
 
@@ -61,7 +61,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
   // Extract individual sold product items
   const itemsSold = [];
   filteredOrders.forEach(order => {
-    const storeLabel = order.store === 'bakery' ? 'Bakery' : 'Supplies';
+    const storeLabel = order.store === 'bakery' ? 'Bakery' : order.store === 'mixed' ? 'Bakery + Supplies' : 'Supplies';
     const items = order.items && order.items.length > 0
       ? order.items
       : [{ name: 'Custom Order', category: storeLabel, quantity: 1, unitPrice: order.total || 0 }];

@@ -25,7 +25,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
 
   const filteredOrders = orders.filter(order => {
-    const matchesStore = storeFilter === 'all' || order.store === storeFilter;
+    const matchesStore = storeFilter === 'all' || order.store === storeFilter || order.store === 'mixed';
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter || (statusFilter === 'Ready for Dispatch' && (order.status === 'Ready' || order.statusStep === 2));
     const matchesSearch =
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,7 +57,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
 
     const rows = [];
     filteredOrders.forEach(order => {
-      const storeType = order.store === 'bakery' ? 'Bakery & Confectionery' : 'Baking Supplies';
+      const storeType = order.store === 'bakery' ? 'Bakery & Confectionery' : order.store === 'mixed' ? 'Bakery + Baking Supplies' : 'Baking Supplies';
       const items = order.items && order.items.length > 0 ? order.items : [{ name: 'Custom Order', category: 'General', quantity: 1, unitPrice: order.total || 0 }];
       
       items.forEach(item => {

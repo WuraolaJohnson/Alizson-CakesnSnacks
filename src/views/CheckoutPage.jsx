@@ -18,7 +18,7 @@ const CheckoutPage = () => {
   const { 
     bakeryCart, suppliesCart, 
     bakerySubtotal, suppliesSubtotal, 
-    activeCartTab, clearCart,
+    activeCartTab, clearCart, checkoutBothStores, setCheckoutBothStores,
     giftConfig, totalGiftFee
   } = useCart();
   const { createOrder, deliveryLocations, storeBankAccount } = useOrders();
@@ -34,8 +34,11 @@ const CheckoutPage = () => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
 
-  const activeCart = activeCartTab === 'bakery' ? bakeryCart : suppliesCart;
-  const activeSubtotal = activeCartTab === 'bakery' ? bakerySubtotal : suppliesSubtotal;
+  // Both carts as one order, or just the cart being viewed
+  const bothStores = checkoutBothStores && bakeryCart.length > 0 && suppliesCart.length > 0;
+  const orderStore = bothStores ? 'mixed' : activeCartTab;
+  const activeCart = bothStores ? [...bakeryCart, ...suppliesCart] : activeCartTab === 'bakery' ? bakeryCart : suppliesCart;
+  const activeSubtotal = bothStores ? bakerySubtotal + suppliesSubtotal : activeCartTab === 'bakery' ? bakerySubtotal : suppliesSubtotal;
 
   const [selectedOgunLocation, setSelectedOgunLocation] = useState(locationsList[0]);
 
@@ -60,7 +63,9 @@ const CheckoutPage = () => {
   const update = (key, val) => setForm(p => ({ ...p, [key]: val }));
 
   // Delivery Fee & Total calculation
-  const DELIVERY_FEE = fulfillmentType === 'pickup' ? 0 : (selectedOgunLocation?.deliveryFee || 1500);
+  // The admin's current price for the chosen area (0 = free delivery)
+  const liveLocation = locationsList.find(l => l.lga === selectedOgunLocation?.lga) || selectedOgunLocation;
+  const DELIVERY_FEE = fulfillmentType === 'pickup' ? 0 : (liveLocation?.deliveryFee ?? 1500);
   const giftFee = giftConfig?.isGift ? totalGiftFee : 0;
   const TOTAL = activeSubtotal + DELIVERY_FEE + giftFee;
 
@@ -107,8 +112,8 @@ const CheckoutPage = () => {
       : (selectedPmObj ? selectedPmObj.label : 'Direct Bank Transfer');
 
     const order = createOrder({
-      store: activeCartTab,
-      storeName: activeCartTab === 'bakery' ? 'Bakery Store' : 'Baking Supply Store',
+      store: orderStore,
+      storeName: bothStores ? 'Bakery & Baking Supplies' : activeCartTab === 'bakery' ? 'Bakery Store' : 'Baking Supply Store',
       customerName: form.name,
       customerEmail: form.email,
       customerPhone: form.phone,
@@ -136,7 +141,8 @@ const CheckoutPage = () => {
       storeBankAccountUsed: storeBankAccount || null
     });
     setLastPlacedOrder(order);
-    clearCart(activeCartTab);
+    if (bothStores) { clearCart('bakery'); clearCart('supplies'); } else clearCart(activeCartTab);
+    setCheckoutBothStores(false);
     setStep(4);
   };
 
@@ -166,7 +172,7 @@ const CheckoutPage = () => {
       orderId:    `ALZ-${Date.now()}`,
       name:       form.name,
       phone:      form.phone,
-      metadata:   { store: activeCartTab, lga: form.lga },
+      metadata:   { store: orderStore, lga: form.lga },
       onSuccess: ({ reference }) => {
         showToast('Payment successful! Processing your order... 🎉', 'success');
         handlePlaceOrder(reference);
@@ -520,7 +526,7 @@ const CheckoutPage = () => {
           <StepCard title="Review Your Order" icon="📋">
             <div style={{ background: 'var(--cream-50)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.25rem', border: '1px solid var(--cream-200)' }}>
               <div style={{ fontSize: '0.8rem', fontWeight: 800, color: activeCartTab === 'bakery' ? 'var(--text-gold)' : 'var(--text-burgundy)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
-                {activeCartTab === 'bakery' ? '🍰 Bakery Order' : '🧁 Baking Supplies Order'}
+                {bothStores ? '🍰🧁 Bakery + Baking Supplies Order' : activeCartTab === 'bakery' ? '🍰 Bakery Order' : '🧁 Baking Supplies Order'}
               </div>
               {activeCart.map(item => (
                 <div key={item.cartItemId} style={{ display: 'flex', gap: '0.75rem', alignItems: 'flex-start', marginBottom: '0.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid var(--cream-200)' }}>

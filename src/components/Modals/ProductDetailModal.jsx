@@ -378,11 +378,6 @@ const ProductDetailModal = () => {
               </div>
             )}
 
-            {product.prepTime && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', color: 'var(--status-success)' }}>
-                <span>⏰</span> {product.prepTime}
-              </div>
-            )}
           </div>
         </div>
       </div>

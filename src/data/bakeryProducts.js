@@ -35,7 +35,6 @@ export const initialBakeryProducts = [
       { id: 'macarons', name: 'Gourmet French Macarons Crown (4pcs)', price: 3000 }
     ],
     ingredients: 'Unbleached wheat flour, organic cane sugar, 70% dark Belgian cocoa, Madagascar vanilla bean, fresh dairy cream, pasteurized eggs, pure unsalted butter.',
-    prepTime: 'Same day dispatch if ordered before 12 PM',
     dietary: ['Vegetarian', 'Nut-Free Option Available']
   },
   {
@@ -70,7 +69,6 @@ export const initialBakeryProducts = [
       { id: 'berries', name: 'Fresh Raspberry & Strawberry Topping', price: 3500 }
     ],
     ingredients: 'Cake flour, buttermilk, cocoa powder, white vinegar, pure vanilla extract, Philadelphia cream cheese, farm fresh eggs.',
-    prepTime: '2 hours preparation lead time',
     dietary: ['Vegetarian']
   },
   {
@@ -104,7 +102,6 @@ export const initialBakeryProducts = [
       { id: 'card', name: 'Handwritten Calligraphy Card', price: 500 }
     ],
     ingredients: 'Flour, butter, sugar, whole milk, free-range eggs, gourmet sprinkles, natural vanilla.',
-    prepTime: 'Ready for immediate pickup / delivery',
     dietary: ['Vegetarian']
   },
   {
@@ -137,7 +134,6 @@ export const initialBakeryProducts = [
       { id: 'dip', name: 'Extra Warm Chocolate Dip Cup', price: 800 }
     ],
     ingredients: 'French butter, organic flour, yeast, fresh milk, organic cane sugar, whole eggs.',
-    prepTime: 'Baked fresh daily at 6 AM',
     dietary: ['Vegetarian']
   },
   {
@@ -169,7 +165,6 @@ export const initialBakeryProducts = [
       { id: 'sauce', name: 'Chili Pepper Dip', price: 400 }
     ],
     ingredients: 'Enriched flour, butter, lean minced beef, Irish potatoes, carrots, thyme, nutmeg, seasoning broth.',
-    prepTime: 'Hot from the oven',
     dietary: ['Halal Beef']
   },
   {
@@ -200,7 +195,6 @@ export const initialBakeryProducts = [
       { id: 'jam', name: 'Artisan Strawberry Marmalade (50g)', price: 1200 }
     ],
     ingredients: 'French T55 flour, Normandy unsalted butter, milk, sugar, sea salt, active yeast.',
-    prepTime: 'Freshly baked every 3 hours',
     dietary: ['Vegetarian']
   },
   {
@@ -227,7 +221,6 @@ export const initialBakeryProducts = [
     flavours: ['Classic Herb Sausage', 'Spicy Pepper Sausage'],
     availableAddOns: [],
     ingredients: 'Puff pastry, beef/pork sausage meat, sage, cracked black pepper, egg wash.',
-    prepTime: 'Ready to eat',
     dietary: []
   },
   {
@@ -254,7 +247,6 @@ export const initialBakeryProducts = [
     flavours: ['Dark Choc Sea Salt', 'Triple Chocolate', 'White Choc Macadamia'],
     availableAddOns: [],
     ingredients: 'Flour, brown sugar, cultured butter, Belgian dark chocolate, sea salt flakes.',
-    prepTime: 'Fresh out of the oven',
     dietary: ['Vegetarian']
   },
   {
@@ -281,7 +273,6 @@ export const initialBakeryProducts = [
     flavours: ['Classic Country Sourdough', 'Brioche Milk Bread', 'Seeded Multigrain'],
     availableAddOns: [],
     ingredients: 'Stone-ground wheat flour, rye starter, water, sea salt.',
-    prepTime: 'Baked fresh daily',
     dietary: ['Vegan (Sourdough)', 'Vegetarian']
   },
   {
@@ -311,7 +302,6 @@ export const initialBakeryProducts = [
       { id: 'ribbon', name: 'Custom Corporate Branded Ribbon', price: 2000 }
     ],
     ingredients: 'Assorted premium artisan bakery ingredients.',
-    prepTime: 'Custom packaged upon order',
     dietary: ['Vegetarian']
   },
   {
@@ -346,7 +336,6 @@ export const initialBakeryProducts = [
       { id: 'strawberries', name: 'Fresh Strawberry Slices', price: 800 }
     ],
     ingredients: 'Cake sponge, whipped cream frosting, cocoa, vanilla extract, chocolate chips, fruit puree.',
-    prepTime: 'Chilled & ready for immediate dispatch',
     dietary: ['Vegetarian']
   }
 ];

@@ -51,3 +51,26 @@ export async function saveCategoriesInDb(value) {
     return { error: err.message };
   }
 }
+
+// ── Delivery prices ───────────────────────────────────────────
+
+const deliveryPricesRef = () => doc(db, 'store_settings', 'delivery_prices');
+
+/** Live admin delivery fees by LGA ({ 'Abeokuta South': 1500, ... }); {} until saved. */
+export function subscribeDeliveryPrices(callback) {
+  if (!isFirebaseReady()) return () => {};
+  return onSnapshot(deliveryPricesRef(),
+    (snap) => callback(snap.exists() ? snap.data().value || {} : {}),
+    (err) => console.error('[settings] delivery prices subscribe failed:', err));
+}
+
+/** Admin: save delivery fees by LGA, shown to every customer at checkout. */
+export async function saveDeliveryPrices(fees) {
+  if (!isFirebaseReady()) return { error: null };
+  try {
+    await setDoc(deliveryPricesRef(), { value: fees, updated_at: new Date().toISOString() });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}

@@ -5,7 +5,7 @@ import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb, subscribeOrdersForUser } from '../services/orderService';
 import { onAuthStateChange, hasRole } from '../services/authService';
-import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
+import { subscribeBankAccount, saveBankAccount, subscribeDeliveryPrices, saveDeliveryPrices } from '../services/settingsService';
 import { subscribeRiders, subscribeOwnRider, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
 import { useProducts } from './ProductContext';
@@ -176,30 +176,34 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     };
   };
 
-  const [deliveryLocations, setDeliveryLocations] = useState(() => {
-    try {
-      const saved = localStorage.getItem('cz_delivery_locations');
-      return saved ? JSON.parse(saved) : OGUN_DELIVERY_LOCATIONS;
-    } catch {
-      return OGUN_DELIVERY_LOCATIONS;
-    }
+  // Admin's delivery fees by LGA, live from Firestore so every customer
+  // pays the current price (a local copy is only used offline)
+  const [deliveryFees, setDeliveryFees] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('cz_delivery_fees') || '{}'); } catch { return {}; }
   });
-
+  useEffect(() => subscribeDeliveryPrices(setDeliveryFees), []);
   useEffect(() => {
-    localStorage.setItem('cz_delivery_locations', JSON.stringify(deliveryLocations));
-  }, [deliveryLocations]);
+    localStorage.setItem('cz_delivery_fees', JSON.stringify(deliveryFees));
+  }, [deliveryFees]);
 
-  const updateDeliveryPrice = (lgaName, newFee) => {
-    setDeliveryLocations(prev =>
-      prev.map(loc => loc.lga === lgaName ? { ...loc, deliveryFee: Number(newFee) } : loc)
-    );
-    showToast(`Updated delivery fee for ${lgaName} to ₦${Number(newFee).toLocaleString()}`, 'success');
+  const deliveryLocations = OGUN_DELIVERY_LOCATIONS.map(loc =>
+    deliveryFees[loc.lga] != null ? { ...loc, deliveryFee: Number(deliveryFees[loc.lga]) } : loc);
+
+  /** Admin: save new fees ({ lga: fee }). Resolves to { error }. */
+  const updateDeliveryPrices = async (changes) => {
+    const next = { ...deliveryFees, ...changes };
+    setDeliveryFees(next);
+    const { error } = await saveDeliveryPrices(next);
+    if (error) showToast(`Could not save delivery prices: ${error}`, 'error');
+    return { error };
   };
+  const updateDeliveryPrice = (lgaName, newFee) => updateDeliveryPrices({ [lgaName]: Number(newFee) });
 
-  const resetDeliveryPrices = () => {
-    setDeliveryLocations(OGUN_DELIVERY_LOCATIONS);
-    localStorage.removeItem('cz_delivery_locations');
-    showToast('Reset delivery fees to default!', 'info');
+  const resetDeliveryPrices = async () => {
+    setDeliveryFees({});
+    const { error } = await saveDeliveryPrices({});
+    if (error) showToast(`Could not reset delivery prices: ${error}`, 'error');
+    else showToast('Delivery fees reset to the standard rates.', 'info');
   };
 
   const [orders, setOrders] = useState(() => {
@@ -388,7 +392,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     const minutes = now.getMinutes().toString().padStart(2, '0');
     const formattedTime = `${hours}:${minutes} ${ampm}`;
 
-    const storePrefix = orderPayload.store === 'bakery' ? 'ALZ-BAK' : 'ALZ-SUP';
+    const storePrefix = orderPayload.store === 'bakery' ? 'ALZ-BAK' : orderPayload.store === 'mixed' ? 'ALZ-MIX' : 'ALZ-SUP';
     const randomIdNum = Math.floor(1000 + Math.random() * 9000);
     const orderId = `${storePrefix}-${randomIdNum}`;
 
@@ -920,6 +924,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
         orders,
         riders,
         deliveryLocations,
+        updateDeliveryPrices,
         updateDeliveryPrice,
         resetDeliveryPrices,
         updateRiderAvailability,

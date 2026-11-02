@@ -4,7 +4,7 @@ import { useOrders } from '../../context/OrderContext';
 import { useApp } from '../../context/AppContext';
 
 const DeliveryPricesModal = ({ isOpen, onClose }) => {
-  const { deliveryLocations, updateDeliveryPrice, resetDeliveryPrices } = useOrders();
+  const { deliveryLocations, updateDeliveryPrices, resetDeliveryPrices } = useOrders();
   const { showToast } = useApp();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,18 +26,17 @@ const DeliveryPricesModal = ({ isOpen, onClose }) => {
     }));
   };
 
-  const handleSaveAll = () => {
-    let changeCount = 0;
-    Object.entries(editedPrices).forEach(([lgaName, newFee]) => {
-      updateDeliveryPrice(lgaName, newFee);
-      changeCount++;
-    });
-    if (changeCount > 0) {
-      showToast(`Successfully updated delivery prices for ${changeCount} LGA(s)! 🚚`, 'success');
-      setEditedPrices({});
-    } else {
+  const handleSaveAll = async () => {
+    const changeCount = Object.keys(editedPrices).length;
+    if (!changeCount) {
       showToast('No delivery price changes to save.', 'info');
+      onClose();
+      return;
     }
+    const { error } = await updateDeliveryPrices(editedPrices);
+    if (error) return;
+    showToast(`Delivery prices saved for ${changeCount} area(s) and live at checkout 🚚`, 'success');
+    setEditedPrices({});
     onClose();
   };
 
