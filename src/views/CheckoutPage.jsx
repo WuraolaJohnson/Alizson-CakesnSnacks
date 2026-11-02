@@ -771,7 +771,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
               ✅ Bank Transfer Verified & Confirmed
             </div>
             <p style={{ fontSize: '0.85rem', color: 'var(--charcoal-800)', margin: 0, lineHeight: 1.45 }}>
-              Your bank transfer payment of <strong>₦{(order?.total || 0).toLocaleString()}</strong> has been verified by our finance team{order?.bankTransferVerifiedBy ? ` (${order.bankTransferVerifiedBy})` : ''}. We are actively preparing your order!
+              Your bank transfer payment of <strong>₦{(order?.total || 0).toLocaleString()}</strong> has been confirmed{order?.bankTransferVerifiedBy ? ` by ${order.bankTransferVerifiedBy}` : ''}. You can follow your order's progress on the tracking page.
             </p>
           </div>
         ) : (

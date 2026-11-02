@@ -460,6 +460,16 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
     let transitionBlocked = false;
 
+    // Payment and preparation are separate steps: a bank transfer must be
+    // confirmed before the order can start being prepared
+    const target = orders.find(o => o.id === orderId);
+    const awaitingTransfer = target && target.paymentStatus !== 'Paid'
+      && /transfer/i.test(target.paymentMethod || '');
+    if (resolvedStatus === 'Preparing' && awaitingTransfer) {
+      showToast(`Confirm the bank transfer for order ${orderId} before you start preparing it.`, 'warning');
+      return;
+    }
+
     setOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         // Enforce valid status transitions (admin can override with forceAdmin)

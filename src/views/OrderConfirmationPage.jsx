@@ -79,7 +79,7 @@ export const OrderConfirmationPage = () => {
           </h1>
 
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', maxWidth: '520px', margin: '0 auto 1.5rem' }}>
-            We've received your order and our artisan bakers are preparing it with care. A confirmation email has been dispatched to <strong>{currentOrder.customerEmail}</strong>.
+            We've received your order. The store will confirm it shortly, and you can follow every step on the tracking page.
           </p>
 
           <div
