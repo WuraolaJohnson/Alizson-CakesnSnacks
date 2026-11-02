@@ -13,7 +13,7 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
 import { auth, db, isFirebaseReady } from '../lib/firebase';
-import { requestRiderAccess, riderRequestMessage } from './riderAccessService';
+import { requestRiderAccess, riderRequestMessage, dbToRider } from './riderAccessService';
 
 // ── Helpers ───────────────────────────────────────────────────
 
@@ -230,27 +230,7 @@ export async function getRiderForUser(userId) {
   const data = { id: snap.docs[0].id, ...snap.docs[0].data() };
 
   return {
-    rider: {
-      id:                    data.id,
-      name:                  data.name,
-      email:                 data.email,
-      phone:                 data.phone,
-      vehicle:               data.vehicle,
-      vehicleType:           data.vehicle_type,
-      licenseNo:             data.license_no,
-      emergencyContactName:  data.emergency_contact_name,
-      emergencyContactPhone: data.emergency_contact_phone,
-      dateJoined:            data.date_joined,
-      rating:                data.rating == null ? null : Number(data.rating),
-      hub:                   data.hub,
-      accountStatus:         data.account_status,
-      availabilityStatus:    data.availability_status,
-      avatar:                data.avatar,
-      initialLocation:       data.initial_location,
-      currentLocation:       data.current_location,
-      completedCount:        data.completed_count ?? 0,
-      todayEarnings:         Number(data.today_earnings ?? 0)
-    },
+    rider: dbToRider(data),
     error: null
   };
 }

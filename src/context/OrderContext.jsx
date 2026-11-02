@@ -5,7 +5,7 @@ import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb } from '../services/orderService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
-import { subscribeRiders, saveRiderAvailability } from '../services/riderAccessService';
+import { subscribeRiders, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
 import { useProducts } from './ProductContext';
 
@@ -609,9 +609,14 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     else showToast(`Duty Status updated to ${newStatus} 🛵`, 'info');
   };
 
-  const updateRiderProfile = (riderId, profileData) => {
-    setRiders(prev => prev.map(r => r.id === riderId ? { ...r, ...profileData } : r));
-    showToast('Rider profile updated successfully! ✨', 'success');
+  const updateRiderProfile = async (riderId, profileData, rider = null) => {
+    setRiders(prev => prev.some(r => r.id === riderId)
+      ? prev.map(r => r.id === riderId ? { ...r, ...profileData } : r)
+      : rider ? [...prev, { ...rider, ...profileData }] : prev);
+    const { error } = await saveRiderProfile(riderId, profileData);
+    if (error) showToast(`Could not save your profile: ${error}`, 'error');
+    else showToast('Rider profile saved ✨', 'success');
+    return { error };
   };
 
   const acceptRiderAssignment = (orderId, riderName, riderId = null) => {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Avatar from '../components/Common/Avatar';
 import { 
   Navigation, MapPin, Clock, ShieldCheck, Phone, CheckCircle2, 
   Layers, Map as MapIcon, AlertTriangle, RefreshCw, ChevronLeft, User, Package, Sparkles, Printer
@@ -565,11 +566,7 @@ export default function OrderTrackingPage({ orderId }) {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                <img
-                  src={rider.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}
-                  alt={rider.name}
-                  style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold-500)' }}
-                />
+                <Avatar src={rider.avatar} name={rider.name} size={64} />
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{rider.name}</div>
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700 }}>

@@ -63,7 +63,7 @@ export function dbToRider(d) {
     email:                 d.email || '',
     phone:                 d.phone || '',
     vehicle:               d.vehicle || '',
-    vehicleType:           d.vehicle_type || 'Motorcycle',
+    vehicleType:           d.vehicle_type || '',
     licenseNo:             d.license_no || '',
     emergencyContactName:  d.emergency_contact_name || '',
     emergencyContactPhone: d.emergency_contact_phone || '',
@@ -72,7 +72,10 @@ export function dbToRider(d) {
     hub:                   d.hub || '',
     accountStatus:         d.account_status || 'Active',
     availabilityStatus:    d.availability_status || 'Offline',
-    avatar:                d.avatar || '/logo.jpeg',
+    avatar:                d.avatar || '',
+    bankName:              d.bank_name || '',
+    bankAccountNumber:     d.bank_account_number || '',
+    bankAccountName:       d.bank_account_name || '',
     initialLocation:       d.initial_location || loc,
     currentLocation:       loc,
     completedCount:        d.completed_count ?? 0,
@@ -94,6 +97,38 @@ export async function saveRiderAvailability(riderId, status) {
   try {
     await updateDoc(doc(db, 'riders', String(riderId)), {
       availability_status: status,
+      updated_at: new Date().toISOString()
+    });
+    return { error: null };
+  } catch (err) {
+    return { error: err.message };
+  }
+}
+
+/** What a rider must fill in before taking orders. */
+export const REQUIRED_RIDER_FIELDS = {
+  avatar: 'Profile photo', phone: 'Phone number', vehicle: 'Vehicle', bankName: 'Bank name',
+  bankAccountNumber: 'Account number', bankAccountName: 'Account name'
+};
+
+/** Labels of required details the rider hasn't given yet (empty = complete). */
+export function missingRiderDetails(rider) {
+  return Object.entries(REQUIRED_RIDER_FIELDS).filter(([key]) => !String(rider?.[key] || '').trim()).map(([, label]) => label);
+}
+
+/** Rider (or admin): save the rider's own details, photo and payout bank account. */
+export async function saveRiderProfile(riderId, profile) {
+  if (!isFirebaseReady()) return { error: null };
+  const fields = {
+    name: profile.name, phone: profile.phone, vehicle: profile.vehicle, vehicle_type: profile.vehicleType,
+    license_no: profile.licenseNo, emergency_contact_name: profile.emergencyContactName,
+    emergency_contact_phone: profile.emergencyContactPhone, avatar: profile.avatar,
+    bank_name: profile.bankName, bank_account_number: profile.bankAccountNumber,
+    bank_account_name: profile.bankAccountName
+  };
+  try {
+    await updateDoc(doc(db, 'riders', String(riderId)), {
+      ...Object.fromEntries(Object.entries(fields).filter(([, v]) => v !== undefined)),
       updated_at: new Date().toISOString()
     });
     return { error: null };

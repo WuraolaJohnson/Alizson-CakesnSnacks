@@ -10,6 +10,10 @@ import { useOrders, AVAILABLE_RIDERS } from '../context/OrderContext';
 import { useApp } from '../context/AppContext';
 import { calculateHaversineDistance, fetchOSRMRoute, formatLocationAge, isLocationStale, isRiderOffRoute } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
+import { missingRiderDetails } from '../services/riderAccessService';
+import { compressImage } from '../utils/imageCompress';
+import Avatar from '../components/Common/Avatar';
+
 
 /**
  * Service Area Validator for Ogun State Hub System
@@ -129,8 +133,22 @@ export default function RiderPortal({ authRider }) {
     }
   }, [isTrackingGps, activeOrders, activeRider?.id, activeRider?.availabilityStatus]);
 
+  // New riders fill in their details (photo, vehicle, payout account) first
+  const missingDetails = missingRiderDetails(activeRider);
+  const profileComplete = missingDetails.length === 0;
+  useEffect(() => {
+    if (!profileComplete) setEditProfileModalOpen(true);
+    // Only on first load; afterwards the banner below reminds them
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Accept Order Handler with Service Area & Active Delivery Limit Validation
   const handleAcceptOrder = (orderToAccept) => {
+    if (!profileComplete) {
+      showToast(`Complete your profile before taking orders. Missing: ${missingDetails.join(', ')}.`, 'warning');
+      setEditProfileModalOpen(true);
+      return;
+    }
     // Duty Status Check
     if (activeRider.availabilityStatus === 'Offline' || activeRider.availabilityStatus === 'Break') {
       showToast(`You are currently ${activeRider.availabilityStatus}. Change duty status to Available to accept orders.`, 'warning');
@@ -263,11 +281,7 @@ export default function RiderPortal({ authRider }) {
           
           {/* Authenticated Rider Profile Summary */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <img
-              src={activeRider.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-              alt={activeRider.name}
-              style={{ width: 54, height: 54, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold-500)' }}
-            />
+            <Avatar src={activeRider.avatar} name={activeRider.name} size={54} />
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.15rem' }}>
                 <span style={{ fontWeight: 800, fontSize: '1.2rem', color: 'white' }}>{activeRider.name}</span>
@@ -409,6 +423,16 @@ export default function RiderPortal({ authRider }) {
       <div className="container" style={{ paddingTop: '1.75rem' }}>
         
         {/* TAB 1: AVAILABLE ORDERS */}
+        {!profileComplete && (
+          <div className="card" style={{ padding: '0.9rem 1.1rem', marginBottom: '1.25rem', border: '1.5px solid var(--gold-500)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+              <strong>Finish setting up your profile to start taking orders.</strong>
+              <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Still needed: {missingDetails.join(', ')}</div>
+            </div>
+            <button className="btn btn-primary btn-sm" onClick={() => setEditProfileModalOpen(true)}>Complete profile</button>
+          </div>
+        )}
+
         {activeTab === 'available' && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.75rem' }}>
             
@@ -1143,7 +1167,7 @@ export default function RiderPortal({ authRider }) {
           rider={activeRider}
           isOpen={editProfileModalOpen}
           onClose={() => setEditProfileModalOpen(false)}
-          onSave={(updated) => updateRiderProfile(activeRider.id, updated)}
+          onSave={(updated) => updateRiderProfile(activeRider.id, updated, activeRider)}
         />
       )}
 
@@ -1186,9 +1210,9 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
           <div><strong>Full Name:</strong> <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{rider.name}</span></div>
           <div><strong>Rider ID:</strong> <span style={{ fontFamily: 'monospace', color: 'var(--text-gold)', fontWeight: 800 }}>{rider.id}</span></div>
-          <div><strong>Email Address:</strong> {rider.email || 'rider@alizson.com'}</div>
-          <div><strong>Phone Number:</strong> {rider.phone}</div>
-          <div><strong>Date Joined:</strong> {rider.dateJoined || 'January 15, 2025'}</div>
+          <div><strong>Email Address:</strong> {rider.email || 'Not provided'}</div>
+          <div><strong>Phone Number:</strong> {rider.phone || 'Not provided'}</div>
+          <div><strong>Date Joined:</strong> {rider.dateJoined || '—'}</div>
           <div>
             <strong>Account Status:</strong>{' '}
             <span className="badge badge-gold" style={{ fontSize: '0.75rem' }}>
@@ -1205,12 +1229,25 @@ const RiderProfileTab = ({ rider, onOpenEdit, onUpdateAvailability }) => (
         </h3>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-          <div><strong>Vehicle Description:</strong> {rider.vehicle}</div>
-          <div><strong>Vehicle Type:</strong> {rider.vehicleType || 'Motorcycle'}</div>
-          <div><strong>License Registration:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rider.licenseNo || 'OG-DRV-882091'}</span></div>
+          <div><strong>Vehicle Description:</strong> {rider.vehicle || 'Not provided'}</div>
+          <div><strong>Vehicle Type:</strong> {rider.vehicleType || 'Not provided'}</div>
+          <div><strong>License Registration:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rider.licenseNo || 'Not provided'}</span></div>
           <div><strong>Assigned Dispatch Hub:</strong> {rider.hub || 'Not assigned yet'}</div>
-          <div><strong>Emergency Contact:</strong> {rider.emergencyContactName || 'Family Member'}</div>
-          <div><strong>Emergency Phone:</strong> {rider.emergencyContactPhone || rider.phone}</div>
+          <div><strong>Emergency Contact:</strong> {rider.emergencyContactName || 'Not provided'}</div>
+          <div><strong>Emergency Phone:</strong> {rider.emergencyContactPhone || 'Not provided'}</div>
+        </div>
+      </div>
+
+      {/* Payout account: where the admin sends delivery allowances */}
+      <div className="card" style={{ padding: '1.5rem' }}>
+        <h3 style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
+          🏦 Payout Bank Account
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <div><strong>Bank:</strong> {rider.bankName || 'Not provided'}</div>
+          <div><strong>Account Number:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{rider.bankAccountNumber || 'Not provided'}</span></div>
+          <div><strong>Account Name:</strong> {rider.bankAccountName || 'Not provided'}</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Your delivery allowances are paid into this account.</div>
         </div>
       </div>
 
@@ -1263,15 +1300,38 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
     vehicle: rider.vehicle || '',
     licenseNo: rider.licenseNo || '',
     emergencyContactName: rider.emergencyContactName || '',
-    emergencyContactPhone: rider.emergencyContactPhone || ''
+    emergencyContactPhone: rider.emergencyContactPhone || '',
+    vehicleType: rider.vehicleType || '',
+    avatar: rider.avatar || '',
+    bankName: rider.bankName || '',
+    bankAccountNumber: rider.bankAccountNumber || '',
+    bankAccountName: rider.bankAccountName || ''
   });
+  const [saving, setSaving] = useState(false);
+  const [photoError, setPhotoError] = useState('');
 
   if (!isOpen) return null;
+  const missing = missingRiderDetails(form);
 
-  const handleSubmit = (e) => {
+  const handlePhoto = async (file) => {
+    if (!file) return;
+    try {
+      setPhotoError('');
+      const avatar = await compressImage(file, 300, 0.8);
+      setForm(p => ({ ...p, avatar }));
+    } catch (err) {
+      setPhotoError(err.message);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(form);
-    onClose();
+    if (!form.avatar) { setPhotoError('Please add a clear photo of your face.'); return; }
+    if (!/^\d{10}$/.test(form.bankAccountNumber.trim())) { setPhotoError('Account number must be 10 digits.'); return; }
+    setSaving(true);
+    const { error } = await onSave({ ...form, bankAccountNumber: form.bankAccountNumber.trim() }) || {};
+    setSaving(false);
+    if (!error) onClose();
   };
 
   return (
@@ -1290,7 +1350,7 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
           <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem', margin: 0, color: 'var(--text-primary)' }}>
-            ✏️ Edit Rider Profile &amp; Vehicle
+            {missingRiderDetails(rider).length ? '👋 Complete your rider profile' : '✏️ Edit Rider Profile & Vehicle'}
           </h3>
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }} onClick={onClose}>
             <X size={20} />
@@ -1298,6 +1358,21 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
         </div>
 
         <form onSubmit={handleSubmit}>
+          {missing.length > 0 && (
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', margin: '-0.5rem 0 1rem' }}>
+              Fill in your details so the admin knows who you are and can pay your allowances. Still needed: {missing.join(', ')}.
+            </p>
+          )}
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+            <Avatar src={form.avatar} name={form.name} size={64} />
+            <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
+              {form.avatar ? 'Change photo' : 'Add your photo *'}
+              <input type="file" accept="image/*" capture="user" style={{ display: 'none' }} onChange={e => handlePhoto(e.target.files?.[0])} />
+            </label>
+          </div>
+          {photoError && <div style={{ color: 'var(--status-danger)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{photoError}</div>}
+
           <div className="form-group" style={{ marginBottom: '1rem' }}>
             <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               Full Name *
@@ -1329,9 +1404,23 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
             <input
               className="form-input"
               required
+              placeholder="e.g. Red Bajaj Boxer, plate ABC-123-XY"
               value={form.vehicle}
               onChange={e => setForm(p => ({ ...p, vehicle: e.target.value }))}
             />
+          </div>
+
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              Vehicle Type
+            </label>
+            <select className="form-input" value={form.vehicleType} onChange={e => setForm(p => ({ ...p, vehicleType: e.target.value }))}>
+              <option value="">Choose…</option>
+              <option>Motorcycle</option>
+              <option>Tricycle (Keke)</option>
+              <option>Car</option>
+              <option>Bicycle</option>
+            </select>
           </div>
 
           <div className="form-group" style={{ marginBottom: '1rem' }}>
@@ -1369,12 +1458,34 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave }) => {
             </div>
           </div>
 
+          <div style={{ padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)', marginBottom: '1.25rem' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.2rem' }}>🏦 Payout bank account *</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Your delivery allowances are paid here. Use an account in your own name.</div>
+            <div className="form-group" style={{ marginBottom: '0.75rem' }}>
+              <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>Bank Name *</label>
+              <input className="form-input" required placeholder="e.g. OPay, GTBank, Access" value={form.bankName}
+                onChange={e => setForm(p => ({ ...p, bankName: e.target.value }))} />
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem' }}>
+              <div className="form-group">
+                <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>Account Number *</label>
+                <input className="form-input" required inputMode="numeric" maxLength={10} placeholder="10 digits" value={form.bankAccountNumber}
+                  onChange={e => setForm(p => ({ ...p, bankAccountNumber: e.target.value.replace(/\D/g, '') }))} />
+              </div>
+              <div className="form-group">
+                <label className="form-label" style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)' }}>Account Name *</label>
+                <input className="form-input" required value={form.bankAccountName}
+                  onChange={e => setForm(p => ({ ...p, bankAccountName: e.target.value }))} />
+              </div>
+            </div>
+          </div>
+
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
             <button type="button" className="btn btn-ghost" onClick={onClose}>
-              Cancel
+              {missingRiderDetails(rider).length ? 'Later' : 'Cancel'}
             </button>
-            <button type="submit" className="btn btn-primary">
-              Save Profile Changes
+            <button type="submit" className="btn btn-primary" disabled={saving}>
+              {saving ? 'Saving…' : 'Save Profile'}
             </button>
           </div>
         </form>

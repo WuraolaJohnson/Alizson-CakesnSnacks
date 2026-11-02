@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import Avatar from '../../components/Common/Avatar';
 import L from 'leaflet';
 import { 
   Bike, MapPin, Navigation, User, Clock, Phone, Shield, 
@@ -437,11 +438,7 @@ export default function AdminRiders() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, minWidth: 0 }}>
-                    <img
-                      src={rdr.avatar}
-                      alt={rdr.name}
-                      style={{ width: 42, height: 42, flexShrink: 0, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold-400)' }}
-                    />
+                    <Avatar src={rdr.avatar} name={rdr.name} size={42} />
                     <div>
                       <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--charcoal-900)' }}>
                         {rdr.name} <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 600 }}>({rdr.id})</span>
@@ -490,11 +487,7 @@ export default function AdminRiders() {
           {/* Header Bar */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <img
-                src={selectedRider.avatar}
-                alt={selectedRider.name}
-                style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--gold-500)', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
-              />
+              <Avatar src={selectedRider.avatar} name={selectedRider.name} size={64} />
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                   <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.5rem', margin: 0, color: 'var(--charcoal-900)' }}>
@@ -559,10 +552,13 @@ export default function AdminRiders() {
                 <Shield size={14} /> Verification & Emergency Contact
               </div>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                <div><strong>Driver License:</strong> {selectedRider.licenseNo}</div>
+                <div><strong>Payout Bank:</strong> {selectedRider.bankName || 'Not provided yet'}</div>
+                <div><strong>Account Number:</strong> <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{selectedRider.bankAccountNumber || '—'}</span></div>
+                <div><strong>Account Name:</strong> {selectedRider.bankAccountName || '—'}</div>
+                <div><strong>Driver License:</strong> {selectedRider.licenseNo || 'Not provided'}</div>
                 <div><strong>Joined Date:</strong> {selectedRider.dateJoined}</div>
                 <div><strong>Rating:</strong> ⭐ {selectedRider.rating != null ? `${selectedRider.rating} / 5.0` : 'No ratings yet'}</div>
-                <div><strong>Emergency Contact:</strong> {selectedRider.emergencyContactName} ({selectedRider.emergencyContactPhone})</div>
+                <div><strong>Emergency Contact:</strong> {selectedRider.emergencyContactName ? `${selectedRider.emergencyContactName} (${selectedRider.emergencyContactPhone || 'no phone'})` : 'Not provided'}</div>
                 <div><strong>Account Status:</strong> <span style={{ color: 'var(--status-success)', fontWeight: 700 }}>{selectedRider.accountStatus}</span></div>
               </div>
             </div>

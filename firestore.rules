@@ -48,7 +48,9 @@ service cloud.firestore {
     match /riders/{id} {
       allow read: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid);
       allow update: if isAdmin() || (signedIn() && resource.data.user_id == request.auth.uid
-        && changed().hasOnly(['availability_status', 'current_location', 'updated_at']));
+        && changed().hasOnly(['availability_status', 'current_location', 'updated_at',
+          'name', 'phone', 'vehicle', 'vehicle_type', 'license_no', 'emergency_contact_name',
+          'emergency_contact_phone', 'avatar', 'bank_name', 'bank_account_number', 'bank_account_name']));
       allow create, delete: if isAdmin();
     }
 

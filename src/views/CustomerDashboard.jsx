@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Avatar from '../components/Common/Avatar';
 import { User, Package, Heart, MapPin, MessageCircle, LogOut, ChevronRight, Clock, CheckCircle2, Truck, Box, Star, Printer, Plus, Edit2, Trash2, Check, Phone, Mail, ShieldCheck, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { useOrders, ORDER_STATUS_STEPS } from '../context/OrderContext';
@@ -148,10 +149,7 @@ const CustomerDashboard = () => {
           <div>
             {/* Profile Card */}
             <div className="card" style={{ padding: '1.5rem', marginBottom: '1rem', textAlign: 'center' }}>
-              <img src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'}
-                alt={currentUser.name}
-                style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--gold-300)', margin: '0 auto 1rem' }}
-              />
+              <Avatar src={currentUser.avatar} name={currentUser.name} size={80} style={{ margin: '0 auto 1rem' }} />
               <div style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-primary)' }}>{currentUser.name}</div>
               <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>{currentUser.email}</div>
               <div style={{ marginTop: '0.6rem', display: 'flex', gap: '0.4rem', justifyContent: 'center' }}>
