@@ -104,7 +104,7 @@ function orderToDb(order) {
     date:                       order.date,
     time:                       order.time,
     iso_date:                   order.isoDate || new Date().toISOString(),
-    status:                     order.status || 'Order Confirmed',
+    status:                     order.status || 'Pending',
     status_step:                order.statusStep || 0,
     payment_method:             order.paymentMethod,
     payment_status:             order.paymentStatus || 'Pending',

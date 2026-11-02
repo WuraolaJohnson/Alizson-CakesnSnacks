@@ -78,8 +78,9 @@ const CustomerDashboard = () => {
   // Fallback to all orders in session if specific email filter returns 0 (e.g., demo account)
   const userOrders = matchedUserOrders.length > 0 ? matchedUserOrders : orders;
 
-  const activeOrders = userOrders.filter(o => o.status !== 'Completed' && o.status !== 'Delivered' && o.status !== 'Cancelled');
-  const completedOrders = userOrders.filter(o => o.status === 'Completed' || o.status === 'Delivered' || o.status === 'Cancelled');
+  const FINISHED = ['Completed', 'Delivered', 'Cancelled', 'Declined'];
+  const activeOrders = userOrders.filter(o => !FINISHED.includes(o.status));
+  const completedOrders = userOrders.filter(o => FINISHED.includes(o.status));
   const bakeryOrders = userOrders.filter(o => o.store === 'bakery');
   const supplyOrders = userOrders.filter(o => o.store === 'supplies');
 

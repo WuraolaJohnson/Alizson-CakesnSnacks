@@ -169,6 +169,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
             }}
           >
             <option value="all">All Statuses</option>
+            <option value="Pending">Pending</option>
             <option value="Order Confirmed">Order Confirmed</option>
             <option value="Preparing">Preparing</option>
             <option value="Ready for Dispatch">Ready for Dispatch</option>
@@ -176,6 +177,7 @@ const AdminOrders = ({ setActiveTab, initialStoreFilter = 'all' }) => {
             <option value="Out for Delivery">Out for Delivery</option>
             <option value="Nearby">Nearby</option>
             <option value="Delivered">Delivered</option>
+            <option value="Declined">Declined</option>
           </select>
         </div>
       </div>

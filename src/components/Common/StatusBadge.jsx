@@ -86,6 +86,13 @@ export const StatusBadge = ({ status = '', type = 'order' }) => {
       </span>
     );
   }
+  if (s.includes('declin')) {
+    return (
+      <span className="badge badge-danger" style={{ gap: '4px' }}>
+        <AlertCircle size={12} /> Declined
+      </span>
+    );
+  }
   if (s.includes('cancel')) {
     return (
       <span className="badge badge-danger" style={{ gap: '4px' }}>

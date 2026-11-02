@@ -384,8 +384,18 @@ export default function OrderTrackingPage({ orderId }) {
             <div>
               <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.05em' }}>Current Status</span>
               <h3 style={{ margin: '0.2rem 0 0', fontWeight: 800, color: 'var(--text-primary)', fontSize: '1.35rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <span>{ORDER_STATUS_STEPS[currentStep]?.icon || '📦'}</span> {order.status}
+                <span>{order.status === 'Pending' ? '⏳' : order.status === 'Declined' ? '❌' : ORDER_STATUS_STEPS[currentStep]?.icon || '📦'}</span> {order.status}
               </h3>
+              {order.status === 'Pending' && (
+                <p style={{ margin: '0.35rem 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  We've received your order. It will be confirmed by the store shortly.
+                </p>
+              )}
+              {order.status === 'Declined' && (
+                <p style={{ margin: '0.35rem 0 0', fontSize: '0.85rem', color: 'var(--status-danger)' }}>
+                  Sorry, the store couldn't take this order. Please contact us about a refund or to place a new order.
+                </p>
+              )}
             </div>
 
             {routeInfo && (

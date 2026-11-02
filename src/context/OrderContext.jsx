@@ -29,10 +29,16 @@ export const ORDER_STATUS_STEPS = [
   { key: 'Delivered', label: 'Delivered', step: 6, icon: '🎉' }
 ];
 
+// New orders wait as 'Pending' until the admin confirms or declines them.
+// Neither is a step on the delivery timeline.
+export const PRE_CONFIRMATION_STATUSES = ['Pending', 'Declined'];
+
 // Valid status transitions — enforced by updateOrderStatus
 export const VALID_TRANSITIONS = {
-  'Order Confirmed': ['Preparing'],
-  'Preparing': ['Ready for Dispatch'],
+  'Pending': ['Order Confirmed', 'Declined'],
+  'Order Confirmed': ['Preparing', 'Declined'],
+  'Preparing': ['Ready for Dispatch', 'Declined'],
+  'Declined': [],
   'Ready for Dispatch': ['Picked Up'],
   'Picked Up': ['Out for Delivery'],
   'Out for Delivery': ['Nearby'],
@@ -131,13 +137,14 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     if (resolvedStatus === 'Ready' || resolvedStatus === 'Ready for Dispatch') resolvedStatus = 'Ready for Dispatch';
     else if (resolvedStatus === 'Completed') resolvedStatus = 'Delivered';
     else if (resolvedStatus === 'Out for Delivery' || resolvedStatus === 'On the Way' || resolvedStatus === 'EN_ROUTE') resolvedStatus = 'Out for Delivery';
-    else if (resolvedStatus === 'Confirmed' || resolvedStatus === 'Pending' || resolvedStatus === 'Order Confirmed') resolvedStatus = 'Order Confirmed';
+    else if (resolvedStatus === 'Confirmed' || resolvedStatus === 'Order Confirmed') resolvedStatus = 'Order Confirmed';
     else if (resolvedStatus === 'Processing' || resolvedStatus === 'Preparing Order' || resolvedStatus === 'Preparing') resolvedStatus = 'Preparing';
     else if (resolvedStatus === 'ACCEPTED' || resolvedStatus === 'PICKED_UP' || resolvedStatus === 'Picked Up') resolvedStatus = 'Picked Up';
     else if (resolvedStatus === 'ARRIVED') resolvedStatus = 'Nearby';
 
     const matchedStep = ORDER_STATUS_STEPS.find(s => s.key === resolvedStatus);
-    const resolvedStep = matchedStep ? matchedStep.step : (o.statusStep !== undefined ? Math.min(o.statusStep, 6) : 0);
+    const resolvedStep = PRE_CONFIRMATION_STATUSES.includes(resolvedStatus) ? -1
+      : matchedStep ? matchedStep.step : (o.statusStep !== undefined ? Math.min(o.statusStep, 6) : 0);
     const isAlreadyAccepted = resolvedStatus === 'Out for Delivery' || resolvedStatus === 'Nearby' || resolvedStatus === 'Picked Up' || resolvedStep >= 3;
     // For Ready for Dispatch orders, reset assignmentState to 'Pending' so riders can see and accept them
     const isReadyForDispatch = resolvedStatus === 'Ready for Dispatch';
@@ -400,7 +407,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     const initialTrackingEvent = {
       event: isBankTransfer
         ? `Order Placed via Bank Transfer (Awaiting confirmation: ₦${(orderPayload.total || 0).toLocaleString()})`
-        : 'Order Confirmed by Customer',
+        : 'Order placed, waiting for the store to confirm',
       statusStep: 0,
       timestamp: `${formattedDate} ${formattedTime}`,
       actor: 'Customer'
@@ -412,7 +419,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
       date: formattedDate,
       time: formattedTime,
       isoDate: now.toISOString(),
-      status: 'Order Confirmed',
+      status: 'Pending',
       statusStep: 0,
       deliveryPin: pinCode,
       paymentStatus: initialPaymentStatus,

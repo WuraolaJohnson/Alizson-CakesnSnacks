@@ -29,7 +29,7 @@ const AdminDashboard = ({ setActiveTab }) => {
   const bakeryRevenue = bakeryOrders.reduce((sum, o) => sum + (o.total || 0), 0);
   const suppliesRevenue = suppliesOrders.reduce((sum, o) => sum + (o.total || 0), 0);
 
-  const pendingOrdersCount = orders.filter(o => o.status === 'Order Confirmed' || o.status === 'Preparing').length;
+  const pendingOrdersCount = orders.filter(o => ['Pending', 'Order Confirmed', 'Preparing'].includes(o.status)).length;
   
   const avgRating = feedbackList.length > 0
     ? (feedbackList.reduce((sum, f) => sum + (f.rating || 5), 0) / feedbackList.length).toFixed(1)
