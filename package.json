@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mediapipe/tasks-vision": "^0.10.14",
     "canvas-confetti": "^1.9.4",
     "firebase": "^11.10.0",
     "leaflet": "^1.9.4",

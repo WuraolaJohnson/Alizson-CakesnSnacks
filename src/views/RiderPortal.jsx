@@ -13,6 +13,7 @@ import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { missingRiderDetails } from '../services/riderAccessService';
 import RiderSetupWizard from '../components/Rider/RiderSetupWizard';
 import { compressImage } from '../utils/imageCompress';
+import { checkFacePhoto } from '../utils/faceCheck';
 import Avatar from '../components/Common/Avatar';
 
 
@@ -1304,6 +1305,7 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave, locked = false 
   });
   const [saving, setSaving] = useState(false);
   const [photoError, setPhotoError] = useState('');
+  const [photoChecking, setPhotoChecking] = useState(false);
 
   if (!isOpen) return null;
   const missing = missingRiderDetails(form);
@@ -1312,10 +1314,16 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave, locked = false 
     if (!file) return;
     try {
       setPhotoError('');
-      const avatar = await compressImage(file, 300, 0.8);
-      setForm(p => ({ ...p, avatar }));
+      setPhotoChecking(true);
+      const avatar = await compressImage(file, 600, 0.8);
+      // Only a clear photo of one face is accepted
+      const { ok, message } = await checkFacePhoto(avatar);
+      if (ok) setForm(p => ({ ...p, avatar }));
+      else setPhotoError(message);
     } catch (err) {
       setPhotoError(err.message);
+    } finally {
+      setPhotoChecking(false);
     }
   };
 
@@ -1365,8 +1373,9 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave, locked = false 
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
             <Avatar src={form.avatar} name={form.name} size={64} />
             <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
-              {form.avatar ? 'Change photo' : 'Add your photo *'}
-              <input type="file" accept="image/*" capture="user" style={{ display: 'none' }} onChange={e => handlePhoto(e.target.files?.[0])} />
+              {photoChecking ? 'Checking photo…' : form.avatar ? 'Change photo' : 'Add your photo *'}
+              <input type="file" accept="image/*" capture="user" style={{ display: 'none' }} disabled={photoChecking}
+                onChange={e => { handlePhoto(e.target.files?.[0]); e.target.value = ''; }} />
             </label>
           </div>
           {photoError && <div style={{ color: 'var(--status-danger)', fontSize: '0.8rem', marginBottom: '0.75rem' }}>{photoError}</div>}

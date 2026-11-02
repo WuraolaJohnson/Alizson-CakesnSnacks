@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 import Avatar from '../Common/Avatar';
 import { compressImage } from '../../utils/imageCompress';
+import { checkFacePhoto } from '../../utils/faceCheck';
 
 const label = { display: 'block', fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.3rem' };
 const field = { marginBottom: '1rem' };
@@ -28,6 +29,7 @@ const RiderSetupWizard = ({ rider, onSave }) => {
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [checkingPhoto, setCheckingPhoto] = useState(false);
   const set = (key) => (e) => { setForm(p => ({ ...p, [key]: e.target.value })); setError(''); };
   const current = STEPS[step];
   const isLast = step === STEPS.length - 1;
@@ -36,10 +38,16 @@ const RiderSetupWizard = ({ rider, onSave }) => {
     if (!file) return;
     try {
       setError('');
-      const avatar = await compressImage(file, 300, 0.8);
-      setForm(p => ({ ...p, avatar }));
+      setCheckingPhoto(true);
+      const avatar = await compressImage(file, 600, 0.8);
+      // Only a clear photo of one face is accepted
+      const { ok, message } = await checkFacePhoto(avatar);
+      if (ok) setForm(p => ({ ...p, avatar }));
+      else setError(message);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setCheckingPhoto(false);
     }
   };
 
@@ -84,9 +92,10 @@ const RiderSetupWizard = ({ rider, onSave }) => {
             <>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
                 <Avatar src={form.avatar} name={form.name} size={72} />
-                <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
-                  {form.avatar ? 'Change photo' : 'Add your photo *'}
-                  <input type="file" accept="image/*" capture="user" style={{ display: 'none' }} onChange={e => handlePhoto(e.target.files?.[0])} />
+                <label className="btn btn-outline btn-sm" style={{ cursor: checkingPhoto ? 'wait' : 'pointer', opacity: checkingPhoto ? 0.6 : 1 }}>
+                  {checkingPhoto ? 'Checking photo…' : form.avatar ? 'Change photo' : 'Add your photo *'}
+                  <input type="file" accept="image/*" capture="user" style={{ display: 'none' }} disabled={checkingPhoto}
+                    onChange={e => { handlePhoto(e.target.files?.[0]); e.target.value = ''; }} />
                 </label>
               </div>
               <div style={field}>
@@ -162,7 +171,7 @@ const RiderSetupWizard = ({ rider, onSave }) => {
                 <ArrowLeft size={16} /> Back
               </button>
             ) : <span />}
-            <button type="submit" className="btn btn-primary" disabled={saving}>
+            <button type="submit" className="btn btn-primary" disabled={saving || checkingPhoto}>
               {saving ? 'Saving…' : isLast ? <><Check size={16} /> Finish registration</> : <>Next <ArrowRight size={16} /></>}
             </button>
           </div>
