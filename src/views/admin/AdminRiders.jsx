@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useOrders } from '../../context/OrderContext';
 import RiderAccessPanel from './RiderAccessPanel';
+import DeliveryPricesModal from '../../components/Admin/DeliveryPricesModal';
 import { 
   fetchOSRMRoute, 
   formatLocationAge, 
@@ -35,6 +36,7 @@ export default function AdminRiders() {
   const markersGroupRef = useRef(null);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
   const [hubFilter, setHubFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [selectedRiderId, setSelectedRiderId] = useState(null);
@@ -275,7 +277,14 @@ export default function AdminRiders() {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button
+            className="btn btn-outline"
+            style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem', fontWeight: 700 }}
+            onClick={() => setIsDeliveryModalOpen(true)}
+          >
+            🚚 Delivery Prices
+          </button>
           <button
             className={`btn ${mapType === 'roadmap' ? 'btn-primary' : 'btn-outline'}`}
             style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
@@ -686,6 +695,8 @@ export default function AdminRiders() {
         </div>
       )}
 
+
+      <DeliveryPricesModal isOpen={isDeliveryModalOpen} onClose={() => setIsDeliveryModalOpen(false)} />
     </div>
   );
 }
