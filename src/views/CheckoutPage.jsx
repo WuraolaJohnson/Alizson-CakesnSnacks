@@ -732,8 +732,9 @@ const CheckoutPage = () => {
 
 const OrderConfirmationStep = ({ navigateTo }) => {
   const { lastPlacedOrder } = useApp();
-  const { storeBankAccount } = useOrders();
-  const order = lastPlacedOrder;
+  const { storeBankAccount, orders } = useOrders();
+  // The live copy, so this page updates when the admin confirms payment
+  const order = orders.find(o => o.id === lastPlacedOrder?.id) || lastPlacedOrder;
 
   const isBankTransfer = order?.paymentMethod === 'Direct Bank Transfer' || order?.paymentMethod?.includes('Transfer');
 
@@ -751,7 +752,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
         Order Placed Successfully! 🎉
       </h1>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '1.75rem' }}>
-        Thank you for your order! We're preparing it with love.
+        Thank you! We've received your order and the store will confirm it shortly.
       </p>
 
       {/* Bank Transfer Notice Box */}
@@ -784,8 +785,11 @@ const OrderConfirmationStep = ({ navigateTo }) => {
             textAlign: 'left'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 800, color: 'var(--status-warning)', marginBottom: '0.5rem' }}>
-              ⏳ Awaiting Bank Transfer Verification
+              ⏳ Waiting for the store to confirm your payment
             </div>
+            <p style={{ fontSize: '0.825rem', color: 'var(--charcoal-800)', margin: '0 0 0.6rem', lineHeight: 1.45 }}>
+              <strong>Already sent the money?</strong> You're all set. Bank transfers can't be checked automatically, so the store confirms each one when it arrives in its account. This page updates by itself once your payment is confirmed.
+            </p>
             <p style={{ fontSize: '0.825rem', color: 'var(--charcoal-800)', margin: '0 0 0.75rem', lineHeight: 1.45 }}>
               If you haven't transferred yet, please transfer <strong>₦{(order?.total || 0).toLocaleString()}</strong> to:
             </p>
@@ -797,7 +801,7 @@ const OrderConfirmationStep = ({ navigateTo }) => {
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{storeBankAccount?.accountName || DEFAULT_STORE_BANK_ACCOUNT.accountName}</div>
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.6rem' }}>
-              Sender: <strong>{order?.transferSenderName || order?.customerName}</strong> · Our finance team confirms received transfers promptly.
+              Sender name we'll look for: <strong>{order?.transferSenderName || order?.customerName}</strong>
             </div>
           </div>
         )

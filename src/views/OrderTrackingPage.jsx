@@ -364,7 +364,7 @@ export default function OrderTrackingPage({ orderId }) {
               </>
             ) : (
               <>
-                <span>⏳ Awaiting Bank Transfer Verification</span>
+                <span>⏳ Waiting for the store to confirm your transfer</span>
                 <span style={{ fontWeight: 500, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
                   — Our finance team is confirming your transfer
                 </span>

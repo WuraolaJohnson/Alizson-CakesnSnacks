@@ -489,7 +489,7 @@ const OrderCard = ({ order, expanded = false, isHistory = false, navigateToTrack
                 </>
               ) : (
                 <>
-                  <span>⏳ Awaiting Bank Transfer Verification</span>
+                  <span>⏳ Waiting for the store to confirm your transfer</span>
                   <span style={{ fontWeight: 400, color: 'var(--text-muted)', fontSize: '0.78rem' }}>
                     — Finance team is reviewing your transfer
                   </span>
