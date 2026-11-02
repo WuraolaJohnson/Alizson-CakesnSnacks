@@ -4,7 +4,7 @@ import { initialFeedback } from '../data/initialFeedback';
 import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { createOrderInDb, updateOrderStatusInDb, subscribeOrdersForUser } from '../services/orderService';
-import { onAuthStateChange } from '../services/authService';
+import { onAuthStateChange, hasRole } from '../services/authService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
 import { subscribeRiders, subscribeOwnRider, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
@@ -228,9 +228,9 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
       unsubscribeOrders = subscribeOrdersForUser(user, list => setOrders(list.map((o, idx) => sanitizeOrder(o, idx))));
       // Riders' duty status and details come live from Firestore: every
       // rider for the admin, and the rider's own record for a rider
-      if (user.role === 'admin') {
+      if (hasRole(user, 'admin')) {
         unsubscribeRiders = subscribeRiders(setRiders);
-      } else if (user.role === 'rider') {
+      } else if (hasRole(user, 'rider')) {
         unsubscribeRiders = subscribeOwnRider(user.id, own =>
           setRiders(prev => [...prev.filter(r => r.id !== own.id), own]));
       }

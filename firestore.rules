@@ -9,11 +9,15 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function profilePath() { return /databases/$(database)/documents/profiles/$(request.auth.uid); }
     function profile() { return get(profilePath()).data; }
-    function isAdmin() { return signedIn() && exists(profilePath()) && profile().role == 'admin'; }
+    // An account can hold several roles (profiles.roles); older profiles use `role`
+    function hasRole(r) {
+      return signedIn() && exists(profilePath())
+        && (profile().get('role', '') == r || profile().get('roles', []).hasAny([r]));
+    }
+    function isAdmin() { return hasRole('admin'); }
     // Rider record id linked to this login (profiles.rider_id, set by an admin)
     function riderId() {
-      return signedIn() && exists(profilePath()) && profile().role == 'rider'
-        ? profile().get('rider_id', null) : null;
+      return hasRole('rider') ? profile().get('rider_id', null) : null;
     }
     function changed() { return request.resource.data.diff(resource.data).affectedKeys(); }
 
@@ -23,9 +27,10 @@ service cloud.firestore {
       allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
       allow create: if signedIn() && request.auth.uid == uid
         && request.resource.data.role == 'customer'
+        && !('roles' in request.resource.data)
         && !('rider_id' in request.resource.data);
       allow update: if isAdmin() || (signedIn() && request.auth.uid == uid
-        && !changed().hasAny(['role', 'rider_id', 'email']));
+        && !changed().hasAny(['role', 'roles', 'rider_id', 'email']));
       allow delete: if isAdmin();
     }
 

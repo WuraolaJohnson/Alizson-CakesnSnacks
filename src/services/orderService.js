@@ -268,17 +268,20 @@ export function subscribeToOrders(onOrderChange) {
 export function subscribeOrdersForUser(user, onOrders) {
   if (!isFirebaseReady() || !user) return () => {};
   const col = collection(db, 'orders');
+  const roles = user.roles || [user.role];
   let queries;
-  if (user.role === 'admin') {
+  if (roles.includes('admin')) {
     queries = [col];
-  } else if (user.role === 'rider' && user.riderId) {
-    queries = [
-      query(col, where('assignment_state', '==', 'Pending'), where('accepted_by_rider_id', '==', null)),
-      query(col, where('accepted_by_rider_id', '==', user.riderId)),
-      query(col, where('assigned_rider.id', '==', user.riderId))
-    ];
   } else {
+    // Everyone is a customer; a rider also sees deliveries
     queries = [query(col, where('customer_id', '==', user.id))];
+    if (roles.includes('rider') && user.riderId) {
+      queries.push(
+        query(col, where('assignment_state', '==', 'Pending'), where('accepted_by_rider_id', '==', null)),
+        query(col, where('accepted_by_rider_id', '==', user.riderId)),
+        query(col, where('assigned_rider.id', '==', user.riderId))
+      );
+    }
   }
 
   const results = queries.map(() => []);

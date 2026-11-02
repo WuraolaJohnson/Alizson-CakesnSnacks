@@ -332,7 +332,7 @@ const FeedbackPage = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.35rem' }}>
                       <RatingStars rating={fb.rating} size={14} />
                       <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
-                        {currentUser?.role === 'admin' && fb.orderId ? (
+                        {currentUser?.roles?.includes('admin') && fb.orderId ? (
                           <span
                             style={{
                               background: 'var(--cream-100)',

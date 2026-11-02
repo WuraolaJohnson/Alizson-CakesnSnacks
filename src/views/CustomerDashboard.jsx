@@ -43,7 +43,7 @@ const CustomerDashboard = () => {
 
   const wishlistProducts = [...bakeryProducts, ...supplyProducts].filter(p => wishlist.includes(p.id));
 
-  if (!currentUser || currentUser.role === 'admin') {
+  if (!currentUser) {
     if (activeTab === 'wishlist') {
       return (
         <div style={{ background: 'var(--cream-50)', minHeight: '85vh', padding: '2rem 0 5rem' }}>

@@ -3,12 +3,12 @@
  * ──────────────────────────────────────────────────────────────
  * Admin approval of rider logins. Signing in on the rider portal without
  * rider access files a request at rider_requests/{uid}; an admin approves it
- * by linking the account to a rider record (profiles.role = 'rider',
+ * by linking the account to a rider record (adds 'rider' to profiles.roles,
  * profiles.rider_id, riders.user_id), rejects it, or later revokes access.
  */
 
 import {
-  collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteField,
+  collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteField, arrayUnion, arrayRemove,
   onSnapshot, writeBatch, query, where
 } from 'firebase/firestore';
 import { auth, db, isFirebaseReady } from '../lib/firebase';
@@ -184,7 +184,8 @@ export async function approveRiderRequest(request, riderId = null) {
         updated_at: now
       });
     }
-    batch.update(doc(db, 'profiles', request.uid), { role: 'rider', rider_id: id, updated_at: now });
+    // Adds the rider role; an admin who is also a rider stays an admin
+    batch.update(doc(db, 'profiles', request.uid), { roles: arrayUnion('rider'), rider_id: id, updated_at: now });
     batch.update(doc(db, 'rider_requests', request.uid), { status: 'approved', rider_id: id, decided_at: now });
     await batch.commit();
     return { error: null };
@@ -210,9 +211,17 @@ export async function rejectRiderRequest(uid) {
 export async function revokeRiderAccess(rider) {
   try {
     const now = new Date().toISOString();
+    const profileRef = doc(db, 'profiles', rider.user_id);
+    const profile = (await getDoc(profileRef)).data() || {};
     const batch = writeBatch(db);
     batch.update(doc(db, 'riders', rider.id), { user_id: null, updated_at: now });
-    batch.update(doc(db, 'profiles', rider.user_id), { role: 'customer', rider_id: deleteField(), updated_at: now });
+    // Removes only the rider role; any other roles stay
+    batch.update(profileRef, {
+      roles: arrayRemove('rider'),
+      ...(profile.role === 'rider' && { role: 'customer' }),
+      rider_id: deleteField(),
+      updated_at: now
+    });
     batch.delete(doc(db, 'rider_requests', rider.user_id));
     await batch.commit();
     return { error: null };

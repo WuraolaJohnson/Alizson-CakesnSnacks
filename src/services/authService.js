@@ -33,13 +33,27 @@ const DEFAULT_ADDRESSES = [
 /**
  * Converts a Firestore profile doc → app user shape
  */
+/**
+ * An account's roles: everyone is a customer, plus any of 'rider' / 'admin'.
+ * Older profiles only have the single `role` field, so it counts too.
+ */
+export function rolesOf(profile) {
+  return [...new Set(['customer', ...(profile?.roles || []), profile?.role].filter(Boolean))];
+}
+
+/** True when the user (or profile) has the role. */
+export const hasRole = (user, role) => !!user && rolesOf(user).includes(role);
+
 function profileToUser(profile) {
+  const roles = rolesOf(profile);
   return {
     id: profile.id,
     name: profile.name || '',
     email: profile.email || '',
     phone: profile.phone || '',
-    role: profile.role || 'customer',
+    roles,
+    // Main role, for older code: admin, else rider, else customer
+    role: roles.includes('admin') ? 'admin' : roles.includes('rider') ? 'rider' : 'customer',
     riderId: profile.rider_id || null,
     avatarUrl: profile.avatar_url || null,
     savedAddresses:
@@ -178,9 +192,9 @@ export async function signInAsRole(email, password, expectedRole) {
   const { user, error } = await signIn(email, password);
   if (error) return { user: null, error };
 
-  if (!user || user.role !== expectedRole) {
+  if (!hasRole(user, expectedRole)) {
     // Rider portal: ask an admin for access instead of just refusing
-    const message = expectedRole === 'rider' && user?.role !== 'admin'
+    const message = expectedRole === 'rider'
       ? riderRequestMessage(await requestRiderAccess())
       : `This account does not have ${expectedRole} access.`;
     // Don't leave a non-staff account signed in from the staff portal
@@ -198,7 +212,7 @@ export async function signInAsRole(email, password, expectedRole) {
 export async function getStaffUser(expectedRole) {
   if (!isFirebaseReady()) return null;
   const user = await getCurrentUser();
-  return user && user.role === expectedRole ? user : null;
+  return hasRole(user, expectedRole) ? user : null;
 }
 
 /**
