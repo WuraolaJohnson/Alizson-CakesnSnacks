@@ -43,7 +43,7 @@ const CheckoutPage = () => {
     name: giftConfig.isGift && giftConfig.recipientName ? giftConfig.recipientName : (currentUser?.name || ''),
     email: currentUser?.email || '',
     phone: giftConfig.isGift && giftConfig.recipientPhone ? giftConfig.recipientPhone : (currentUser?.phone || ''),
-    address: giftConfig.isGift && giftConfig.deliveryAddress ? giftConfig.deliveryAddress : (currentUser?.savedAddresses?.[0]?.address || 'Abeokuta South, Ogun State'),
+    address: giftConfig.isGift && giftConfig.deliveryAddress ? giftConfig.deliveryAddress : ((currentUser?.savedAddresses?.find(a => a.isDefault) || currentUser?.savedAddresses?.[0])?.address || ''),
     lga: 'Abeokuta South',
     city: 'Kuto & Ibara Central Hub',
     state: 'Ogun State',

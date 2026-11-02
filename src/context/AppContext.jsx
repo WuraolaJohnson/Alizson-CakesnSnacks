@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { onAuthStateChange, signOut as authSignOut, getCurrentUser, getPendingOAuthPortal } from '../services/authService';
+import { onAuthStateChange, signOut as authSignOut, getCurrentUser, getPendingOAuthPortal, realAddresses } from '../services/authService';
 
 const AppContext = createContext();
 
@@ -191,37 +191,13 @@ export const AppProvider = ({ children }) => {
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
 
   // ── Auth / Current User ──────────────────────────────────────
-  const DEFAULT_SAVED_ADDRESSES = [
-    {
-      id: 'addr-1',
-      label: 'Home (Olusegun Obasanjo Hilltop)',
-      address: 'House 14, Presidential Boulevard, Olusegun Obasanjo Hilltop, Abeokuta',
-      lga: 'Abeokuta South',
-      city: 'Abeokuta',
-      state: 'Ogun State',
-      phone: '+234 803 555 0192',
-      isDefault: true
-    },
-    {
-      id: 'addr-2',
-      label: 'Office (Ibara Housing Estate)',
-      address: 'Suite 4B, Commerce House, Ibara Housing Estate, Abeokuta',
-      lga: 'Abeokuta South',
-      city: 'Abeokuta',
-      state: 'Ogun State',
-      phone: '+234 802 111 2233',
-      isDefault: false
-    }
-  ];
 
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('cz_user');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (!parsed.savedAddresses || parsed.savedAddresses.length === 0) {
-          parsed.savedAddresses = DEFAULT_SAVED_ADDRESSES;
-        }
+        parsed.savedAddresses = realAddresses(parsed.savedAddresses);
         return parsed;
       }
       return null;
@@ -233,7 +209,7 @@ export const AppProvider = ({ children }) => {
   const login = useCallback((userData) => {
     const userWithAddresses = {
       ...userData,
-      savedAddresses: userData.savedAddresses && userData.savedAddresses.length > 0 ? userData.savedAddresses : DEFAULT_SAVED_ADDRESSES
+      savedAddresses: realAddresses(userData.savedAddresses)
     };
     setCurrentUser(userWithAddresses);
     localStorage.setItem('cz_user', JSON.stringify(userWithAddresses));
@@ -315,7 +291,7 @@ export const AppProvider = ({ children }) => {
   const addAddress = useCallback((newAddress) => {
     setCurrentUser(prev => {
       if (!prev) return prev;
-      const currentAddresses = prev.savedAddresses && prev.savedAddresses.length > 0 ? prev.savedAddresses : DEFAULT_SAVED_ADDRESSES;
+      const currentAddresses = realAddresses(prev.savedAddresses);
       let updatedAddresses = [...currentAddresses];
       if (newAddress.isDefault) {
         updatedAddresses = updatedAddresses.map(a => ({ ...a, isDefault: false }));
@@ -336,7 +312,7 @@ export const AppProvider = ({ children }) => {
   const updateAddress = useCallback((addrId, updatedData) => {
     setCurrentUser(prev => {
       if (!prev) return prev;
-      const currentAddresses = prev.savedAddresses && prev.savedAddresses.length > 0 ? prev.savedAddresses : DEFAULT_SAVED_ADDRESSES;
+      const currentAddresses = realAddresses(prev.savedAddresses);
       let updatedAddresses = currentAddresses.map(a => {
         if (a.id === addrId) {
           return { ...a, ...updatedData };
@@ -371,7 +347,7 @@ export const AppProvider = ({ children }) => {
   const setDefaultAddress = useCallback((addrId) => {
     setCurrentUser(prev => {
       if (!prev) return prev;
-      const currentAddresses = prev.savedAddresses && prev.savedAddresses.length > 0 ? prev.savedAddresses : DEFAULT_SAVED_ADDRESSES;
+      const currentAddresses = realAddresses(prev.savedAddresses);
       const updatedAddresses = currentAddresses.map(a => ({
         ...a,
         isDefault: a.id === addrId

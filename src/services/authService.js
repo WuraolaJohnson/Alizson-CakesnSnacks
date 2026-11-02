@@ -17,18 +17,11 @@ import { requestRiderAccess, riderRequestMessage, dbToRider } from './riderAcces
 
 // ── Helpers ───────────────────────────────────────────────────
 
-const DEFAULT_ADDRESSES = [
-  {
-    id: 'addr-default-1',
-    label: 'Home',
-    address: '',
-    lga: '',
-    city: 'Abeokuta',
-    state: 'Ogun State',
-    phone: '',
-    isDefault: true
-  }
-];
+// Only addresses the customer actually entered; earlier versions saved a
+// blank "Home" placeholder (and demo addresses) that must not show.
+const DEMO_ADDRESS_IDS = ['addr-default-1', 'addr-1', 'addr-2'];
+export const realAddresses = (list = []) =>
+  list.filter(a => a && String(a.address || '').trim() && !DEMO_ADDRESS_IDS.includes(a.id));
 
 /**
  * Converts a Firestore profile doc → app user shape
@@ -56,10 +49,7 @@ function profileToUser(profile) {
     role: roles.includes('admin') ? 'admin' : roles.includes('rider') ? 'rider' : 'customer',
     riderId: profile.rider_id || null,
     avatarUrl: profile.avatar_url || null,
-    savedAddresses:
-      profile.saved_addresses && profile.saved_addresses.length > 0
-        ? profile.saved_addresses
-        : DEFAULT_ADDRESSES
+    savedAddresses: realAddresses(profile.saved_addresses)
   };
 }
 
@@ -121,7 +111,7 @@ export async function signUp(name, email, password) {
       email,
       phone: '',
       role: 'customer',
-      savedAddresses: DEFAULT_ADDRESSES
+      savedAddresses: []
     };
     localStorage.setItem('cz_user', JSON.stringify(fakeUser));
     return { user: fakeUser, error: null };
@@ -163,7 +153,7 @@ export async function signIn(email, password) {
       email,
       phone: '',
       role: 'customer',
-      savedAddresses: DEFAULT_ADDRESSES
+      savedAddresses: []
     };
     return { user: fakeUser, error: null };
   }
