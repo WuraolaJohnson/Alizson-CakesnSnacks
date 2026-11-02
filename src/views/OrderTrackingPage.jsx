@@ -572,13 +572,21 @@ export default function OrderTrackingPage({ orderId }) {
                   <div style={{ fontSize: '0.8rem', color: 'var(--text-gold)', fontWeight: 700 }}>
                     {rider.vehicle}{rider.rating != null ? ` · ${rider.rating} ★` : ''}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                    Hub: {rider.hub || 'Ogun Central Dispatch'}
-                  </div>
+                  {rider.hub && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Hub: {rider.hub}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {rider.phone && (
+              {/* The rider's number is shared once they accept the delivery */}
+              {order.assignmentState !== 'Accepted' && (
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                  The rider's phone number will appear here once a rider accepts your delivery.
+                </div>
+              )}
+              {order.assignmentState === 'Accepted' && rider.phone && (
                 <a
                   href={`tel:${rider.phone}`}
                   className="btn btn-primary"

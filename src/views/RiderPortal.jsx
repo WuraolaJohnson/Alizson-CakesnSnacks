@@ -164,7 +164,7 @@ export default function RiderPortal({ authRider }) {
       return;
     }
 
-    const success = acceptRiderAssignment(orderToAccept.id, activeRider.name, activeRider.id);
+    const success = acceptRiderAssignment(orderToAccept.id, activeRider.name, activeRider.id, activeRider);
     if (success) {
       setActiveDeliveryId(orderToAccept.id);
       setActiveTab('active');
@@ -491,7 +491,7 @@ export default function RiderPortal({ authRider }) {
                               Order #{ord.id}
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                              {ord.customerName} · {ord.customerPhone}
+                              {ord.customerName} · <span style={{ fontStyle: 'italic' }}>phone shown after you accept</span>
                             </div>
                           </div>
                           
@@ -729,7 +729,7 @@ export default function RiderPortal({ authRider }) {
                               Order #{ord.id}
                             </div>
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                              {ord.customerName} · {ord.customerPhone}
+                              {ord.customerName} · <a href={`tel:${ord.customerPhone}`} style={{ color: 'inherit', fontWeight: 700 }}>{ord.customerPhone}</a>
                             </div>
                           </div>
                           <span style={{
@@ -877,9 +877,9 @@ export default function RiderPortal({ authRider }) {
                           {paymentBadge}
                         </div>
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-                          <div><strong>Phone Contact:</strong> {activeOrder.customerPhone}</div>
+                          <div><strong>Phone Contact:</strong> <a href={`tel:${activeOrder.customerPhone}`} style={{ color: 'var(--text-gold)', fontWeight: 700 }}>{activeOrder.customerPhone || 'Not provided'}</a></div>
                           <div><strong>Delivery Address:</strong> {activeOrder.deliveryAddress}</div>
-                          <div><strong>LGA / District:</strong> {activeOrder.lga || 'Abeokuta South'}, Ogun State</div>
+                          <div><strong>LGA / District:</strong> {activeOrder.lga ? `${activeOrder.lga}, ` : ''}Ogun State</div>
                           {activeOrder.specialInstructions && (
                             <div style={{ fontStyle: 'italic', color: 'var(--text-gold)', marginTop: '0.2rem' }}>
                               "Notes: {activeOrder.specialInstructions}"

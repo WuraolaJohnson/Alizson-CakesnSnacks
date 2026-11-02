@@ -40,6 +40,7 @@ function profileToUser(profile) {
     email: profile.email || '',
     phone: profile.phone || '',
     role: profile.role || 'customer',
+    riderId: profile.rider_id || null,
     avatarUrl: profile.avatar_url || null,
     savedAddresses:
       profile.saved_addresses && profile.saved_addresses.length > 0

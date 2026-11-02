@@ -220,11 +220,15 @@ export async function updateOrderStatusInDb(orderId, updates, trackingEvent) {
   if (updates.failureReason !== undefined)       dbUpdates.failure_reason = updates.failureReason;
   if (updates.bankTransferVerifiedBy !== undefined) dbUpdates.bank_transfer_verified_by = updates.bankTransferVerifiedBy;
   if (updates.stockDeducted !== undefined)       dbUpdates.stock_deducted = updates.stockDeducted;
+  if (updates.paymentConfirmedAt !== undefined)  dbUpdates.payment_confirmed_at = updates.paymentConfirmedAt;
   if (updates.adminPaymentOverride !== undefined) dbUpdates.admin_payment_override = updates.adminPaymentOverride;
   if (updates.cashPaymentConfirmedByRider !== undefined) dbUpdates.cash_payment_confirmed_by_rider = updates.cashPaymentConfirmedByRider;
   dbUpdates.updated_at = new Date().toISOString();
 
-  if (trackingEvent) dbUpdates.tracking_history = arrayUnion(trackingToDb(trackingEvent));
+  const events = [].concat(trackingEvent || []);
+  if (events.length) dbUpdates.tracking_history = arrayUnion(...events.map(trackingToDb));
+  // Firestore rejects undefined, even inside objects like assigned_rider
+  Object.assign(dbUpdates, JSON.parse(JSON.stringify({ ...dbUpdates, tracking_history: undefined })));
 
   try {
     await updateDoc(doc(db, 'orders', String(orderId)), dbUpdates);
@@ -254,6 +258,39 @@ export function subscribeToOrders(onOrderChange) {
       onOrderChange(typeMap[type], type === 'removed' ? null : order, type === 'removed' ? order : null);
     });
   }, (err) => console.error('[orderService] subscribeToOrders error:', err));
+}
+
+/**
+ * Live orders for the signed-in user, as the security rules allow: everything
+ * for an admin; for a rider, orders waiting for a rider plus their own; for a
+ * customer, their own. Calls onOrders(list) on every change. Returns unsubscribe.
+ */
+export function subscribeOrdersForUser(user, onOrders) {
+  if (!isFirebaseReady() || !user) return () => {};
+  const col = collection(db, 'orders');
+  let queries;
+  if (user.role === 'admin') {
+    queries = [col];
+  } else if (user.role === 'rider' && user.riderId) {
+    queries = [
+      query(col, where('assignment_state', '==', 'Pending'), where('accepted_by_rider_id', '==', null)),
+      query(col, where('accepted_by_rider_id', '==', user.riderId)),
+      query(col, where('assigned_rider.id', '==', user.riderId))
+    ];
+  } else {
+    queries = [query(col, where('customer_id', '==', user.id))];
+  }
+
+  const results = queries.map(() => []);
+  const emit = () => {
+    const byId = new Map();
+    results.flat().forEach(o => byId.set(o.id, o));
+    onOrders([...byId.values()].sort((a, b) => String(b.isoDate || '').localeCompare(String(a.isoDate || ''))));
+  };
+  const unsubs = queries.map((q, i) => onSnapshot(q,
+    (snap) => { results[i] = snapToOrders(snap); emit(); },
+    (err) => console.error('[orderService] orders subscribe error:', err)));
+  return () => unsubs.forEach(u => u());
 }
 
 /**

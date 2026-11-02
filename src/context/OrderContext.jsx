@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { initialOrders } from '../data/initialOrders';
 import { initialFeedback } from '../data/initialFeedback';
 import { checkGeofenceStatus } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
-import { createOrderInDb, updateOrderStatusInDb } from '../services/orderService';
+import { createOrderInDb, updateOrderStatusInDb, subscribeOrdersForUser } from '../services/orderService';
+import { onAuthStateChange } from '../services/authService';
 import { subscribeBankAccount, saveBankAccount } from '../services/settingsService';
 import { subscribeRiders, saveRiderAvailability, saveRiderProfile } from '../services/riderAccessService';
 import { isFirebaseReady } from '../lib/firebase';
@@ -212,6 +213,48 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     localStorage.setItem('cz_orders_ver', CACHE_VERSION);
     return initialOrders.map((o, idx) => sanitizeOrder(o, idx));
   });
+
+  // Orders come from Firestore for whoever is signed in (admin, rider or
+  // customer), so every device sees the same orders and updates live.
+  useEffect(() => {
+    if (!isFirebaseReady()) return undefined;
+    let unsubscribeOrders = () => {};
+    const unsubscribeAuth = onAuthStateChange((_event, user) => {
+      unsubscribeOrders();
+      if (!user) { setOrders([]); return; }
+      unsubscribeOrders = subscribeOrdersForUser(user, list => setOrders(list.map((o, idx) => sanitizeOrder(o, idx))));
+    });
+    return () => { unsubscribeAuth(); unsubscribeOrders(); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Order fields saved to Firestore when an action changes them
+  const SAVED_ORDER_FIELDS = [
+    'status', 'statusStep', 'assignmentState', 'acceptedByRiderId', 'acceptedByRiderName', 'assignedRider',
+    'paymentStatus', 'paymentReference', 'riderLocation', 'failureReason', 'bankTransferVerifiedBy',
+    'adminPaymentOverride', 'cashPaymentConfirmedByRider', 'paymentConfirmedAt'
+  ];
+  const ordersRef = useRef(orders);
+  ordersRef.current = orders;
+
+  /** Applies `updater` to the orders, then saves what changed (and new tracking events). */
+  const changeOrders = (updater) => {
+    const prev = ordersRef.current;
+    const next = updater(prev);
+    ordersRef.current = next;
+    setOrders(next);
+    next.forEach(order => {
+      const before = prev.find(o => o.id === order.id);
+      if (!before || before === order) return;
+      const changes = Object.fromEntries(SAVED_ORDER_FIELDS
+        .filter(k => JSON.stringify(order[k]) !== JSON.stringify(before[k]))
+        .map(k => [k, order[k] ?? null]));
+      const events = (order.trackingHistory || []).slice((before.trackingHistory || []).length);
+      if (!Object.keys(changes).length && !events.length) return;
+      updateOrderStatusInDb(order.id, changes, events)
+        .then(({ error }) => { if (error) showToast(`Could not save order ${order.id}: ${error}`, 'error'); });
+    });
+  };
 
   const [feedbackList, setFeedbackList] = useState(() => {
     const saved = localStorage.getItem('cz_feedback_v2');
@@ -456,7 +499,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     }
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
           event: `Delivery assigned to ${matchedRider.name}`,
@@ -505,7 +548,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
       return r;
     }));
 
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id !== orderId && order.acceptedByRiderId !== riderId) return order;
 
       const currentTS = new Date(order.riderLocation?.timestamp || 0).getTime();
@@ -549,7 +592,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let verified = false;
 
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id !== orderId) return order;
 
       // PIN check if provided
@@ -619,7 +662,8 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     return { error };
   };
 
-  const acceptRiderAssignment = (orderId, riderName, riderId = null) => {
+  /** `rider` is the accepting rider's record, so the customer gets their contact details. */
+  const acceptRiderAssignment = (orderId, riderName, riderId = null, rider = null) => {
     const effectiveRiderId = riderId || 'rdr-001';
     
     // Single active order check: Ensure rider doesn't already have an active in-progress order
@@ -636,9 +680,26 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     }
 
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const source = riders.find(r => r.id === effectiveRiderId) || rider || { id: effectiveRiderId, name: riderName };
+    // What the customer sees: who is coming and how to call them
+    const riderContact = {
+      id: effectiveRiderId, name: source.name || riderName, phone: source.phone || '',
+      vehicle: source.vehicle || '', vehicleType: source.vehicleType || '', avatar: source.avatar || '',
+      rating: source.rating ?? null
+    };
+    const acceptEvent = {
+      event: `Rider ${riderName} (${effectiveRiderId}) accepted delivery assignment`,
+      statusStep: 3, timestamp: timeStr, actor: riderName
+    };
+    updateOrderStatusInDb(orderId, {
+      status: 'Picked Up', statusStep: 3, assignmentState: 'Accepted',
+      acceptedByRiderId: effectiveRiderId, acceptedByRiderName: riderName, assignedRider: riderContact
+    }, acceptEvent).then(({ error }) => {
+      if (error) showToast(`Could not save the acceptance: ${error}`, 'error');
+    });
     setOrders(prev => prev.map(order => {
       if (order.id === orderId) {
-        const matchedRider = riders.find(r => r.id === effectiveRiderId) || { id: effectiveRiderId, name: riderName };
+        const matchedRider = { ...source, ...riderContact };
         const eventLog = {
           event: `Rider ${riderName} (${effectiveRiderId}) accepted delivery assignment`,
           statusStep: Math.max(order.statusStep, 2),
@@ -665,7 +726,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const confirmCashPayment = (orderId, riderName = 'Delivery Rider') => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
           event: `💵 Pay on Delivery Cash Collected & Confirmed by Rider (${riderName})`,
@@ -689,7 +750,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const rejectRiderAssignment = (orderId, riderName, reason = 'Rider Unavailable') => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
           event: `Rider ${riderName} declined assignment (${reason})`,
@@ -715,7 +776,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
 
   const reportDeliveryFailure = (orderId, riderName, reason = 'Customer unreachable') => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
           event: `⚠️ Delivery Failed: ${reason}`,
@@ -763,7 +824,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
     const formattedDate = `${now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
     const confirmTime = `${formattedDate} ${timeStr}`;
 
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         // Idempotency: If order is already paid, do not re-verify or duplicate logs
         if (order.paymentStatus === 'Paid') {
@@ -799,7 +860,7 @@ export const OrderProvider = ({ children, showToast = () => {} }) => {
   // Admin Override for Emergency Exception
   const overridePaymentByAdmin = (orderId, adminName = 'Store Manager') => {
     const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    setOrders(prev => prev.map(order => {
+    changeOrders(prev => prev.map(order => {
       if (order.id === orderId) {
         const eventLog = {
           event: `🛡️ Admin Payment Override Granted by ${adminName}`,
