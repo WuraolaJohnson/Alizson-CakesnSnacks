@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { grossRevenue, storeRevenue } from '../../utils/revenue';
 import {
   FileText, TrendingUp, Download, Printer, DollarSign,
   Calendar, Cake, Package, Award, ArrowUpRight, Truck
@@ -17,9 +18,10 @@ const AdminRecords = () => {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isDeliveryModalOpen, setIsDeliveryModalOpen] = useState(false);
 
-  const totalSales = orders.reduce((sum, o) => sum + (o.total || 0), 0);
-  const bakerySales = orders.filter(o => o.store === 'bakery').reduce((sum, o) => sum + (o.total || 0), 0);
-  const suppliesSales = orders.filter(o => o.store === 'supplies').reduce((sum, o) => sum + (o.total || 0), 0);
+  // Only orders whose payment has been confirmed count as sales
+  const totalSales = grossRevenue(orders);
+  const bakerySales = storeRevenue(orders, 'bakery');
+  const suppliesSales = storeRevenue(orders, 'supplies');
 
   const completedOrders = orders.filter(o => o.status === 'Delivered' || o.status === 'Completed').length;
   const inProgressOrders = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Completed' && o.status !== 'Cancelled').length;

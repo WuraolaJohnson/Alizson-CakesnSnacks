@@ -1,4 +1,5 @@
 import React from 'react';
+import { grossRevenue, storeRevenue } from '../../utils/revenue';
 import {
   DollarSign, ShoppingBag, Cake, Package, TrendingUp, AlertTriangle,
   Clock, CheckCircle, ArrowRight, Eye, RefreshCw, Star
@@ -22,13 +23,14 @@ const AdminDashboard = ({ setActiveTab }) => {
   };
 
   // Metrics Calculations
-  const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+  // Only orders whose payment has been confirmed count as revenue
+  const totalRevenue = grossRevenue(orders);
   // Orders from both stores count in each
   const bakeryOrders = orders.filter(o => o.store === 'bakery' || o.store === 'mixed');
   const suppliesOrders = orders.filter(o => o.store === 'supplies' || o.store === 'mixed');
 
-  const bakeryRevenue = bakeryOrders.reduce((sum, o) => sum + (o.total || 0), 0);
-  const suppliesRevenue = suppliesOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const bakeryRevenue = storeRevenue(orders, 'bakery');
+  const suppliesRevenue = storeRevenue(orders, 'supplies');
 
   const pendingOrdersCount = orders.filter(o => ['Pending', 'Order Confirmed', 'Preparing'].includes(o.status)).length;
   

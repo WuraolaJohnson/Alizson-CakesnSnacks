@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { isPaidOrder } from '../../utils/revenue';
 import { X, Download, Calendar, Filter, ShoppingBag, Cake, Package, CheckCircle2 } from 'lucide-react';
 import { useOrders } from '../../context/OrderContext';
 import { useApp } from '../../context/AppContext';
@@ -23,6 +24,8 @@ const SalesExportModal = ({ isOpen, onClose }) => {
 
   // Filter orders based on timeframe
   const filteredOrders = orders.filter(order => {
+    // Sales are paid orders only
+    if (!isPaidOrder(order)) return false;
     // Store filter
     if (storeFilter !== 'all' && order.store !== storeFilter && order.store !== 'mixed') {
       return false;
@@ -66,7 +69,8 @@ const SalesExportModal = ({ isOpen, onClose }) => {
       ? order.items
       : [{ name: 'Custom Order', category: storeLabel, quantity: 1, unitPrice: order.total || 0 }];
 
-    items.forEach(item => {
+    // From an order with both stores, list only the chosen store's items
+    items.filter(item => storeFilter === 'all' || order.store !== 'mixed' || item.store === storeFilter).forEach(item => {
       itemsSold.push({
         date: order.date || now.toLocaleDateString(),
         time: order.time || '12:00 PM',
@@ -81,7 +85,7 @@ const SalesExportModal = ({ isOpen, onClose }) => {
         customerName: order.customerName || 'Valued Customer',
         customerEmail: order.customerEmail || '',
         customerPhone: order.customerPhone || '',
-        lga: order.lga || 'Abeokuta South',
+        lga: order.lga || '',
         paymentMethod: order.paymentMethod || 'Online Payment',
         paymentStatus: order.paymentStatus || 'Paid',
         orderStatus: order.status || 'Confirmed'
