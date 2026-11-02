@@ -11,6 +11,7 @@ import { useApp } from '../context/AppContext';
 import { calculateHaversineDistance, fetchOSRMRoute, formatLocationAge, isLocationStale, isRiderOffRoute } from '../utils/trackingRouting';
 import { OGUN_DELIVERY_LOCATIONS } from '../data/ogunLocations';
 import { missingRiderDetails } from '../services/riderAccessService';
+import RiderSetupWizard from '../components/Rider/RiderSetupWizard';
 import { compressImage } from '../utils/imageCompress';
 import Avatar from '../components/Common/Avatar';
 
@@ -264,13 +265,7 @@ export default function RiderPortal({ authRider }) {
   // Nothing else opens until every detail is filled in
   if (!profileComplete) {
     return (
-      <EditRiderProfileModal
-        rider={activeRider}
-        isOpen
-        locked
-        onClose={() => {}}
-        onSave={(updated) => updateRiderProfile(activeRider.id, updated, activeRider)}
-      />
+      <RiderSetupWizard rider={activeRider} onSave={(updated) => updateRiderProfile(activeRider.id, updated, activeRider)} />
     );
   }
 
@@ -1346,7 +1341,7 @@ const EditRiderProfileModal = ({ rider, isOpen, onClose, onSave, locked = false 
     >
       <div
         className="card"
-        style={{ padding: '2rem', width: '100%', maxWidth: 460, background: 'var(--bg-surface)' }}
+        style={{ padding: '2rem', width: '100%', maxWidth: 460, maxHeight: '90vh', overflowY: 'auto', background: 'var(--bg-surface)' }}
         onClick={e => e.stopPropagation()}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
